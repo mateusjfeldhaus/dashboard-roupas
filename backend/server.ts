@@ -9,6 +9,7 @@ import looksRouter    from './routes/looks'
 import usageRouter    from './routes/usage'
 import ratingRouter   from './routes/rating'
 import wishlistRouter from './routes/wishlist'
+import { requireApiKey } from './middleware/requireApiKey'
 
 const app  = express()
 const PORT = process.env.PORT ?? 3001
@@ -43,6 +44,17 @@ app.use('/img', (req, res, next) => {
   } catch {
     next()
   }
+})
+
+// ── Auth: bloqueia POST/PUT/DELETE sem API Key ────────────────────────────────
+app.use((req, res, next) => {
+  if (req.method === 'GET' || req.method === 'OPTIONS') return next()
+  requireApiKey(req, res, next)
+})
+
+// ── POST /api/auth — verifica o PIN ──────────────────────────────────────────
+app.post('/api/auth', (_req, res) => {
+  res.json({ ok: true }) // se chegou aqui, o middleware já validou
 })
 
 // ── API routes ────────────────────────────────────────────────────────────────

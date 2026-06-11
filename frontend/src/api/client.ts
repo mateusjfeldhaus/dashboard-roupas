@@ -7,4 +7,9 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
+/** Chamado pelo PinGate após validação — injeta o PIN em todos os requests */
+export function setApiKey(key: string) {
+  api.defaults.headers.common['x-api-key'] = key
+}
+
 export default api
