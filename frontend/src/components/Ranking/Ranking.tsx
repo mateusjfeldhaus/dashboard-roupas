@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useLooks } from '../../hooks/useLooks'
 import type { Look } from '@data/types'
 import { LookModal } from '../Looks/LookModal'
+import api from '../../api/client'
 import {
   Wrap, SectionLabel, RankList, RankCard,
   Position, LookInfo, LookTitle, TagRow, Tag,
@@ -32,11 +33,11 @@ export function Ranking() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/rating').then(r => r.json())  as Promise<{ ratings: Record<string, number> }>,
-      fetch('/api/usage').then(r => r.json())   as Promise<{ summary: Record<string, LookStats> }>,
-    ]).then(([rData, uData]) => {
-      setRatings(rData.ratings ?? {})
-      setSummary(uData.summary ?? {})
+      api.get<{ ratings: Record<string, number> }>('/api/rating'),
+      api.get<{ summary: Record<string, LookStats> }>('/api/usage'),
+    ]).then(([rRes, uRes]) => {
+      setRatings(rRes.data.ratings ?? {})
+      setSummary(uRes.data.summary ?? {})
       setLoading(false)
     }).catch(() => setLoading(false))
   }, [])
