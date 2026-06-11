@@ -92,7 +92,7 @@ export function Calendario() {
       if (!map[rec.date].find(l => l.id === look.id)) map[rec.date].push(look)
     }
     return map
-  }, [records])
+  }, [records, looks])
 
   // Monthly stats
   const monthStats = useMemo(() => {
