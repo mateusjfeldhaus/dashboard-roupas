@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-// In development, Vite proxies /api and /img to the Express backend on :3001.
-// In production, backend and frontend are served from the same origin.
+// In development, VITE_API_URL is unset → uses '/' → Vite proxies /api and /img to :3001.
+// In production, set VITE_API_URL to the deployed backend URL (e.g. https://api.railway.app).
 const api = axios.create({
-  baseURL: '/',
+  baseURL: import.meta.env.VITE_API_URL ?? '/',
   headers: { 'Content-Type': 'application/json' },
 })
 
