@@ -11,13 +11,15 @@ import ratingRouter   from './routes/rating'
 import wishlistRouter from './routes/wishlist'
 
 const app  = express()
-const PORT = 3001
+const PORT = process.env.PORT ?? 3001
 
 // ── Wardrobe root: two levels up from backend/ ────────────────────────────────
 const ROUPAS_DIR = path.resolve(__dirname, '../..')
 
 // ── Middleware ────────────────────────────────────────────────────────────────
-app.use(cors())
+app.use(cors({
+  origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
+}))
 app.use(express.json())
 
 // ── Image server (/img/*) ────────────────────────────────────────────────────
