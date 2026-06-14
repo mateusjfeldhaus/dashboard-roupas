@@ -2397,6 +2397,67 @@ export const looks: Look[] = [
     ]
   },
 
+  // ── Orient Tank ──────────────────────────────────────────────────────────
+  {
+    id: 'l-tan01', title: 'Caramelo com Tank Dourado', tags: ['formal', 'diurno'], formality: 5,
+    tip: 'Costume caramelo Homem SA e Tank dourado: a caixa retangular dourada amplifica o tom quente do caramelo. Um dos combos mais elegantes do guarda-roupa.',
+    pieces: [
+      { cat: 'Costume', pieceId: 'co-ca-hsa' },
+      { cat: 'Camisa',  pieceId: 'cs-br-hsa' },
+      { cat: 'Sapato',  pieceId: 'sa-ta-maj' },
+      { cat: 'Cinto',   pieceId: 'ci-ta-at' },
+      { cat: 'Relógio', pieceId: 're-or-tan' },
+    ]
+  },
+  {
+    id: 'l-tan02', title: 'Marrom Decinel com Tank', tags: ['formal', 'diurno'], formality: 5,
+    tip: 'Costume marrom Decinel, gravata mocha e Tank dourado: paleta terrosa de cima a baixo. O dourado do relógio aquece ainda mais o look.',
+    pieces: [
+      { cat: 'Costume', pieceId: 'co-ma-dec' },
+      { cat: 'Camisa',  pieceId: 'cs-br-doc' },
+      { cat: 'Gravata', pieceId: 'gr-mm-df' },
+      { cat: 'Sapato',  pieceId: 'sa-ca-at' },
+      { cat: 'Cinto',   pieceId: 'ci-ca-at' },
+      { cat: 'Relógio', pieceId: 're-or-tan' },
+    ]
+  },
+  {
+    id: 'l-tan03', title: 'Azul Homem SA com Tank', tags: ['formal', 'diurno'], formality: 5,
+    tip: 'Costume azul Homem SA com Tank dourado: contraste clássico azul e ouro — combinação de alfaiataria italiana. Gravata dourada ou xadrez completaria o look.',
+    pieces: [
+      { cat: 'Costume', pieceId: 'co-az-hsa' },
+      { cat: 'Camisa',  pieceId: 'cs-br-doc' },
+      { cat: 'Gravata', pieceId: 'gr-ar-df' },
+      { cat: 'Sapato',  pieceId: 'sa-pr-maj-ox' },
+      { cat: 'Cinto',   pieceId: 'ci-pr' },
+      { cat: 'Relógio', pieceId: 're-or-tan' },
+    ]
+  },
+  {
+    id: 'l-tan04', title: 'Chumbo Zegna com Tank', tags: ['formal', 'diurno'], formality: 5,
+    tip: 'Costume chumbo Zegna com Tank dourado: o dourado cria um contraste luxuoso contra o cinza frio. Look de alto impacto para reuniões de peso.',
+    pieces: [
+      { cat: 'Costume', pieceId: 'co-ch-zeg' },
+      { cat: 'Camisa',  pieceId: 'cs-br-doc' },
+      { cat: 'Gravata', pieceId: 'gr-xcm-df' },
+      { cat: 'Sapato',  pieceId: 'sa-pr-maj-ox' },
+      { cat: 'Cinto',   pieceId: 'ci-pr' },
+      { cat: 'Relógio', pieceId: 're-or-tan' },
+    ]
+  },
+  {
+    id: 'l-tan05', title: 'Blazer Creme com Tank', tags: ['smart casual', 'diurno'], formality: 3,
+    tip: 'Blazer creme com calça areia e Tank dourado: paleta neutra quente onde o relógio é o único ponto de brilho. Smart casual sofisticado sem esforço.',
+    pieces: [
+      { cat: 'Blazer',  pieceId: 'bl-cr-doc' },
+      { cat: 'Calça',   pieceId: 'cl-ar-doc' },
+      { cat: 'Camisa',  pieceId: 'cs-br-doc' },
+      { cat: 'Sapato',  pieceId: 'sa-ta-maj' },
+      { cat: 'Cinto',   pieceId: 'ci-ta-at' },
+      { cat: 'Relógio', pieceId: 're-or-tan' },
+    ]
+  },
+
   // ── Orient Bambino ────────────────────────────────────────────────────────
   {
     id: 'l-bam01', title: 'Marrom Decinel com Bambino', tags: ['formal', 'diurno'], formality: 5,

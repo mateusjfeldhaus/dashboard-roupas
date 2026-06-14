@@ -825,6 +825,17 @@ export const pieces: Piece[] = [
     ]
   },
   {
+    id: 're-or-tan', name: 'Tank GBSC1013', brand: 'Orient', category: 'Relógio',
+    img: 'Relogios/Orient - Tank GBSC1013.png', color: '#d4af37',
+    tips: [
+      'Design retangular inspirado no clássico Tank — referência ao relógio de pulso mais icônico da história',
+      'Mostrador dourado e índices aplicados: elegância vintage com acabamento contemporâneo',
+      'Mecânico automático Orient — confiabilidade japonesa sem precisar de bateria',
+      'Combina com looks terrosos, caramelo, chumbo e azul — versátil entre formal e smart casual',
+      'O formato tank estreito caiu muito bem em punhos médios com manga de camisa social'
+    ]
+  },
+  {
     id: 're-or-bam', name: 'Bambino RA-AP0002S30B', brand: 'Orient', category: 'Relógio',
     img: 'Relogios/Orient - Bambino RA-AP0002S30B.png', color: '#92400e',
     tips: [
