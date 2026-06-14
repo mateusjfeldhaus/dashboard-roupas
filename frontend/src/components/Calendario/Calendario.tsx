@@ -101,8 +101,16 @@ export function Calendario() {
     const activeDays = new Set(monthRecords.map(r => r.date)).size
     const totalUses  = monthRecords.length
     const lookFreq: Record<string, number> = {}
-    for (const r of monthRecords) lookFreq[r.lookId] = (lookFreq[r.lookId] ?? 0) + 1
-    const topId = Object.entries(lookFreq).sort((a,b) => b[1]-a[1])[0]?.[0]
+    const lookLastUsed: Record<string, string> = {}
+    for (const r of monthRecords) {
+      lookFreq[r.lookId] = (lookFreq[r.lookId] ?? 0) + 1
+      if (!lookLastUsed[r.lookId] || r.date > lookLastUsed[r.lookId]) {
+        lookLastUsed[r.lookId] = r.date
+      }
+    }
+    const topId = Object.entries(lookFreq)
+      .sort((a, b) => b[1] - a[1] || lookLastUsed[b[0]].localeCompare(lookLastUsed[a[0]]))
+      [0]?.[0]
     const topLook = topId ? looks.find(l => l.id === topId) : null
     return { activeDays, totalUses, topLook }
   }, [records, year, month])
