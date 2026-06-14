@@ -825,6 +825,17 @@ export const pieces: Piece[] = [
     ]
   },
   {
+    id: 're-or-bam', name: 'Bambino RA-AP0002S30B', brand: 'Orient', category: 'Relógio',
+    img: 'Relogios/Orient - Bambino RA-AP0002S30B.png', color: '#92400e',
+    tips: [
+      'Dress watch clássico com mostrador creme e ponteiros dauphine — elegância atemporal',
+      'Pulseira em couro marrom combina perfeitamente com sapatos burgundy, café e caramelo',
+      'Mecânico automático — não precisa de bateria, carregado pelo movimento do pulso',
+      'Caixa em aço de 40mm: tamanho ideal para punhos médios e looks formais',
+      'Versátil entre formal e smart casual — funciona com terno, costume e blazer'
+    ]
+  },
+  {
     id: 're-pr-cit', name: 'Dress Watch B01AFTLZKY — Pulseira Preta', brand: 'Citizen', category: 'Relógio',
     img: 'Relogios/Citizen - Dress Watch B01AFTLZKY - Pulseira Preta.png', color: '#111827',
     tips: [

@@ -1969,7 +1969,7 @@ export const looks: Look[] = [
   },
   {
     id: 'l-di04', title: 'Terno Vinho e Overcoat Inverno', tags: ['formal', 'diurno', 'inverno'], formality: 5,
-    tip: 'Overcoat Raffer sobre terno vinho: maxima elegancia de inverno. O preto do casaco exalta o vinho profundo do terno.',
+    tip: 'Overcoat Raffer sobre terno vinho: maxima elegancia de inverno. O mostrador creme do Bambino e a pulseira marrom harmonizam com o burgundy do look.',
     pieces: [
       { cat: 'Sobretudo', pieceId: 'ja-pr-raf' },
       { cat: 'Terno', pieceId: 'co-vi-raf' },
@@ -1977,7 +1977,7 @@ export const looks: Look[] = [
       { cat: 'Gravata', pieceId: 'gr-bv' },
       { cat: 'Sapato', pieceId: 'sa-bu-at' },
       { cat: 'Cinto', pieceId: 'ci-bu-at' },
-      { cat: 'Relogio', pieceId: 're-pr-cit' },
+      { cat: 'Relógio', pieceId: 're-or-bam' },
     ]
   },
   {
@@ -2394,6 +2394,67 @@ export const looks: Look[] = [
       { cat: 'Camisa', pieceId: 'cs-pr-con' },
       { cat: 'Sapato', pieceId: 'sa-pr-dem-ch' },
       { cat: 'Relogio', pieceId: 're-az-cas' },
+    ]
+  },
+
+  // ── Orient Bambino ────────────────────────────────────────────────────────
+  {
+    id: 'l-bam01', title: 'Marrom Decinel com Bambino', tags: ['formal', 'diurno'], formality: 5,
+    tip: 'Costume marrom Decinel e Orient Bambino: a pulseira marrom do relógio ecoa diretamente no tom do costume. Gravata mocha fecha a paleta terrosa com sofisticação.',
+    pieces: [
+      { cat: 'Costume', pieceId: 'co-ma-dec' },
+      { cat: 'Camisa', pieceId: 'cs-br-doc' },
+      { cat: 'Gravata', pieceId: 'gr-mm-df' },
+      { cat: 'Sapato', pieceId: 'sa-ca-at' },
+      { cat: 'Cinto', pieceId: 'ci-ca-at' },
+      { cat: 'Relógio', pieceId: 're-or-bam' },
+    ]
+  },
+  {
+    id: 'l-bam02', title: 'Caramelo Homem SA com Bambino', tags: ['formal', 'diurno'], formality: 4,
+    tip: 'Costume caramelo Homem SA com camisa branca de punho francês e Bambino: paleta quente e elegante. O mostrador creme do relógio espelha o tom areia do costume.',
+    pieces: [
+      { cat: 'Costume', pieceId: 'co-ca-hsa' },
+      { cat: 'Camisa', pieceId: 'cs-br-hsa' },
+      { cat: 'Sapato', pieceId: 'sa-ta-maj' },
+      { cat: 'Cinto', pieceId: 'ci-ta-at' },
+      { cat: 'Relógio', pieceId: 're-or-bam' },
+    ]
+  },
+  {
+    id: 'l-bam03', title: 'Blazer Creme e Bambino', tags: ['smart casual', 'diurno'], formality: 3,
+    tip: 'Blazer creme Docthos com calça areia e Orient Bambino: paleta neutra e refinada para smart casual. O relógio mecânico eleva sem pesar o look.',
+    pieces: [
+      { cat: 'Blazer', pieceId: 'bl-cr-doc' },
+      { cat: 'Calça', pieceId: 'cl-ar-doc' },
+      { cat: 'Camisa', pieceId: 'cs-br-doc' },
+      { cat: 'Sapato', pieceId: 'sa-ta-maj' },
+      { cat: 'Cinto', pieceId: 'ci-ca-at' },
+      { cat: 'Relógio', pieceId: 're-or-bam' },
+    ]
+  },
+  {
+    id: 'l-bam04', title: 'Cinza Raffer com Bambino', tags: ['formal', 'diurno'], formality: 5,
+    tip: 'Costume cinza Raffer com gravata xadrez cinza e marinho: look corporativo clássico. O Bambino substitui com classe qualquer relógio de quartzo.',
+    pieces: [
+      { cat: 'Costume', pieceId: 'co-ci-raf' },
+      { cat: 'Camisa', pieceId: 'cs-br-doc' },
+      { cat: 'Gravata', pieceId: 'gr-xcm-df' },
+      { cat: 'Sapato', pieceId: 'sa-pr-maj-ox' },
+      { cat: 'Cinto', pieceId: 'ci-pr' },
+      { cat: 'Relógio', pieceId: 're-or-bam' },
+    ]
+  },
+  {
+    id: 'l-bam05', title: 'Linho Areia com Bambino', tags: ['smart casual', 'diurno', 'verão'], formality: 3,
+    tip: 'Terno de linho areia Homem SA e Orient Bambino: combinação perfeita de leveza e elegância para o calor. O automático mecânico e o linho são dois clássicos atemporais.',
+    pieces: [
+      { cat: 'Blazer', pieceId: 'te-ar-hsa-b' },
+      { cat: 'Calça', pieceId: 'te-ar-hsa-c' },
+      { cat: 'Camisa', pieceId: 'cs-br-alg' },
+      { cat: 'Sapato', pieceId: 'sa-ta-maj' },
+      { cat: 'Cinto', pieceId: 'ci-ta-at' },
+      { cat: 'Relógio', pieceId: 're-or-bam' },
     ]
   },
 ]
