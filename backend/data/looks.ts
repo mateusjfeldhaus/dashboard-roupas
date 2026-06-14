@@ -2446,7 +2446,7 @@ export const looks: Look[] = [
     ]
   },
   {
-    id: 'l-tan05', title: 'Blazer Creme com Tank', tags: ['smart casual', 'diurno'], formality: 3,
+    id: 'l-tan05', title: 'Blazer Creme com Tank', tags: ['casual', 'diurno'], formality: 3,
     tip: 'Blazer creme com calça areia e Tank dourado: paleta neutra quente onde o relógio é o único ponto de brilho. Smart casual sofisticado sem esforço.',
     pieces: [
       { cat: 'Blazer',  pieceId: 'bl-cr-doc' },
@@ -2483,7 +2483,7 @@ export const looks: Look[] = [
     ]
   },
   {
-    id: 'l-bam03', title: 'Blazer Creme e Bambino', tags: ['smart casual', 'diurno'], formality: 3,
+    id: 'l-bam03', title: 'Blazer Creme e Bambino', tags: ['casual', 'diurno'], formality: 3,
     tip: 'Blazer creme Docthos com calça areia e Orient Bambino: paleta neutra e refinada para smart casual. O relógio mecânico eleva sem pesar o look.',
     pieces: [
       { cat: 'Blazer', pieceId: 'bl-cr-doc' },
@@ -2507,7 +2507,7 @@ export const looks: Look[] = [
     ]
   },
   {
-    id: 'l-bam05', title: 'Linho Areia com Bambino', tags: ['smart casual', 'diurno', 'verão'], formality: 3,
+    id: 'l-bam05', title: 'Linho Areia com Bambino', tags: ['casual', 'diurno', 'verao'], formality: 3,
     tip: 'Terno de linho areia Homem SA e Orient Bambino: combinação perfeita de leveza e elegância para o calor. O automático mecânico e o linho são dois clássicos atemporais.',
     pieces: [
       { cat: 'Blazer', pieceId: 'te-ar-hsa-b' },
