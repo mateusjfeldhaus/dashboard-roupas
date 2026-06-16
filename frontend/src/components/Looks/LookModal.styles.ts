@@ -192,21 +192,20 @@ export const RatingLabel = styled.span`
 `
 
 export const StarRow = styled.div`
-  display: flex; gap: 2px; align-items: center;
+  display: flex; gap: 1px; align-items: center; flex-wrap: wrap;
 `
 
 export const Star = styled.button<{ $filled: boolean; $loading: boolean }>`
-  font-size: 24px;
+  font-size: 17px;
   line-height: 1;
   color: ${p => p.$filled ? '#f59e0b' : p.theme.colors.border};
   cursor: ${p => p.$loading ? 'default' : 'pointer'};
   opacity: ${p => p.$loading ? 0.5 : 1};
   transition: color 0.12s, transform 0.1s;
-  padding: 2px 3px;
-  /* Larger tap target on mobile */
+  padding: 2px 2px;
   @media (max-width: 480px) {
-    font-size: 28px;
-    padding: 2px 4px;
+    font-size: 20px;
+    padding: 3px 3px;
   }
   &:hover:not(:disabled) {
     transform: scale(1.2);

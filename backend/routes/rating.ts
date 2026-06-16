@@ -23,7 +23,7 @@ router.get('/:lookId', async (req, res) => {
   } catch (e) { res.status(500).json({ error: String(e) }) }
 })
 
-// POST /api/rating/:lookId  body: { rating: 0-5 }
+// POST /api/rating/:lookId  body: { rating: 0-10 }
 router.post('/:lookId', async (req, res) => {
   try {
     const { rating } = req.body as { rating: number }
@@ -34,7 +34,7 @@ router.post('/:lookId', async (req, res) => {
       return
     }
 
-    const value = Math.max(1, Math.min(5, Math.round(rating)))
+    const value = Math.max(1, Math.min(10, Math.round(rating)))
 
     await db.insert(ratings)
       .values({ lookId: req.params.lookId, rating: value, updatedAt: new Date() })

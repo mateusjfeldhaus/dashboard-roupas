@@ -16,7 +16,7 @@ interface LookStats {
 }
 
 function renderStars(rating: number): string {
-  return '★'.repeat(rating) + '☆'.repeat(5 - rating)
+  return '★'.repeat(rating) + '☆'.repeat(10 - rating)
 }
 
 function formatDate(iso: string): string {
@@ -87,7 +87,7 @@ export function Ranking() {
                   </TagRow>
                 </LookInfo>
                 <MetaCol>
-                  <Stars>{renderStars(item.rating)}</Stars>
+                  <Stars>{renderStars(item.rating)} <span style={{ fontSize: 11, opacity: 0.7, marginLeft: 4 }}>{item.rating}/10</span></Stars>
                   {item.count > 0 ? (
                     <UsagePill>{item.count}× usado{item.count !== 1 ? 's' : ''}</UsagePill>
                   ) : (
@@ -115,7 +115,7 @@ export function Ranking() {
               </TagRow>
             </LookInfo>
             <MetaCol>
-              <Stars style={{ color: 'var(--border, #333)', opacity: 0.4 }}>{'☆'.repeat(5)}</Stars>
+              <Stars style={{ color: 'var(--border, #333)', opacity: 0.4 }}>{'☆'.repeat(10)}</Stars>
               {(summary[look.id]?.count ?? 0) > 0 && (
                 <UsagePill>{summary[look.id].count}× usado{summary[look.id].count !== 1 ? 's' : ''}</UsagePill>
               )}

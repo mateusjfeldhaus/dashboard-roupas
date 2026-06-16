@@ -80,19 +80,20 @@ export function LookModal({ look, onClose }: Props) {
               <StarRow
                 onMouseLeave={() => setHovered(0)}
               >
-                {[1,2,3,4,5].map(n => (
+                {[1,2,3,4,5,6,7,8,9,10].map(n => (
                   <Star
                     key={n}
                     $filled={n <= displayRating}
                     $loading={rLoading}
                     onMouseEnter={() => setHovered(n)}
                     onClick={() => handleStarClick(n)}
-                    title={`${n} estrela${n !== 1 ? 's' : ''}`}
+                    title={`${n}/10`}
                   >
                     {n <= displayRating ? '★' : '☆'}
                   </Star>
                 ))}
               </StarRow>
+              {!rLoading && rating > 0 && <RatingLabel style={{ fontWeight: 700, fontSize: 13 }}>{rating}/10</RatingLabel>}
               {!rLoading && rating === 0 && <RatingLabel>sem avaliação</RatingLabel>}
             </RatingRow>
 
