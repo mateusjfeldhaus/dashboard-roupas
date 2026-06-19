@@ -2,7 +2,8 @@ import { useState, useEffect, ReactNode, FormEvent } from 'react'
 import styled, { keyframes } from 'styled-components'
 import api, { setApiKey } from '../../api/client'
 
-const STORAGE_KEY = 'wardrobePin'
+const STORAGE_KEY = 'wardrobeAuth'
+const TOKEN_TTL   = 24 * 60 * 60 * 1000 // 24h em ms
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
@@ -86,6 +87,26 @@ const ErrorMsg = styled.p`
   margin: 0;
 `
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+interface StoredAuth { token: string; expiresAt: number }
+
+function loadStoredAuth(): StoredAuth | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    const auth = JSON.parse(raw) as StoredAuth
+    if (Date.now() >= auth.expiresAt) {
+      localStorage.removeItem(STORAGE_KEY)
+      return null
+    }
+    return auth
+  } catch {
+    localStorage.removeItem(STORAGE_KEY)
+    return null
+  }
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 type Status = 'checking' | 'locked' | 'unlocked'
@@ -97,9 +118,9 @@ export function PinGate({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      setApiKey(stored)
+    const auth = loadStoredAuth()
+    if (auth) {
+      setApiKey(auth.token)
       setStatus('unlocked')
     } else {
       setStatus('locked')
@@ -112,13 +133,14 @@ export function PinGate({ children }: { children: ReactNode }) {
     setLoading(true)
     setError('')
     try {
-      setApiKey(pin)
-      await api.post('/api/auth')
-      localStorage.setItem(STORAGE_KEY, pin)
+      const res = await api.post<{ token: string }>('/api/auth', { pin })
+      const { token } = res.data
+      const auth: StoredAuth = { token, expiresAt: Date.now() + TOKEN_TTL }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(auth))
+      setApiKey(token)
       setStatus('unlocked')
     } catch {
       setError('PIN incorreto. Tente novamente.')
-      setApiKey('')
     } finally {
       setLoading(false)
     }

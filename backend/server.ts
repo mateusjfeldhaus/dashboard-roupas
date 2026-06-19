@@ -3,6 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import path from 'path'
 import fs from 'fs'
+import jwt from 'jsonwebtoken'
 
 import piecesRouter   from './routes/pieces'
 import looksRouter    from './routes/looks'
@@ -46,15 +47,22 @@ app.use('/img', (req, res, next) => {
   }
 })
 
-// ── Auth: bloqueia POST/PUT/DELETE sem API Key ────────────────────────────────
+// ── POST /api/auth — valida PIN e emite JWT 24h ──────────────────────────────
+app.post('/api/auth', (req, res) => {
+  const { pin } = req.body as { pin?: string }
+  const secret  = process.env.API_KEY
+  if (!secret || pin !== secret) {
+    res.status(401).json({ error: 'PIN incorreto' })
+    return
+  }
+  const token = jwt.sign({}, secret, { expiresIn: '24h' })
+  res.json({ token })
+})
+
+// ── Auth: bloqueia POST/PUT/DELETE sem token JWT válido ───────────────────────
 app.use((req, res, next) => {
   if (req.method === 'GET' || req.method === 'OPTIONS') return next()
   requireApiKey(req, res, next)
-})
-
-// ── POST /api/auth — verifica o PIN ──────────────────────────────────────────
-app.post('/api/auth', (_req, res) => {
-  res.json({ ok: true }) // se chegou aqui, o middleware já validou
 })
 
 // ── API routes ────────────────────────────────────────────────────────────────

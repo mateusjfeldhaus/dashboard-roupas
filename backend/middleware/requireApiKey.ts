@@ -1,13 +1,20 @@
 import { Request, Response, NextFunction } from 'express'
+import jwt from 'jsonwebtoken'
 
 export function requireApiKey(req: Request, res: Response, next: NextFunction) {
-  const expected = process.env.API_KEY
-  if (!expected) { next(); return } // sem API_KEY configurada → dev mode aberto
+  const secret = process.env.API_KEY
+  if (!secret) { next(); return } // dev mode sem configuração
 
-  const key = req.headers['x-api-key']
-  if (key !== expected) {
-    res.status(401).json({ error: 'PIN incorreto' })
+  const token = req.headers['x-api-key'] as string | undefined
+  if (!token) {
+    res.status(401).json({ error: 'Token ausente' })
     return
   }
-  next()
+
+  try {
+    jwt.verify(token, secret)
+    next()
+  } catch {
+    res.status(401).json({ error: 'Token inválido ou expirado' })
+  }
 }
