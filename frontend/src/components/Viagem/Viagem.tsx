@@ -3,6 +3,7 @@ import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
 import type { Look, LookTag, Piece } from '@data/types'
 import { getTagColor } from '../../styles/tagColors'
+import { SEASONS, OCCASIONS } from '../../styles/tags'
 import { LookModal } from '../Looks/LookModal'
 import { PecaModal } from '../Pecas/PecaModal'
 import {
@@ -21,7 +22,7 @@ import {
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type OccasionFilter = 'formal' | 'casual' | 'esportes' | null
-type SeasonFilter   = 'verao' | 'inverno' | 'primavera' | 'outono' | null
+type SeasonFilter   = typeof SEASONS[number]['tag'] | null
 
 const CAT_ORDER = [
   'Camisa','Polo','Camiseta','Costume','Blazer','Terno',
@@ -208,10 +209,10 @@ export function Viagem() {
             <FieldGroup>
               <FieldLabel>Ocasião</FieldLabel>
               <ChipRow>
-                {(['formal','casual','esportes'] as OccasionFilter[]).map(o => (
-                  <Chip key={String(o)} $active={occasion === o}
-                    onClick={() => setOccasion(occasion === o ? null : o)}>
-                    {o}
+                {OCCASIONS.filter(o => o.tag !== 'diurno' && o.tag !== 'noturno').map(o => (
+                  <Chip key={o.tag} $active={occasion === o.tag}
+                    onClick={() => setOccasion(occasion === o.tag ? null : o.tag as OccasionFilter)}>
+                    {o.label}
                   </Chip>
                 ))}
               </ChipRow>
@@ -220,10 +221,10 @@ export function Viagem() {
             <FieldGroup style={{ gridColumn: '1 / -1' }}>
               <FieldLabel>Estação</FieldLabel>
               <ChipRow>
-                {(['verao','outono','inverno','primavera'] as SeasonFilter[]).map(s => (
-                  <Chip key={String(s)} $active={season === s}
-                    onClick={() => setSeason(season === s ? null : s)}>
-                    {s}
+                {SEASONS.map(s => (
+                  <Chip key={s.tag} $active={season === s.tag}
+                    onClick={() => setSeason(season === s.tag ? null : s.tag)}>
+                    {s.emoji} {s.label}
                   </Chip>
                 ))}
               </ChipRow>

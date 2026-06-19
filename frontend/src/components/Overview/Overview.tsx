@@ -3,6 +3,7 @@ import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
 import type { Look, Piece } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
+import { SEASONS, OCCASIONS } from '../../styles/tags'
 import { PecaModal } from '../Pecas/PecaModal'
 import { LookModal } from '../Looks/LookModal'
 import {
@@ -37,20 +38,11 @@ export function Overview() {
     ? looks.filter(l => l.tags.includes(filterTag as never))
     : []
 
-  const ocasiao = {
-    Formal:  looks.filter(l => l.tags.includes('formal')).length,
-    Casual:  looks.filter(l => l.tags.includes('casual')).length,
-    Diurno:  looks.filter(l => l.tags.includes('diurno')).length,
-    Noturno:   looks.filter(l => l.tags.includes('noturno')).length,
-    Esportes: looks.filter(l => l.tags.includes('esportes' as never)).length,
-  }
-
-  const estacoes: { label: string; tag: string; emoji: string; color: string }[] = [
-    { label: 'Verão',    tag: 'verao',    emoji: '☀️', color: '#f59e0b' },
-    { label: 'Outono',   tag: 'outono',   emoji: '🍂', color: '#c2783c' },
-    { label: 'Inverno',  tag: 'inverno',  emoji: '❄️', color: '#5b9bd5' },
-    { label: 'Primavera',tag: 'primavera',emoji: '🌸', color: '#ec6fa7' },
-  ]
+  // ocasiões derivadas do array central
+  const ocasiaoItems = OCCASIONS.map(o => ({
+    ...o,
+    count: looks.filter(l => l.tags.includes(o.tag as never)).length,
+  }))
 
   const catCounts = allCats.map(cat => ({
     cat,
@@ -86,15 +78,14 @@ export function Overview() {
         </Grid>
       </Section>
 
-      {/* ── Ocasião / Período ───────────────────────────────────────────── */}
+      {/* ── Ocasião ─────────────────────────────────────────────────────── */}
       <Section>
         <SectionTitle>Looks por Ocasião</SectionTitle>
         <Grid>
-          {Object.entries(ocasiao).map(([label, count]) => {
-            const tag = label.toLowerCase()
+          {ocasiaoItems.map(({ tag, label, count }) => {
             const isSelected = filterTag === tag && filterSection === 'ocasiao'
             return (
-              <ClickCard key={label} $selected={isSelected} onClick={() => toggleFilter(tag, 'ocasiao')}>
+              <ClickCard key={tag} $selected={isSelected} onClick={() => toggleFilter(tag, 'ocasiao')}>
                 <StatValue>{count}</StatValue>
                 <StatLabel>{label}</StatLabel>
               </ClickCard>
@@ -104,7 +95,7 @@ export function Overview() {
         {filterSection === 'ocasiao' && filterTag && (
           <LookPanel>
             <PanelTitle>
-              {filterTag.charAt(0).toUpperCase() + filterTag.slice(1)} — {filteredLooks.length} look{filteredLooks.length !== 1 ? 's' : ''}
+              {OCCASIONS.find(o => o.tag === filterTag)?.label} — {filteredLooks.length} look{filteredLooks.length !== 1 ? 's' : ''}
               <PanelClose onClick={() => { setFilterTag(null); setFilterSection(null) }}>fechar</PanelClose>
             </PanelTitle>
             <LookList>
@@ -126,7 +117,7 @@ export function Overview() {
       <Section>
         <SectionTitle>Looks por Estação</SectionTitle>
         <Grid>
-          {estacoes.map(({ label, tag, emoji, color }) => {
+          {SEASONS.map(({ tag, label, emoji, color }) => {
             const count = looks.filter(l => l.tags.includes(tag as never)).length
             const isSelected = filterTag === tag && filterSection === 'estacao'
             return (
@@ -137,25 +128,28 @@ export function Overview() {
             )
           })}
         </Grid>
-        {filterSection === 'estacao' && filterTag && (
-          <LookPanel>
-            <PanelTitle>
-              {estacoes.find(e => e.tag === filterTag)?.emoji} {estacoes.find(e => e.tag === filterTag)?.label} — {filteredLooks.length} look{filteredLooks.length !== 1 ? 's' : ''}
-              <PanelClose onClick={() => { setFilterTag(null); setFilterSection(null) }}>fechar</PanelClose>
-            </PanelTitle>
-            <LookList>
-              {filteredLooks.map(look => (
-                <LookListCard key={look.id} onClick={() => setSelectedLook(look)}>
-                  <LookListTitle>{look.title}</LookListTitle>
-                  <LookListTags>
-                    {look.tags.map(t => <LookListTag key={t}>{t}</LookListTag>)}
-                  </LookListTags>
-                  <LookListMeta>{look.pieces.length} peça{look.pieces.length !== 1 ? 's' : ''} · formalidade {look.formality}/5</LookListMeta>
-                </LookListCard>
-              ))}
-            </LookList>
-          </LookPanel>
-        )}
+        {filterSection === 'estacao' && filterTag && (() => {
+          const s = SEASONS.find(e => e.tag === filterTag)
+          return (
+            <LookPanel>
+              <PanelTitle>
+                {s?.emoji} {s?.label} — {filteredLooks.length} look{filteredLooks.length !== 1 ? 's' : ''}
+                <PanelClose onClick={() => { setFilterTag(null); setFilterSection(null) }}>fechar</PanelClose>
+              </PanelTitle>
+              <LookList>
+                {filteredLooks.map(look => (
+                  <LookListCard key={look.id} onClick={() => setSelectedLook(look)}>
+                    <LookListTitle>{look.title}</LookListTitle>
+                    <LookListTags>
+                      {look.tags.map(t => <LookListTag key={t}>{t}</LookListTag>)}
+                    </LookListTags>
+                    <LookListMeta>{look.pieces.length} peça{look.pieces.length !== 1 ? 's' : ''} · formalidade {look.formality}/5</LookListMeta>
+                  </LookListCard>
+                ))}
+              </LookList>
+            </LookPanel>
+          )
+        })()}
       </Section>
 
       {/* ── Peças por Categoria ─────────────────────────────────────────── */}

@@ -2,6 +2,7 @@ import api from '../../api/client'
 import { useState, useMemo, useEffect } from 'react'
 import { useLooks } from '../../hooks/useLooks'
 import type { Look } from '@data/types'
+import { SEASONS, OCCASIONS } from '../../styles/tags'
 import { LookModal } from '../Looks/LookModal'
 import {
   Wrap, Intro,
@@ -15,7 +16,7 @@ import {
 } from './Planejador.styles'
 
 type Period   = 'diurno' | 'noturno'
-type Season   = 'verao' | 'inverno' | 'primavera' | 'outono'
+type Season   = typeof SEASONS[number]['tag']
 type Occasion = 'formal' | 'casual' | 'esportes'
 
 interface UsageSummary {
@@ -32,17 +33,9 @@ const periodOptions:   { id: Period;   label: string }[] = [
   { id: 'diurno',    label: 'Diurno'   },
   { id: 'noturno',   label: 'Noturno'  },
 ]
-const seasonOptions:   { id: Season;   label: string }[] = [
-  { id: 'verao',     label: 'Verão'    },
-  { id: 'inverno',   label: 'Inverno'  },
-  { id: 'primavera', label: 'Primavera'},
-  { id: 'outono',    label: 'Outono'   },
-]
-const occasionOptions: { id: Occasion; label: string }[] = [
-  { id: 'formal',   label: 'Formal'   },
-  { id: 'casual',   label: 'Casual'   },
-  { id: 'esportes', label: 'Esportes' },
-]
+const seasonOptions   = SEASONS.map(s => ({ id: s.tag as Season, label: `${s.emoji} ${s.label}` }))
+const occasionOptions = OCCASIONS.filter(o => o.tag !== 'diurno' && o.tag !== 'noturno')
+                                 .map(o => ({ id: o.tag as Occasion, label: o.label }))
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 

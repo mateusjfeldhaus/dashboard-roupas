@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLooks } from '../../hooks/useLooks'
 import type { Look, LookTag } from '@data/types'
+import { SEASONS, OCCASIONS, TAG_LABELS } from '../../styles/tags'
 import { LookModal } from './LookModal'
 import {
   FilterStickyWrap, FilterPanel, FilterRow, GroupLabel,
@@ -9,19 +10,12 @@ import {
   FormalityRow, Dot, PieceList, ClickHint,
 } from './Looks.styles'
 
-const OCASIAO  = ['formal', 'casual', 'esportes'] as const
 const PERIODO  = ['diurno', 'noturno'] as const
-const ESTACAO  = ['verao', 'inverno', 'primavera', 'outono'] as const
+const PERIODO_LABELS: Record<string, string> = { diurno: 'Diurno', noturno: 'Noturno' }
 
-const LABELS: Record<string, string> = {
-  formal: 'Formal', casual: 'Casual', esportes: 'Esportes',
-  diurno: 'Diurno', noturno: 'Noturno',
-  verao: 'Verão', inverno: 'Inverno', primavera: 'Primavera', outono: 'Outono',
-}
-
-type OcasTag  = typeof OCASIAO[number]
+type OcasTag  = typeof OCCASIONS[number]['tag']
 type PeriTag  = typeof PERIODO[number]
-type EstaTag  = typeof ESTACAO[number]
+type EstaTag  = typeof SEASONS[number]['tag']
 
 export function Looks() {
   const { looks } = useLooks()
@@ -54,10 +48,10 @@ export function Looks() {
         <FilterPanel>
           <FilterRow>
             <GroupLabel>Ocasião</GroupLabel>
-            {OCASIAO.map(t => (
-              <FilterChip key={t} $active={ocasiao === t} $tag={t}
-                onClick={() => toggle(t, ocasiao, setOcasiao)}>
-                {LABELS[t]}
+            {OCCASIONS.filter(o => o.tag !== 'diurno' && o.tag !== 'noturno').map(o => (
+              <FilterChip key={o.tag} $active={ocasiao === o.tag} $tag={o.tag}
+                onClick={() => toggle(o.tag as OcasTag, ocasiao, setOcasiao)}>
+                {o.label}
               </FilterChip>
             ))}
           </FilterRow>
@@ -69,7 +63,7 @@ export function Looks() {
             {PERIODO.map(t => (
               <FilterChip key={t} $active={periodo === t} $tag={t}
                 onClick={() => toggle(t, periodo, setPeriodo)}>
-                {LABELS[t]}
+                {PERIODO_LABELS[t]}
               </FilterChip>
             ))}
           </FilterRow>
@@ -78,10 +72,10 @@ export function Looks() {
 
           <FilterRow>
             <GroupLabel>Estação</GroupLabel>
-            {ESTACAO.map(t => (
-              <FilterChip key={t} $active={estacao === t} $tag={t}
-                onClick={() => toggle(t, estacao, setEstacao)}>
-                {LABELS[t]}
+            {SEASONS.map(s => (
+              <FilterChip key={s.tag} $active={estacao === s.tag} $tag={s.tag}
+                onClick={() => toggle(s.tag as EstaTag, estacao, setEstacao)}>
+                {s.emoji} {s.label}
               </FilterChip>
             ))}
           </FilterRow>
