@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
-import type { Piece } from '@data/types'
+import type { Look, Piece } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
 import { PecaModal } from '../Pecas/PecaModal'
+import { LookModal } from '../Looks/LookModal'
 import {
-  Grid, Card, StatValue, StatLabel,
+  Grid, Card, ClickCard, StatValue, StatLabel,
   Section, SectionTitle,
   CatGrid, CatCard, CatName, CatCount, BarTrack, BarFill,
+  LookPanel, LookList, LookListCard, LookListTitle, LookListTags, LookListTag, LookListMeta,
   PiecePanel, PanelTitle, PanelClose,
   PieceGrid, PieceCard, PieceThumb, PieceThumbImg, PieceInfo, PieceName, PieceBrand,
 } from './Overview.styles'
@@ -16,8 +18,24 @@ export function Overview() {
   const { pieces } = usePieces()
   const { looks } = useLooks()
   const allCats = [...new Set(pieces.map(p => p.category))]
-  const [selectedCat, setSelectedCat] = useState<string | null>(null)
-  const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null)
+  const [selectedCat,    setSelectedCat]    = useState<string | null>(null)
+  const [selectedPiece,  setSelectedPiece]  = useState<Piece | null>(null)
+  const [selectedLook,   setSelectedLook]   = useState<Look | null>(null)
+  const [filterTag,      setFilterTag]      = useState<string | null>(null)
+  const [filterSection,  setFilterSection]  = useState<'ocasiao' | 'estacao' | null>(null)
+
+  function toggleFilter(tag: string, section: 'ocasiao' | 'estacao') {
+    if (filterTag === tag && filterSection === section) {
+      setFilterTag(null); setFilterSection(null)
+    } else {
+      setFilterTag(tag); setFilterSection(section)
+      setSelectedCat(null) // fecha painel de categorias se aberto
+    }
+  }
+
+  const filteredLooks = filterTag
+    ? looks.filter(l => l.tags.includes(filterTag as never))
+    : []
 
   const ocasiao = {
     Formal:  looks.filter(l => l.tags.includes('formal')).length,
@@ -45,6 +63,7 @@ export function Overview() {
   function toggleCat(cat: string) {
     setSelectedCat(prev => prev === cat ? null : cat)
     setSelectedPiece(null)
+    setFilterTag(null); setFilterSection(null) // fecha painel de ocasião/estação
   }
 
   return (
@@ -71,13 +90,36 @@ export function Overview() {
       <Section>
         <SectionTitle>Looks por Ocasião</SectionTitle>
         <Grid>
-          {Object.entries(ocasiao).map(([label, count]) => (
-            <Card key={label}>
-              <StatValue>{count}</StatValue>
-              <StatLabel>{label}</StatLabel>
-            </Card>
-          ))}
+          {Object.entries(ocasiao).map(([label, count]) => {
+            const tag = label.toLowerCase()
+            const isSelected = filterTag === tag && filterSection === 'ocasiao'
+            return (
+              <ClickCard key={label} $selected={isSelected} onClick={() => toggleFilter(tag, 'ocasiao')}>
+                <StatValue>{count}</StatValue>
+                <StatLabel>{label}</StatLabel>
+              </ClickCard>
+            )
+          })}
         </Grid>
+        {filterSection === 'ocasiao' && filterTag && (
+          <LookPanel>
+            <PanelTitle>
+              {filterTag.charAt(0).toUpperCase() + filterTag.slice(1)} — {filteredLooks.length} look{filteredLooks.length !== 1 ? 's' : ''}
+              <PanelClose onClick={() => { setFilterTag(null); setFilterSection(null) }}>fechar</PanelClose>
+            </PanelTitle>
+            <LookList>
+              {filteredLooks.map(look => (
+                <LookListCard key={look.id} onClick={() => setSelectedLook(look)}>
+                  <LookListTitle>{look.title}</LookListTitle>
+                  <LookListTags>
+                    {look.tags.map(t => <LookListTag key={t}>{t}</LookListTag>)}
+                  </LookListTags>
+                  <LookListMeta>{look.pieces.length} peça{look.pieces.length !== 1 ? 's' : ''} · formalidade {look.formality}/5</LookListMeta>
+                </LookListCard>
+              ))}
+            </LookList>
+          </LookPanel>
+        )}
       </Section>
 
       {/* ── Estações ────────────────────────────────────────────────────── */}
@@ -86,14 +128,34 @@ export function Overview() {
         <Grid>
           {estacoes.map(({ label, tag, emoji, color }) => {
             const count = looks.filter(l => l.tags.includes(tag as never)).length
+            const isSelected = filterTag === tag && filterSection === 'estacao'
             return (
-              <Card key={tag} style={{ borderTop: `3px solid ${color}` }}>
+              <ClickCard key={tag} $selected={isSelected} style={{ borderTop: `3px solid ${color}` }} onClick={() => toggleFilter(tag, 'estacao')}>
                 <StatValue style={{ color }}>{emoji} {count}</StatValue>
                 <StatLabel>{label}</StatLabel>
-              </Card>
+              </ClickCard>
             )
           })}
         </Grid>
+        {filterSection === 'estacao' && filterTag && (
+          <LookPanel>
+            <PanelTitle>
+              {estacoes.find(e => e.tag === filterTag)?.emoji} {estacoes.find(e => e.tag === filterTag)?.label} — {filteredLooks.length} look{filteredLooks.length !== 1 ? 's' : ''}
+              <PanelClose onClick={() => { setFilterTag(null); setFilterSection(null) }}>fechar</PanelClose>
+            </PanelTitle>
+            <LookList>
+              {filteredLooks.map(look => (
+                <LookListCard key={look.id} onClick={() => setSelectedLook(look)}>
+                  <LookListTitle>{look.title}</LookListTitle>
+                  <LookListTags>
+                    {look.tags.map(t => <LookListTag key={t}>{t}</LookListTag>)}
+                  </LookListTags>
+                  <LookListMeta>{look.pieces.length} peça{look.pieces.length !== 1 ? 's' : ''} · formalidade {look.formality}/5</LookListMeta>
+                </LookListCard>
+              ))}
+            </LookList>
+          </LookPanel>
+        )}
       </Section>
 
       {/* ── Peças por Categoria ─────────────────────────────────────────── */}
@@ -148,6 +210,10 @@ export function Overview() {
 
       {selectedPiece && (
         <PecaModal piece={selectedPiece} onClose={() => setSelectedPiece(null)} />
+      )}
+
+      {selectedLook && (
+        <LookModal look={selectedLook} onClose={() => setSelectedLook(null)} />
       )}
     </>
   )

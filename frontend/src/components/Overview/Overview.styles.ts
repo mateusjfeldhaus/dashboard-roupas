@@ -20,6 +20,21 @@ export const Card = styled.div`
   @media (max-width: 480px) { padding: 16px; border-radius: 10px; }
 `
 
+export const ClickCard = styled.button<{ $selected?: boolean }>`
+  background: ${p => p.$selected ? p.theme.colors.accent + '18' : p.theme.colors.surface};
+  border: 1px solid ${p => p.$selected ? p.theme.colors.accent : p.theme.colors.border};
+  border-radius: 12px;
+  padding: 24px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  &:hover {
+    border-color: ${p => p.theme.colors.accent};
+    transform: translateY(-2px);
+  }
+  @media (max-width: 480px) { padding: 16px; border-radius: 10px; }
+`
+
 export const StatValue = styled.div`
   font-size: 36px;
   font-weight: 800;
@@ -105,7 +120,68 @@ export const BarFill = styled.div<{ $pct: number }>`
   border-radius: 2px;
 `
 
-// ── Expanded piece panel ────────────────────────────────────────────────────
+// ── Expanded look panel ─────────────────────────────────────────────────────
+
+export const LookPanel = styled.div`
+  margin-top: 20px;
+  animation: fadeInLook 0.15s ease;
+  @keyframes fadeInLook { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+`
+
+export const LookList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+`
+
+export const LookListCard = styled.button`
+  background: ${p => p.theme.colors.surface};
+  border: 1px solid ${p => p.theme.colors.border};
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.1s;
+  &:hover {
+    border-color: ${p => p.theme.colors.accent};
+    transform: translateY(-1px);
+  }
+`
+
+export const LookListTitle = styled.div`
+  font-size: 14px;
+  font-weight: 600;
+  color: ${p => p.theme.colors.text};
+  margin-bottom: 6px;
+`
+
+export const LookListTags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+`
+
+export const LookListTag = styled.span`
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: ${p => p.theme.colors.textMuted};
+  background: ${p => p.theme.colors.border};
+  border-radius: 4px;
+  padding: 2px 6px;
+`
+
+export const LookListMeta = styled.div`
+  font-size: 11px;
+  color: ${p => p.theme.colors.textMuted};
+  margin-top: 6px;
+`
+
+// ── Expanded piece panel ─────────────────────────────────────────────────────
 
 export const PiecePanel = styled.div`
   margin-top: 20px;
