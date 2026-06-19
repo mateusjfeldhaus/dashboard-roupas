@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Nav } from './components/Nav/Nav'
 import { Overview } from './components/Overview/Overview'
@@ -21,6 +21,17 @@ export type Tab =
   | 'porpeca'  | 'busca' | 'planejador' | 'ranking' | 'calendario'
   | 'montar'   | 'viagem' | 'wishlist' | 'stats'
 
+const VALID_TABS = new Set<Tab>([
+  'overview', 'pecas', 'looks', 'lacunas', 'estacoes',
+  'porpeca', 'busca', 'planejador', 'ranking', 'calendario',
+  'montar', 'viagem', 'wishlist', 'stats',
+])
+
+function getTabFromHash(): Tab {
+  const hash = window.location.hash.slice(1) as Tab
+  return VALID_TABS.has(hash) ? hash : 'overview'
+}
+
 const Main = styled.main`
   max-width: 1400px;
   margin: 0 auto;
@@ -31,7 +42,18 @@ const Main = styled.main`
 `
 
 export default function App() {
-  const [tab, setTab] = useState<Tab>('overview')
+  const [tab, setTab] = useState<Tab>(getTabFromHash)
+
+  // Sync hash ↔ tab
+  useEffect(() => {
+    window.location.hash = tab
+  }, [tab])
+
+  useEffect(() => {
+    function onHashChange() { setTab(getTabFromHash()) }
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
 
   return (
     <>

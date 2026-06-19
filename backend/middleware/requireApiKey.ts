@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
 export function requireApiKey(req: Request, res: Response, next: NextFunction) {
-  const secret = process.env.API_KEY
+  const secret = process.env.JWT_SECRET ?? process.env.API_KEY  // JWT_SECRET separado; fallback para API_KEY
   if (!secret) { next(); return } // dev mode sem configuração
 
   const token = req.headers['x-api-key'] as string | undefined

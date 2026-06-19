@@ -49,13 +49,19 @@ app.use('/img', (req, res, next) => {
 
 // ── POST /api/auth — valida PIN e emite JWT 24h ──────────────────────────────
 app.post('/api/auth', (req, res) => {
-  const { pin } = req.body as { pin?: string }
-  const secret  = process.env.API_KEY
-  if (!secret || pin !== secret) {
+  const { pin }   = req.body as { pin?: string }
+  const apiKey    = process.env.API_KEY
+  const jwtSecret = process.env.JWT_SECRET ?? apiKey   // JWT_SECRET separado; fallback para API_KEY
+
+  if (!apiKey || pin !== apiKey) {
     res.status(401).json({ error: 'PIN incorreto' })
     return
   }
-  const token = jwt.sign({}, secret, { expiresIn: '24h' })
+  if (!jwtSecret) {
+    res.status(500).json({ error: 'JWT_SECRET não configurado' })
+    return
+  }
+  const token = jwt.sign({}, jwtSecret, { expiresIn: '24h' })
   res.json({ token })
 })
 

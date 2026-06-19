@@ -16,7 +16,8 @@ interface LookStats {
 }
 
 function renderStars(rating: number): string {
-  return '★'.repeat(rating) + '☆'.repeat(10 - rating)
+  const r = Math.max(0, Math.min(10, Math.round(rating ?? 0)))
+  return '★'.repeat(r) + '☆'.repeat(10 - r)
 }
 
 function formatDate(iso: string): string {
