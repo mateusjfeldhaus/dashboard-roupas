@@ -1038,6 +1038,17 @@ export const pieces: Piece[] = [
       'Versátil para ambientes formais que valorizam originalidade'
     ]
   },
+  {
+    id: 'gr-ma-ofr', name: 'Gravata Slim Merino — Marine', brand: 'O Frances', category: 'Gravata',
+    img: 'Gravatas/O Frances - Gravata Slim - Merino Marine - Marinho.png', color: '#1e3a5f',
+    tips: [
+      'Merino de alta qualidade: textura suave, queda impecável, sem brilho excessivo',
+      'Marinho é a cor mais versátil depois do preto — combina com todos os tons de cinza, chumbo e azul',
+      'Slim é o corte mais moderno — evita o look antiquado da gravata larga',
+      'Funciona com costume marrom Decinel para contraste terra-mar sofisticado',
+      'Com costume cinza Raffer = combinação mais clássica da alfaiataria europeia'
+    ]
+  },
 
   // ─── CINTOS ───────────────────────────────────────────────────────────────
   {
@@ -1128,6 +1139,17 @@ export const pieces: Piece[] = [
       'Mais casual que o cinto social liso',
       'Boa alternativa ao cinto café Adolfo Turrion para looks de trabalho',
       'Combine com os Derby e Oxford em café Majorano'
+    ]
+  },
+  {
+    id: 'ci-su-pr', name: 'Suspensório Adulto — All Black', brand: 'O Frances', category: 'Cinto',
+    img: 'Cintos/O Frances - Suspensorio Adulto - All Black - Preto.png', color: '#111827',
+    tips: [
+      'Suspensório substitui o cinto e eleva o nível de refinamento — detalhe que os entendedores notam',
+      'All black: alças pretas, ferragem preta — coesão total com qualquer traje escuro',
+      'Visível apenas na abertura do paletó, cria profundidade visual no look',
+      'Use com costume ou blazer preto, chumbo ou cinza para máximo impacto',
+      'Alternativa elegante ao cinto para looks de gala e eventos especiais'
     ]
   },
 

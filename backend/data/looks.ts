@@ -2518,4 +2518,128 @@ export const looks: Look[] = [
       { cat: 'Relógio', pieceId: 're-or-bam' },
     ]
   },
+
+  // ── Suspensório All Black (O Frances) ────────────────────────────────────
+  {
+    id: 'l-su01', title: 'All Black de Gala com Suspensório', tags: ['formal', 'noturno'], formality: 5,
+    tip: 'Costume preto Cliffield + suspensório all black + gravata bordô: tonal escuro máximo com um único contraste. O suspensório é o detalhe que diferencia do look convencional.',
+    pieces: [
+      { cat: 'Costume',     pieceId: 'co-pr-cli' },
+      { cat: 'Camisa',      pieceId: 'cs-br-hsa' },
+      { cat: 'Gravata',     pieceId: 'gr-bv' },
+      { cat: 'Sapato',      pieceId: 'sa-pr-maj-ox' },
+      { cat: 'Suspensório', pieceId: 'ci-su-pr' },
+      { cat: 'Relógio',     pieceId: 're-pr-cit' },
+    ]
+  },
+  {
+    id: 'l-su02', title: 'Chumbo Zegna com Suspensório Elegante', tags: ['formal', 'diurno'], formality: 5,
+    tip: 'Costume chumbo Zegna + suspensório all black + gravata azul royal: o suspensório substitui o cinto e eleva o nível de refinamento. Look de diretoria com detalhe de alfaiate.',
+    pieces: [
+      { cat: 'Costume',     pieceId: 'co-ch-zeg' },
+      { cat: 'Camisa',      pieceId: 'cs-br-doc' },
+      { cat: 'Gravata',     pieceId: 'gr-ar-df' },
+      { cat: 'Sapato',      pieceId: 'sa-pr-maj-ox' },
+      { cat: 'Suspensório', pieceId: 'ci-su-pr' },
+      { cat: 'Relógio',     pieceId: 're-or-tan' },
+    ]
+  },
+  {
+    id: 'l-su03', title: 'Blazer Preto + Suspensório Noturno', tags: ['casual', 'noturno'], formality: 3,
+    tip: 'Blazer preto + calça malha preta + suspensório all black: elegância noturna sem traje completo. O suspensório é o detalhe que transforma o look casual em algo memorável.',
+    pieces: [
+      { cat: 'Blazer',      pieceId: 'bl-pr-doc' },
+      { cat: 'Camisa',      pieceId: 'cs-br-alg' },
+      { cat: 'Calça',       pieceId: 'cl-pr-doc' },
+      { cat: 'Sapato',      pieceId: 'sa-pr-dem-lo' },
+      { cat: 'Suspensório', pieceId: 'ci-su-pr' },
+      { cat: 'Relógio',     pieceId: 're-pr-cit' },
+    ]
+  },
+  {
+    id: 'l-su04', title: 'Cinza Raffer com Suspensório', tags: ['formal', 'diurno'], formality: 5,
+    tip: 'Costume cinza Raffer + suspensório all black + gravata xadrez cinza: sofisticação discreta para os entendedores. O suspensório aparece apenas na abertura do paletó — detalhe de alfaiate britânico.',
+    pieces: [
+      { cat: 'Costume',     pieceId: 'co-ci-raf' },
+      { cat: 'Camisa',      pieceId: 'cs-br-hsa' },
+      { cat: 'Gravata',     pieceId: 'gr-xcm-df' },
+      { cat: 'Sapato',      pieceId: 'sa-pr-maj-mk' },
+      { cat: 'Suspensório', pieceId: 'ci-su-pr' },
+      { cat: 'Relógio',     pieceId: 're-or-bam' },
+    ]
+  },
+  {
+    id: 'l-su05', title: 'Terno Vinho com Suspensório de Gala', tags: ['formal', 'noturno'], formality: 5,
+    tip: 'Terno vinho Raffer + suspensório all black + gravata azul seda: contraste rico entre vinho e azul, com o suspensório adicionando textura ao tronco. Look de gala que combina elegância e personalidade.',
+    pieces: [
+      { cat: 'Costume',     pieceId: 'co-vi-raf' },
+      { cat: 'Camisa',      pieceId: 'cs-br-hsa' },
+      { cat: 'Gravata',     pieceId: 'gr-as' },
+      { cat: 'Sapato',      pieceId: 'sa-pr-maj-ox' },
+      { cat: 'Suspensório', pieceId: 'ci-su-pr' },
+      { cat: 'Relógio',     pieceId: 're-or-bam' },
+    ]
+  },
+
+  // ── Gravata Slim Merino Marine (O Frances) ────────────────────────────────
+  {
+    id: 'l-grm01', title: 'Cinza Raffer + Gravata Marinho Clássico', tags: ['formal', 'diurno'], formality: 5,
+    tip: 'Cinza Raffer + gravata slim merino marinho: a combinação mais clássica da alfaiataria europeia. O merino tem queda impecável e textura suave que complementa o cinza médio.',
+    pieces: [
+      { cat: 'Costume', pieceId: 'co-ci-raf' },
+      { cat: 'Camisa',  pieceId: 'cs-br-hsa' },
+      { cat: 'Gravata', pieceId: 'gr-ma-ofr' },
+      { cat: 'Sapato',  pieceId: 'sa-pr-maj-ox' },
+      { cat: 'Cinto',   pieceId: 'ci-pr' },
+      { cat: 'Relógio', pieceId: 're-or-tan' },
+    ]
+  },
+  {
+    id: 'l-grm02', title: 'Chumbo Zegna + Gravata Marinho Premium', tags: ['formal', 'diurno'], formality: 5,
+    tip: 'Costume chumbo Zegna + gravata merino marinho: dois tons escuros em harmonia sofisticada. O marinho aquece o chumbo frio do Zegna sem perder o rigor executivo.',
+    pieces: [
+      { cat: 'Costume', pieceId: 'co-ch-zeg' },
+      { cat: 'Camisa',  pieceId: 'cs-br-doc' },
+      { cat: 'Gravata', pieceId: 'gr-ma-ofr' },
+      { cat: 'Sapato',  pieceId: 'sa-pr-maj-ox' },
+      { cat: 'Cinto',   pieceId: 'ci-pr' },
+      { cat: 'Relógio', pieceId: 're-pr-cit' },
+    ]
+  },
+  {
+    id: 'l-grm03', title: 'Marrom Decinel + Gravata Marinho — Terra e Mar', tags: ['formal', 'diurno'], formality: 5,
+    tip: 'Costume marrom Decinel + gravata slim merino marinho: terra e mar. O marinho cria contraste inesperado e sofisticado com o marrom — look de colecionador de estilo que foge do óbvio.',
+    pieces: [
+      { cat: 'Costume', pieceId: 'co-ma-dec' },
+      { cat: 'Camisa',  pieceId: 'cs-br-doc' },
+      { cat: 'Gravata', pieceId: 'gr-ma-ofr' },
+      { cat: 'Sapato',  pieceId: 'sa-ca-at' },
+      { cat: 'Cinto',   pieceId: 'ci-ca-at' },
+      { cat: 'Relógio', pieceId: 're-or-bam' },
+    ]
+  },
+  {
+    id: 'l-grm04', title: 'Azul Homem SA + Gravata Marinho Tonal', tags: ['formal', 'diurno'], formality: 5,
+    tip: 'Costume azul Homem SA + gravata slim merino marinho: look tonal azul com variação de profundidade. O marinho mais escuro da gravata ancora e dá peso visual ao look claro.',
+    pieces: [
+      { cat: 'Costume', pieceId: 'co-az-hsa' },
+      { cat: 'Camisa',  pieceId: 'cs-br-hsa' },
+      { cat: 'Gravata', pieceId: 'gr-ma-ofr' },
+      { cat: 'Sapato',  pieceId: 'sa-pr-maj-ox' },
+      { cat: 'Cinto',   pieceId: 'ci-pr' },
+      { cat: 'Relógio', pieceId: 're-or-tan' },
+    ]
+  },
+  {
+    id: 'l-grm05', title: 'Costume Preto + Gravata Marinho Noturno', tags: ['formal', 'noturno'], formality: 5,
+    tip: 'Costume preto Cliffield + gravata merino marinho: contraste azul profundo no fundo escuro — sofisticado e moderno. Look de gala ou apresentação noturna que mantém seriedade com personalidade.',
+    pieces: [
+      { cat: 'Costume', pieceId: 'co-pr-cli' },
+      { cat: 'Camisa',  pieceId: 'cs-br-hsa' },
+      { cat: 'Gravata', pieceId: 'gr-ma-ofr' },
+      { cat: 'Sapato',  pieceId: 'sa-pr-maj-ox' },
+      { cat: 'Cinto',   pieceId: 'ci-pr' },
+      { cat: 'Relógio', pieceId: 're-pr-cit' },
+    ]
+  },
 ]
