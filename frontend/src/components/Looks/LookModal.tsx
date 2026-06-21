@@ -58,9 +58,9 @@ export function LookModal({ look, onClose }: Props) {
     finally { setExporting(false) }
   }
 
-  function handleStarClick(n: number) {
+  async function handleStarClick(n: number) {
     if (rLoading) return
-    setRating(rating === n ? 0 : n)
+    await setRating(rating === n ? 0 : n)
   }
 
   return (

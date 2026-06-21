@@ -19,11 +19,23 @@ export function useRating(lookId: string): RatingState {
   }, [lookId])
 
   async function setRating(n: number) {
-    const r = await api.post<{ rating: number }>(
-      `/api/rating/${encodeURIComponent(lookId)}`,
-      { rating: n }
-    )
-    setRatingState(r.data.rating ?? 0)
+    if (loading) return
+    const previous = rating
+    // Atualização otimista — responde imediatamente ao clique
+    setRatingState(n)
+    setLoading(true)
+    try {
+      const r = await api.post<{ rating: number }>(
+        `/api/rating/${encodeURIComponent(lookId)}`,
+        { rating: n }
+      )
+      setRatingState(r.data.rating ?? 0)
+    } catch {
+      // Reverte se o servidor rejeitar
+      setRatingState(previous)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return { rating, loading, setRating }
