@@ -33,6 +33,7 @@ export interface Piece {
   img: string
   color: string
   tips: string[]
+  notes?: string
 }
 
 export interface LookPiece {
@@ -46,6 +47,7 @@ export interface Look {
   tags: LookTag[]
   formality: 1 | 2 | 3 | 4 | 5   // 1 = casual, 5 = black-tie
   tip: string
+  notes?: string
   pieces: LookPiece[]
 }
 

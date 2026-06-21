@@ -102,4 +102,21 @@ router.delete('/:id', async (req, res) => {
   } catch (e) { res.status(500).json({ error: String(e) }) }
 })
 
+// PATCH /api/looks/:id/notes  body: { notes: string }
+router.patch('/:id/notes', async (req, res) => {
+  try {
+    const { notes } = req.body as { notes?: string }
+    if (typeof notes !== 'string') {
+      res.status(400).json({ error: 'notes deve ser uma string' })
+      return
+    }
+    const [updated] = await db.update(looks)
+      .set({ notes })
+      .where(eq(looks.id, req.params.id))
+      .returning()
+    if (!updated) { res.status(404).json({ error: 'Look não encontrado' }); return }
+    res.json({ notes: updated.notes })
+  } catch (e) { res.status(500).json({ error: String(e) }) }
+})
+
 export default router

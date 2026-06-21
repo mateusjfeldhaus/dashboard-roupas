@@ -4,11 +4,13 @@ import type { Piece, Look } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
 import { LookModal } from '../Looks/LookModal'
 import { getTagColor } from '../../styles/tagColors'
+import { useNotes } from '../../hooks/useNotes'
 import {
   Overlay, Dialog, ImgWrap, Img, ImgPlaceholder,
   Body, Name, Meta, TipsTitle, TipItem, CloseBtn, ColorDot,
   LooksSectionTitle, LooksCount, LookRow, LookRowTitle,
   LookTagRow, LookTag, FormalityDots, FormalityDot, EmptyLooks,
+  NotesSection, NotesLabel, NotesTitle, NotesStatus, NotesTextarea,
 } from './PecaModal.styles'
 
 interface Props { piece: Piece; onClose: () => void }
@@ -16,6 +18,7 @@ interface Props { piece: Piece; onClose: () => void }
 export function PecaModal({ piece, onClose }: Props) {
   const { looks } = useLooks()
   const [lookModal, setLookModal] = useState<Look | null>(null)
+  const { notes, status: notesStatus, setNotes } = useNotes('piece', piece.id, piece.notes)
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -93,6 +96,23 @@ export function PecaModal({ piece, onClose }: Props) {
                 </LookRow>
               ))
             )}
+
+            {/* ── Observações ────────────────────────────────────────────── */}
+            <NotesSection>
+              <NotesLabel>
+                <NotesTitle>Observações</NotesTitle>
+                <NotesStatus $status={notesStatus}>
+                  {notesStatus === 'saving' ? 'salvando…' :
+                   notesStatus === 'saved'  ? '✓ salvo'   :
+                   notesStatus === 'error'  ? 'erro ao salvar' : ''}
+                </NotesStatus>
+              </NotesLabel>
+              <NotesTextarea
+                value={notes}
+                onChange={e => setNotes(e.target.value)}
+                placeholder="Adicione observações sobre esta peça…"
+              />
+            </NotesSection>
           </Body>
         </Dialog>
       </Overlay>

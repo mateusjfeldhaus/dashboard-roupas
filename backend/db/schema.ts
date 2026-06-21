@@ -12,6 +12,7 @@ export const pieces = pgTable('pieces', {
   img:      text('img').notNull().default(''), // filename in /img/
   color:    text('color').notNull().default(''),
   tips:     text('tips').array().notNull().default([]),
+  notes:    text('notes').notNull().default(''),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 
@@ -23,6 +24,7 @@ export const looks = pgTable('looks', {
   tags:      text('tags').array().notNull().default([]),
   formality: integer('formality').notNull().default(1), // 1–5
   tip:       text('tip').notNull().default(''),
+  notes:     text('notes').notNull().default(''),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 

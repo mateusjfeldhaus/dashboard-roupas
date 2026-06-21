@@ -5,6 +5,7 @@ import { usePieces } from '../../hooks/usePieces'
 import { imgUrl } from '../../utils/imgUrl'
 import { useUsage, formatDate } from '../../hooks/useUsage'
 import { useRating } from '../../hooks/useRating'
+import { useNotes } from '../../hooks/useNotes'
 import { PecaModal } from '../Pecas/PecaModal'
 import {
   Overlay, Dialog, Header, Title, TagRow, Tag, CloseBtn,
@@ -12,6 +13,7 @@ import {
   PieceCat, PieceName, Tip, Formalidade, Dot,
   UsageRow, UsageStat, UsageBadge, MarkBtn, UndoBtn,
   RatingRow, RatingLabel, StarRow, Star, ExportBtn,
+  NotesSection, NotesLabel, NotesTitle, NotesStatus, NotesTextarea,
 } from './LookModal.styles'
 
 const catOrder: Record<string, number> = {
@@ -31,6 +33,7 @@ export function LookModal({ look, onClose }: Props) {
   const { pieces } = usePieces()
   const { count, lastDate, loading, markUsed, undoLast } = useUsage(look.id)
   const { rating, loading: rLoading, setRating } = useRating(look.id)
+  const { notes, status: notesStatus, setNotes } = useNotes('look', look.id, look.notes)
   const [hovered, setHovered] = useState<number>(0)
   const [exporting, setExporting] = useState(false)
   const [pieceModal, setPieceModal] = useState<Piece | null>(null)
@@ -159,6 +162,22 @@ export function LookModal({ look, onClose }: Props) {
           </FlatLay>
           <FlatLayTitle>Dica do Stylist</FlatLayTitle>
           <Tip>{look.tip}</Tip>
+
+          <NotesSection>
+            <NotesLabel>
+              <NotesTitle>Observações</NotesTitle>
+              <NotesStatus $status={notesStatus}>
+                {notesStatus === 'saving' ? 'salvando…' :
+                 notesStatus === 'saved'  ? '✓ salvo'   :
+                 notesStatus === 'error'  ? 'erro ao salvar' : ''}
+              </NotesStatus>
+            </NotesLabel>
+            <NotesTextarea
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+              placeholder="Adicione observações sobre este look…"
+            />
+          </NotesSection>
 
           <ExportBtn
             onClick={handleExport}

@@ -225,6 +225,56 @@ export const Star = styled.button<{ $filled: boolean; $loading: boolean }>`
   }
 `
 
+// ─── Notes ───────────────────────────────────────────────────────────────────
+
+export const NotesSection = styled.div`
+  margin-top: 24px;
+  border-top: 1px solid ${p => p.theme.colors.border};
+  padding-top: 18px;
+`
+
+export const NotesLabel = styled.div`
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+`
+
+export const NotesTitle = styled.h3`
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: ${p => p.theme.colors.accent};
+  margin: 0;
+`
+
+export const NotesStatus = styled.span<{ $status: 'idle' | 'saving' | 'saved' | 'error' }>`
+  font-size: 10px;
+  color: ${p =>
+    p.$status === 'saved'  ? '#22c55e' :
+    p.$status === 'error'  ? '#ef4444' :
+    p.$status === 'saving' ? p.theme.colors.textMuted :
+    'transparent'
+  };
+  transition: color 0.2s;
+`
+
+export const NotesTextarea = styled.textarea`
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 12px;
+  background: ${p => p.theme.colors.bg};
+  border: 1px solid ${p => p.theme.colors.border};
+  border-radius: 8px;
+  color: ${p => p.theme.colors.text};
+  font-size: 13px;
+  line-height: 1.6;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s;
+  &:focus { border-color: ${p => p.theme.colors.accent}88; }
+  &::placeholder { color: ${p => p.theme.colors.textMuted}; }
+`
+
 export const ExportBtn = styled.button<{ $loading?: boolean }>`
   display: inline-flex; align-items: center; gap: 6px;
   padding: 6px 14px; border-radius: 8px;

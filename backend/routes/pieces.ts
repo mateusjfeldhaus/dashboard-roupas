@@ -53,4 +53,21 @@ router.delete('/:id', async (req, res) => {
   } catch (e) { res.status(500).json({ error: String(e) }) }
 })
 
+// PATCH /api/pieces/:id/notes  body: { notes: string }
+router.patch('/:id/notes', async (req, res) => {
+  try {
+    const { notes } = req.body as { notes?: string }
+    if (typeof notes !== 'string') {
+      res.status(400).json({ error: 'notes deve ser uma string' })
+      return
+    }
+    const [updated] = await db.update(pieces)
+      .set({ notes })
+      .where(eq(pieces.id, req.params.id))
+      .returning()
+    if (!updated) { res.status(404).json({ error: 'Peça não encontrada' }); return }
+    res.json({ notes: updated.notes })
+  } catch (e) { res.status(500).json({ error: String(e) }) }
+})
+
 export default router
