@@ -33,11 +33,12 @@ const Card = styled.form`
 
 const Logo = styled.div`
   text-align: center;
-  font-size: 32px;
-  letter-spacing: 2px;
+  font-size: 22px;
+  letter-spacing: 3px;
   color: var(--accent, #c8a96e);
   font-weight: 700;
   margin-bottom: 4px;
+  text-transform: lowercase;
 `
 
 const Subtitle = styled.p`
@@ -154,7 +155,7 @@ export function PinGate({ children }: { children: ReactNode }) {
     <Screen>
       <Card onSubmit={handleSubmit}>
         <div>
-          <Logo>GR</Logo>
+          <Logo>mateusjf</Logo>
           <Subtitle>Guarda-Roupa · Acesso privado</Subtitle>
         </div>
 
