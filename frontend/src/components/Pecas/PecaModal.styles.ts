@@ -3,7 +3,7 @@ import styled from 'styled-components'
 export const Overlay = styled.div`
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.75);
-  z-index: 200;
+  z-index: 300;
   display: flex; align-items: center; justify-content: center;
   padding: 24px;
 `
