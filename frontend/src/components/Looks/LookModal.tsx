@@ -5,6 +5,7 @@ import { usePieces } from '../../hooks/usePieces'
 import { imgUrl } from '../../utils/imgUrl'
 import { useUsage, formatDate } from '../../hooks/useUsage'
 import { useRating } from '../../hooks/useRating'
+import { PecaModal } from '../Pecas/PecaModal'
 import {
   Overlay, Dialog, Header, Title, TagRow, Tag, CloseBtn,
   Body, FlatLayTitle, FlatLay, PieceSlot, PieceImg, Img,
@@ -32,6 +33,7 @@ export function LookModal({ look, onClose }: Props) {
   const { rating, loading: rLoading, setRating } = useRating(look.id)
   const [hovered, setHovered] = useState<number>(0)
   const [exporting, setExporting] = useState(false)
+  const [pieceModal, setPieceModal] = useState<Piece | null>(null)
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -62,6 +64,7 @@ export function LookModal({ look, onClose }: Props) {
   }
 
   return (
+  <>
     <Overlay onClick={onClose}>
       <Dialog onClick={e => e.stopPropagation()}>
         <Header>
@@ -133,7 +136,7 @@ export function LookModal({ look, onClose }: Props) {
           <FlatLayTitle>Flat-Lay do Look</FlatLayTitle>
           <FlatLay>
             {piecesInLook.map(({ cat, piece }) => (
-              <PieceSlot key={piece.id}>
+              <PieceSlot key={piece.id} onClick={() => setPieceModal(piece)} title={`Ver ${piece.name}`}>
                 <PieceImg $color={piece.color}>
                   <Img
                     src={imgUrl(piece.img)}
@@ -165,5 +168,10 @@ export function LookModal({ look, onClose }: Props) {
         </Body>
       </Dialog>
     </Overlay>
+
+    {pieceModal && (
+      <PecaModal piece={pieceModal} onClose={() => setPieceModal(null)} />
+    )}
+  </>
   )
 }

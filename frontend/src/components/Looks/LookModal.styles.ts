@@ -91,8 +91,18 @@ export const FlatLay = styled.div`
   }
 `
 
-export const PieceSlot = styled.div`
+export const PieceSlot = styled.button`
   text-align: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  transition: transform 0.15s;
+  &:hover { transform: translateY(-3px); }
+  &:hover img { opacity: 0.88; }
 `
 
 export const PieceImg = styled.div<{ $color: string }>`
@@ -102,6 +112,8 @@ export const PieceImg = styled.div<{ $color: string }>`
   overflow: hidden;
   border: 2px solid ${p => p.$color}44;
   display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s;
+  ${PieceSlot}:hover & { border-color: ${p => p.$color}99; }
 `
 
 export const Img = styled.img`
