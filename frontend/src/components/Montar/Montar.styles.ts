@@ -138,6 +138,47 @@ export const ClearBtn = styled.button`
   &:hover { color: ${p => p.theme.colors.text}; }
 `
 
+// ── Filters ───────────────────────────────────────────────────────────────────
+
+export const FilterBar = styled.div`
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid ${p => p.theme.colors.border};
+`
+
+export const FilterGroup = styled.div`
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+`
+
+export const FilterLabel = styled.span`
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  color: ${p => p.theme.colors.textMuted};
+  min-width: 52px;
+  flex-shrink: 0;
+`
+
+export const FilterChip = styled.button<{ $active: boolean; $color?: string }>`
+  font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 20px;
+  border: 1px solid ${p => p.$active
+    ? (p.$color ?? p.theme.colors.accent)
+    : p.theme.colors.border};
+  background: ${p => p.$active
+    ? (p.$color ?? p.theme.colors.accent) + '22'
+    : 'transparent'};
+  color: ${p => p.$active
+    ? (p.$color ?? p.theme.colors.accent)
+    : p.theme.colors.textMuted};
+  cursor: pointer;
+  transition: all 0.15s;
+  &:hover {
+    border-color: ${p => (p.$color ?? p.theme.colors.accent) + '88'};
+    color: ${p => p.$color ?? p.theme.colors.accent};
+  }
+`
+
 // ── Results ───────────────────────────────────────────────────────────────────
 
 export const ResultsHeader = styled.div`

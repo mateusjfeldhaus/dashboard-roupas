@@ -5,11 +5,13 @@ import type { Piece, Look } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
 import { getTagColor } from '../../styles/tagColors'
 import { LookModal } from '../Looks/LookModal'
+import { SEASONS, OCCASIONS } from '../../styles/tags'
 import {
   Wrapper, Panel, PanelTitle,
   CatRow, CatChip,
   PieceGrid, PieceThumb, PieceThumbImg, PieceCheckmark, PieceName,
   SelectedRow, SelectedChip, ChipRemove, ClearBtn,
+  FilterBar, FilterGroup, FilterLabel, FilterChip,
   ResultsHeader, ResultsCount,
   EmptyState, EmptyIcon, NoMatch,
   LookCard, LookCardHeader, LookCardTitle,
@@ -36,6 +38,13 @@ const CAT_LABELS: Record<string, string> = {
   'Acessório': 'Acessórios',
 }
 const CAT_ORDER = Object.keys(CAT_LABELS)
+
+// ── Filter types ──────────────────────────────────────────────────────────────
+
+type SeasonFilter  = typeof SEASONS[number]['tag']   | null
+type TimeFilter    = 'diurno'  | 'noturno'           | null
+type StyleFilter   = 'formal'  | 'casual' | 'esportes' | null
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 interface MatchedLook {
@@ -54,7 +63,7 @@ function computeMatches(looks: Look[], selectedIds: string[]): MatchedLook[] {
       return selectedIds.every(id => lookPieceIds.includes(id))
     })
     .map(look => {
-      const allPieceIds = look.pieces.map(lp => lp.pieceId)
+      const allPieceIds  = look.pieces.map(lp => lp.pieceId)
       const havePieceIds = selectedIds.filter(id => allPieceIds.includes(id))
       return { look, havePieceIds, allPieceIds, missing: allPieceIds.length - havePieceIds.length }
     })
@@ -65,26 +74,38 @@ function computeMatches(looks: Look[], selectedIds: string[]): MatchedLook[] {
 
 export function Montar() {
   const { pieces } = usePieces()
-  const { looks } = useLooks()
-  const allCats = [...new Set(pieces.map(p => p.category as string))]
+  const { looks }  = useLooks()
+
+  const allCats   = [...new Set(pieces.map(p => p.category as string))]
   const CATEGORIES = [
     ...CAT_ORDER.filter(c => allCats.includes(c)),
     ...allCats.filter(c => !CAT_ORDER.includes(c)),
   ]
 
-  const [activeCat, setActiveCat] = useState<string>('Camisa')
-  const [selectedIds, setSelectedIds] = useState<string[]>([])
-  const [modal, setModal] = useState<Look | null>(null)
+  const [activeCat,    setActiveCat]    = useState<string>('Camisa')
+  const [selectedIds,  setSelectedIds]  = useState<string[]>([])
+  const [modal,        setModal]        = useState<Look | null>(null)
+
+  // Filtros de look
+  const [filterSeason, setFilterSeason] = useState<SeasonFilter>(null)
+  const [filterTime,   setFilterTime]   = useState<TimeFilter>(null)
+  const [filterStyle,  setFilterStyle]  = useState<StyleFilter>(null)
 
   const piecesInCat = useMemo(
     () => pieces.filter(p => (p.category as string) === activeCat),
-    [pieces, activeCat]
+    [pieces, activeCat],
   )
 
   const matches = useMemo(() => computeMatches(looks, selectedIds), [looks, selectedIds])
 
-  // One piece per category: selecting a new piece replaces any existing selection
-  // from the same category. Clicking a selected piece deselects it.
+  const filteredMatches = useMemo(() => matches.filter(({ look }) => {
+    if (filterSeason && !look.tags.includes(filterSeason as never)) return false
+    if (filterTime   && !look.tags.includes(filterTime   as never)) return false
+    if (filterStyle  && !look.tags.includes(filterStyle  as never)) return false
+    return true
+  }), [matches, filterSeason, filterTime, filterStyle])
+
+  // Toggle: one piece per category
   function toggle(id: string) {
     const piece = pieces.find(p => p.id === id)
     if (!piece) return
@@ -97,6 +118,15 @@ export function Montar() {
     })
   }
 
+  function toggleFilter<T>(
+    current: T | null,
+    value: T,
+    set: (v: T | null) => void,
+  ) {
+    set(current === value ? null : value)
+  }
+
+  const activeFilters = [filterSeason, filterTime, filterStyle].filter(Boolean).length
   const selectedPieces = selectedIds.map(id => pieces.find(p => p.id === id)).filter(Boolean) as Piece[]
 
   return (
@@ -152,10 +182,56 @@ export function Montar() {
             <PanelTitle style={{ marginBottom: 0 }}>Looks compatíveis</PanelTitle>
             {selectedIds.length > 0 && (
               <ResultsCount>
-                {matches.length === 0 ? 'nenhum' : `${matches.length} look${matches.length > 1 ? 's' : ''}`}
+                {filteredMatches.length === 0
+                  ? 'nenhum'
+                  : `${filteredMatches.length} look${filteredMatches.length > 1 ? 's' : ''}`}
+                {activeFilters > 0 && ` · ${activeFilters} filtro${activeFilters > 1 ? 's' : ''}`}
               </ResultsCount>
             )}
           </ResultsHeader>
+
+          {/* ── Filtros ── */}
+          <FilterBar>
+            <FilterGroup>
+              <FilterLabel>Estação</FilterLabel>
+              {SEASONS.map(s => (
+                <FilterChip
+                  key={s.tag}
+                  $active={filterSeason === s.tag}
+                  $color={s.color}
+                  onClick={() => toggleFilter(filterSeason, s.tag as SeasonFilter, setFilterSeason)}
+                >
+                  {s.emoji} {s.label}
+                </FilterChip>
+              ))}
+            </FilterGroup>
+
+            <FilterGroup>
+              <FilterLabel>Hora</FilterLabel>
+              {(['diurno', 'noturno'] as const).map(t => (
+                <FilterChip
+                  key={t}
+                  $active={filterTime === t}
+                  onClick={() => toggleFilter(filterTime, t, setFilterTime)}
+                >
+                  {t === 'diurno' ? '☀️ Diurno' : '🌙 Noturno'}
+                </FilterChip>
+              ))}
+            </FilterGroup>
+
+            <FilterGroup>
+              <FilterLabel>Estilo</FilterLabel>
+              {(['formal', 'casual', 'esportes'] as const).map(s => (
+                <FilterChip
+                  key={s}
+                  $active={filterStyle === s}
+                  onClick={() => toggleFilter(filterStyle, s, setFilterStyle)}
+                >
+                  {s === 'formal' ? '👔 Formal' : s === 'casual' ? '👕 Casual' : '🏃 Esportes'}
+                </FilterChip>
+              ))}
+            </FilterGroup>
+          </FilterBar>
 
           {selectedIds.length === 0 ? (
             <EmptyState>
@@ -167,13 +243,17 @@ export function Montar() {
                 com destaque para o que ainda falta vestir.
               </span>
             </EmptyState>
-          ) : matches.length === 0 ? (
+          ) : filteredMatches.length === 0 ? (
             <NoMatch>
-              Nenhum look usa todas as peças selecionadas juntas.<br />
-              <span style={{ fontSize: 12 }}>Tente remover uma peça para ampliar os resultados.</span>
+              Nenhum look encontrado com as peças e filtros selecionados.<br />
+              <span style={{ fontSize: 12 }}>
+                {activeFilters > 0
+                  ? 'Tente remover um filtro ou trocar uma peça.'
+                  : 'Tente remover uma peça para ampliar os resultados.'}
+              </span>
             </NoMatch>
           ) : (
-            matches.map(({ look, havePieceIds, allPieceIds, missing }) => (
+            filteredMatches.map(({ look, havePieceIds, allPieceIds, missing }) => (
               <LookCard key={look.id} onClick={() => setModal(look)}>
                 <LookCardHeader>
                   <LookCardTitle>{look.title}</LookCardTitle>
@@ -196,7 +276,7 @@ export function Montar() {
 
                 <PiecesBreakdown>
                   {allPieceIds.map(pid => {
-                    const p = pieces.find(p => p.id === pid)
+                    const p    = pieces.find(p => p.id === pid)
                     const have = havePieceIds.includes(pid)
                     return (
                       <PieceChip key={pid} $have={have}>
