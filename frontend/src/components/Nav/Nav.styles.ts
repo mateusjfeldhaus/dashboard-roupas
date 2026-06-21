@@ -20,7 +20,7 @@ export const Inner = styled.div`
   @media (max-width: 768px) { padding: 0 16px; }
 `
 
-export const Brand = styled.div`
+export const Brand = styled.button`
   font-size: 13px;
   font-weight: 800;
   color: ${p => p.theme.colors.accent};
@@ -30,6 +30,11 @@ export const Brand = styled.div`
   margin-right: 36px;
   white-space: nowrap;
   flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  &:hover { opacity: 0.8; }
   @media (max-width: 768px) { margin-right: 0; flex: 1; padding: 15px 0; }
 `
 

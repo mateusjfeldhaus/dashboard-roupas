@@ -91,7 +91,7 @@ export function Nav({ activeTab, onTabChange }: Props) {
     <>
       <NavBar>
         <Inner>
-          <Brand>Guarda-Roupa</Brand>
+          <Brand onClick={() => onTabChange('overview')}>Guarda-Roupa</Brand>
 
           {/* ── Desktop tab list (all tabs flow together) ─────────────── */}
           <TabList>
