@@ -19,10 +19,10 @@ export function PecaModal({ piece, onClose }: Props) {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        if (lookModal) setLookModal(null)
-        else onClose()
-      }
+      if (e.key !== 'Escape') return
+      e.stopImmediatePropagation() // impede que o LookModal (ou qualquer pai) também capture
+      if (lookModal) setLookModal(null)
+      else onClose()
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)

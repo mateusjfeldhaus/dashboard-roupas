@@ -36,10 +36,14 @@ export function LookModal({ look, onClose }: Props) {
   const [pieceModal, setPieceModal] = useState<Piece | null>(null)
 
   useEffect(() => {
-    const h = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    const h = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      if (pieceModal) setPieceModal(null)
+      else onClose()
+    }
     window.addEventListener('keydown', h)
     return () => window.removeEventListener('keydown', h)
-  }, [onClose])
+  }, [onClose, pieceModal])
 
   const piecesInLook = look.pieces
     .map(lp => {
