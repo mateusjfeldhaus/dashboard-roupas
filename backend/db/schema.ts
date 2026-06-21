@@ -70,6 +70,16 @@ export const wishlistItems = pgTable('wishlist_items', {
   createdAt:   timestamp('created_at').notNull().defaultNow(),
 })
 
+// ── Look photos ───────────────────────────────────────────────────────────────
+
+export const lookPhotos = pgTable('look_photos', {
+  id:         text('id').primaryKey(),         // nanoid — ID único para uso futuro
+  lookId:     text('look_id').notNull().unique().references(() => looks.id, { onDelete: 'cascade' }),
+  mimeType:   text('mime_type').notNull().default('image/jpeg'),
+  data:       text('data').notNull(),           // base64 da imagem
+  uploadedAt: timestamp('uploaded_at').notNull().defaultNow(),
+})
+
 // ── Types inferred from schema ────────────────────────────────────────────────
 
 export type Piece         = typeof pieces.$inferSelect
@@ -80,3 +90,4 @@ export type LookPiece     = typeof lookPieces.$inferSelect
 export type UsageRecord   = typeof usageRecords.$inferSelect
 export type Rating        = typeof ratings.$inferSelect
 export type WishlistItem  = typeof wishlistItems.$inferSelect
+export type LookPhoto     = typeof lookPhotos.$inferSelect

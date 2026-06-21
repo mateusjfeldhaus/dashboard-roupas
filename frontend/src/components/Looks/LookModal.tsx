@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import type { Look, Piece } from '@data/types'
 import { exportLookAsImage } from '../../utils/exportLook'
 import { usePieces } from '../../hooks/usePieces'
@@ -6,6 +6,7 @@ import { imgUrl } from '../../utils/imgUrl'
 import { useUsage, formatDate } from '../../hooks/useUsage'
 import { useRating } from '../../hooks/useRating'
 import { useNotes } from '../../hooks/useNotes'
+import { useLookPhoto } from '../../hooks/useLookPhoto'
 import { PecaModal } from '../Pecas/PecaModal'
 import {
   Overlay, Dialog, Header, Title, TagRow, Tag, CloseBtn,
@@ -14,6 +15,8 @@ import {
   UsageRow, UsageStat, UsageBadge, MarkBtn, UndoBtn,
   RatingRow, RatingLabel, StarRow, Star, ExportBtn,
   NotesSection, NotesLabel, NotesTitle, NotesStatus, NotesTextarea,
+  PhotoSection, PhotoImg, PhotoEmpty, PhotoIcon,
+  PhotoActions, PhotoBtn, PhotoDelBtn, PhotoUploadInput, PhotoUploading,
 } from './LookModal.styles'
 
 const catOrder: Record<string, number> = {
@@ -27,6 +30,12 @@ function catKey(cat: string) {
   return cat.normalize('NFD').replace(/[̀-ͯ]/g, '')
 }
 
+// Deriva a URL da foto do look a partir do VITE_API_URL
+function photoUrl(lookId: string) {
+  const base = import.meta.env.VITE_API_URL ?? ''
+  return `${base}/api/photos/${encodeURIComponent(lookId)}`
+}
+
 interface Props { look: Look; onClose: () => void }
 
 export function LookModal({ look, onClose }: Props) {
@@ -34,9 +43,12 @@ export function LookModal({ look, onClose }: Props) {
   const { count, lastDate, loading, markUsed, undoLast } = useUsage(look.id)
   const { rating, loading: rLoading, setRating } = useRating(look.id)
   const { notes, status: notesStatus, setNotes } = useNotes('look', look.id, look.notes)
+  const { photoId, uploading: photoUploading, upload: uploadPhoto, remove: removePhoto } = useLookPhoto(look.id, look.photoId)
   const [hovered, setHovered] = useState<number>(0)
   const [exporting, setExporting] = useState(false)
   const [pieceModal, setPieceModal] = useState<Piece | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const replaceInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
@@ -70,10 +82,60 @@ export function LookModal({ look, onClose }: Props) {
     await setRating(rating === n ? 0 : n)
   }
 
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) uploadPhoto(file)
+    e.target.value = ''
+  }
+
   return (
   <>
     <Overlay onClick={onClose}>
       <Dialog onClick={e => e.stopPropagation()}>
+
+        {/* ── Foto do Look ── */}
+        <PhotoSection>
+          {photoId ? (
+            <>
+              <PhotoImg
+                src={photoUrl(look.id)}
+                alt={`Foto do look ${look.title}`}
+                key={photoId}
+              />
+              <PhotoActions>
+                {/* Trocar foto */}
+                <PhotoBtn as="label" htmlFor={`replace-${look.id}`}>
+                  🔄 Trocar
+                  <PhotoUploadInput
+                    id={`replace-${look.id}`}
+                    ref={replaceInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
+                </PhotoBtn>
+                {/* Remover foto */}
+                <PhotoDelBtn $danger onClick={removePhoto} disabled={photoUploading}>
+                  🗑 Remover
+                </PhotoDelBtn>
+              </PhotoActions>
+              {photoUploading && <PhotoUploading>Enviando…</PhotoUploading>}
+            </>
+          ) : (
+            <PhotoEmpty htmlFor={`upload-${look.id}`}>
+              <PhotoIcon>📸</PhotoIcon>
+              {photoUploading ? 'Enviando…' : 'Adicionar foto do look'}
+              <PhotoUploadInput
+                id={`upload-${look.id}`}
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+            </PhotoEmpty>
+          )}
+        </PhotoSection>
+
         <Header>
           <div>
             <Title>{look.title}</Title>
@@ -87,9 +149,7 @@ export function LookModal({ look, onClose }: Props) {
             {/* ── Star Rating ── */}
             <RatingRow>
               <RatingLabel>Avaliação:</RatingLabel>
-              <StarRow
-                onMouseLeave={() => setHovered(0)}
-              >
+              <StarRow onMouseLeave={() => setHovered(0)}>
                 {[1,2,3,4,5,6,7,8,9,10].map(n => (
                   <Star
                     key={n}

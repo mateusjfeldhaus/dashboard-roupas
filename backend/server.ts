@@ -10,6 +10,7 @@ import looksRouter    from './routes/looks'
 import usageRouter    from './routes/usage'
 import ratingRouter   from './routes/rating'
 import wishlistRouter from './routes/wishlist'
+import photosRouter   from './routes/photos'
 import { requireApiKey } from './middleware/requireApiKey'
 
 const app  = express()
@@ -77,6 +78,7 @@ app.use('/api/looks',    looksRouter)
 app.use('/api/usage',    usageRouter)
 app.use('/api/rating',   ratingRouter)
 app.use('/api/wishlist', wishlistRouter)
+app.use('/api/photos',   photosRouter)
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {

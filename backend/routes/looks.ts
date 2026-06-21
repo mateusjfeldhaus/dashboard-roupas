@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { eq } from 'drizzle-orm'
 import { db } from '../db/client'
-import { looks, lookPieces } from '../db/schema'
+import { looks, lookPieces, lookPhotos } from '../db/schema'
 
 const router = Router()
 
@@ -31,10 +31,14 @@ async function withPieces(lookRows: (typeof looks.$inferSelect)[]) {
 // GET /api/looks
 router.get('/', async (_req, res) => {
   try {
-    const all = await db.select().from(looks).orderBy(looks.title)
-    const allLp = await db.select().from(lookPieces)
+    const all    = await db.select().from(looks).orderBy(looks.title)
+    const allLp  = await db.select().from(lookPieces)
+    const photos = await db.select({ lookId: lookPhotos.lookId, id: lookPhotos.id }).from(lookPhotos)
+    const photoMap = Object.fromEntries(photos.map(p => [p.lookId, p.id]))
+
     const result = all.map(look => ({
       ...look,
+      photoId: photoMap[look.id] ?? null,
       pieces: allLp
         .filter(lp => lp.lookId === look.id)
         .map(lp => ({ cat: lp.cat, pieceId: lp.pieceId })),
@@ -48,8 +52,9 @@ router.get('/:id', async (req, res) => {
   try {
     const [look] = await db.select().from(looks).where(eq(looks.id, req.params.id))
     if (!look) { res.status(404).json({ error: 'Not found' }); return }
+    const [photo] = await db.select({ id: lookPhotos.id }).from(lookPhotos).where(eq(lookPhotos.lookId, req.params.id))
     const [result] = await withPieces([look])
-    res.json(result)
+    res.json({ ...result, photoId: photo?.id ?? null })
   } catch (e) { res.status(500).json({ error: String(e) }) }
 })
 
