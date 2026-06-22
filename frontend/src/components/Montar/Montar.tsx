@@ -5,7 +5,7 @@ import type { Piece, Look } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
 import { getTagColor } from '../../styles/tagColors'
 import { LookModal } from '../Looks/LookModal'
-import { SEASONS, OCCASIONS } from '../../styles/tags'
+import { SEASONS } from '../../styles/tags'
 import {
   Wrapper, Panel, PanelTitle,
   CatRow, CatChip,
