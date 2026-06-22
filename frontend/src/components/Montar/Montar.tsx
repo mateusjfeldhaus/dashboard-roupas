@@ -118,14 +118,6 @@ export function Montar() {
     })
   }
 
-  function toggleFilter<T>(
-    current: T | null,
-    value: T,
-    set: (v: T | null) => void,
-  ) {
-    set(current === value ? null : value)
-  }
-
   const activeFilters = [filterSeason, filterTime, filterStyle].filter(Boolean).length
   const selectedPieces = selectedIds.map(id => pieces.find(p => p.id === id)).filter(Boolean) as Piece[]
 
@@ -199,7 +191,7 @@ export function Montar() {
                   key={s.tag}
                   $active={filterSeason === s.tag}
                   $color={s.color}
-                  onClick={() => toggleFilter(filterSeason, s.tag as SeasonFilter, setFilterSeason)}
+                  onClick={() => setFilterSeason(f => f === s.tag ? null : s.tag)}
                 >
                   {s.emoji} {s.label}
                 </FilterChip>
@@ -212,7 +204,7 @@ export function Montar() {
                 <FilterChip
                   key={t}
                   $active={filterTime === t}
-                  onClick={() => toggleFilter(filterTime, t, setFilterTime)}
+                  onClick={() => setFilterTime(f => f === t ? null : t)}
                 >
                   {t === 'diurno' ? '☀️ Diurno' : '🌙 Noturno'}
                 </FilterChip>
@@ -225,7 +217,7 @@ export function Montar() {
                 <FilterChip
                   key={s}
                   $active={filterStyle === s}
-                  onClick={() => toggleFilter(filterStyle, s, setFilterStyle)}
+                  onClick={() => setFilterStyle(f => f === s ? null : s)}
                 >
                   {s === 'formal' ? '👔 Formal' : s === 'casual' ? '👕 Casual' : '🏃 Esportes'}
                 </FilterChip>
