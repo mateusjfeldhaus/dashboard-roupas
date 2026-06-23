@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import express from 'express'
+import helmet from 'helmet'
 import cors from 'cors'
 import path from 'path'
 import fs from 'fs'
@@ -21,6 +22,7 @@ const PORT = process.env.PORT ?? 3001
 const ROUPAS_DIR = path.resolve(__dirname, '../..')
 
 // ── Middleware ────────────────────────────────────────────────────────────────
+app.use(helmet())
 app.use(cors({
   origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
 }))
