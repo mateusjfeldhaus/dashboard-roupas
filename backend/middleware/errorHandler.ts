@@ -1,7 +1,8 @@
-import { Request, Response, NextFunction } from 'express'
+import { Response } from 'express'
 import { ZodError } from 'zod'
 
-const IS_PROD = process.env.NODE_ENV === 'production'
+// Expõe detalhes apenas se NODE_ENV for explicitamente "development"
+const IS_DEV = process.env.NODE_ENV === 'development'
 
 /** Converte um ZodError em mensagem legível */
 function formatZodError(e: ZodError): string {
@@ -15,11 +16,10 @@ export function apiError(res: Response, e: unknown, status = 500) {
     return
   }
 
-  // Em produção: loga internamente, retorna mensagem genérica
-  if (IS_PROD) {
-    console.error('[API Error]', e)
-    res.status(status).json({ error: 'Erro interno do servidor' })
-  } else {
-    res.status(status).json({ error: String(e) })
-  }
+  // Sempre loga no servidor
+  console.error('[API Error]', e)
+
+  // Expõe detalhes só em dev explícito — padrão é esconder
+  const message = IS_DEV ? String(e) : 'Erro interno do servidor'
+  res.status(status).json({ error: message })
 }
