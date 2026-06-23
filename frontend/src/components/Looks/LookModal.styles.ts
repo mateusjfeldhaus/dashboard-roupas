@@ -291,99 +291,92 @@ export const ExportBtn = styled.button<{ $loading?: boolean }>`
   }
 `
 
-// ─── Look Photo ───────────────────────────────────────────────────────────────
+// ─── Look Photo (inline button) ───────────────────────────────────────────────
 
-export const PhotoSection = styled.div`
-  width: 100%;
-  border-bottom: 1px solid ${p => p.theme.colors.border};
-  border-radius: 16px 16px 0 0;
-  overflow: hidden;
-  position: relative;
-  background: ${p => p.theme.colors.bg};
-`
-
-export const PhotoImg = styled.img`
-  width: 100%;
-  max-height: 420px;
-  object-fit: cover;
-  display: block;
-`
-
-export const PhotoEmpty = styled.label`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  height: 160px;
+export const PhotoInlineBtn = styled.label`
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px; font-weight: 600;
   cursor: pointer;
+  border: 1px solid ${p => p.theme.colors.border};
   color: ${p => p.theme.colors.textMuted};
-  font-size: 13px;
-  border: 2px dashed ${p => p.theme.colors.border};
-  border-radius: 14px;
-  margin: 16px;
-  transition: border-color 0.15s, color 0.15s;
+  background: transparent;
+  transition: all 0.15s;
+  margin-top: 8px;
   &:hover {
     border-color: ${p => p.theme.colors.accent}88;
     color: ${p => p.theme.colors.accent};
   }
 `
 
-export const PhotoIcon = styled.span`
-  font-size: 32px;
-  line-height: 1;
-`
-
-export const PhotoActions = styled.div`
-  position: absolute;
-  bottom: 10px; right: 10px;
-  display: flex; gap: 6px;
-`
-
-export const PhotoBtn = styled.label<{ $danger?: boolean }>`
+export const PhotoViewBtn = styled.button`
   display: inline-flex; align-items: center; gap: 5px;
-  padding: 5px 12px;
-  border-radius: 8px;
-  font-size: 11px; font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px; font-weight: 600;
   cursor: pointer;
-  background: ${p => p.$danger ? '#ef444422' : p.theme.colors.surface};
-  color: ${p => p.$danger ? '#ef4444' : p.theme.colors.text};
-  border: 1px solid ${p => p.$danger ? '#ef444444' : p.theme.colors.border};
-  backdrop-filter: blur(6px);
+  border: 1px solid ${p => p.theme.colors.accent}66;
+  color: ${p => p.theme.colors.accent};
+  background: ${p => p.theme.colors.accent}10;
   transition: all 0.15s;
-  &:hover {
-    background: ${p => p.$danger ? '#ef444433' : p.theme.colors.accent + '22'};
-    border-color: ${p => p.$danger ? '#ef4444' : p.theme.colors.accent + '88'};
-  }
-`
-
-export const PhotoDelBtn = styled.button<{ $danger?: boolean }>`
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 5px 12px;
-  border-radius: 8px;
-  font-size: 11px; font-weight: 700;
-  cursor: pointer;
-  background: ${p => p.$danger ? '#ef444422' : p.theme.colors.surface};
-  color: ${p => p.$danger ? '#ef4444' : p.theme.colors.text};
-  border: 1px solid ${p => p.$danger ? '#ef444444' : p.theme.colors.border};
-  backdrop-filter: blur(6px);
-  transition: all 0.15s;
-  &:hover {
-    background: #ef444433;
-    border-color: #ef4444;
-    color: #ef4444;
-  }
+  margin-top: 8px;
+  &:hover { background: ${p => p.theme.colors.accent}22; }
 `
 
 export const PhotoUploadInput = styled.input`
   display: none;
 `
 
-export const PhotoUploading = styled.div`
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.5);
+// ─── Lightbox ─────────────────────────────────────────────────────────────────
+
+export const LightboxOverlay = styled.div`
+  position: fixed; inset: 0;
+  z-index: 400;
+  background: rgba(0,0,0,0.92);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+`
+
+export const LightboxImg = styled.img`
+  max-width: 100%;
+  max-height: calc(100dvh - 100px);
+  object-fit: contain;
+  border-radius: 4px;
+`
+
+export const LightboxClose = styled.button`
+  position: absolute; top: 16px; right: 20px;
+  font-size: 28px; color: #fff; opacity: 0.7;
+  cursor: pointer; line-height: 1;
+  &:hover { opacity: 1; }
+`
+
+export const LightboxActions = styled.div`
+  position: absolute; bottom: 24px;
+  display: flex; gap: 10px;
+`
+
+export const LightboxBtn = styled.label`
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 16px; border-radius: 10px;
+  font-size: 12px; font-weight: 700;
+  cursor: pointer;
+  background: rgba(255,255,255,0.12);
   color: #fff;
-  font-size: 13px; font-weight: 700;
-  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.2);
+  transition: background 0.15s;
+  &:hover { background: rgba(255,255,255,0.22); }
+`
+
+export const LightboxDelBtn = styled.button`
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 16px; border-radius: 10px;
+  font-size: 12px; font-weight: 700;
+  cursor: pointer;
+  background: rgba(239,68,68,0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239,68,68,0.3);
+  transition: background 0.15s;
+  &:hover { background: rgba(239,68,68,0.35); }
 `

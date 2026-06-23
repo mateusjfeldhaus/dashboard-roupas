@@ -15,8 +15,8 @@ import {
   UsageRow, UsageStat, UsageBadge, MarkBtn, UndoBtn,
   RatingRow, RatingLabel, StarRow, Star, ExportBtn,
   NotesSection, NotesLabel, NotesTitle, NotesStatus, NotesTextarea,
-  PhotoSection, PhotoImg, PhotoEmpty, PhotoIcon,
-  PhotoActions, PhotoBtn, PhotoDelBtn, PhotoUploadInput, PhotoUploading,
+  PhotoInlineBtn, PhotoViewBtn, PhotoUploadInput,
+  LightboxOverlay, LightboxImg, LightboxClose, LightboxActions, LightboxBtn, LightboxDelBtn,
 } from './LookModal.styles'
 
 const catOrder: Record<string, number> = {
@@ -30,7 +30,6 @@ function catKey(cat: string) {
   return cat.normalize('NFD').replace(/[̀-ͯ]/g, '')
 }
 
-// Deriva a URL da foto do look a partir do VITE_API_URL
 function photoUrl(lookId: string) {
   const base = import.meta.env.VITE_API_URL ?? ''
   return `${base}/api/photos/${encodeURIComponent(lookId)}`
@@ -44,21 +43,24 @@ export function LookModal({ look, onClose }: Props) {
   const { rating, loading: rLoading, setRating } = useRating(look.id)
   const { notes, status: notesStatus, setNotes } = useNotes('look', look.id, look.notes)
   const { photoId, uploading: photoUploading, upload: uploadPhoto, remove: removePhoto } = useLookPhoto(look.id, look.photoId)
-  const [hovered, setHovered] = useState<number>(0)
-  const [exporting, setExporting] = useState(false)
-  const [pieceModal, setPieceModal] = useState<Piece | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const replaceInputRef = useRef<HTMLInputElement>(null)
+  const [hovered,     setHovered]     = useState<number>(0)
+  const [exporting,   setExporting]   = useState(false)
+  const [pieceModal,  setPieceModal]  = useState<Piece | null>(null)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const uploadRef  = useRef<HTMLInputElement>(null)
+  const replaceRef = useRef<HTMLInputElement>(null)
 
+  // Escape: fecha lightbox → fecha pieceModal → fecha modal
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
-      if (pieceModal) setPieceModal(null)
-      else onClose()
+      if (lightboxOpen) { setLightboxOpen(false); return }
+      if (pieceModal)   { setPieceModal(null);     return }
+      onClose()
     }
     window.addEventListener('keydown', h)
     return () => window.removeEventListener('keydown', h)
-  }, [onClose, pieceModal])
+  }, [onClose, pieceModal, lightboxOpen])
 
   const piecesInLook = look.pieces
     .map(lp => {
@@ -88,54 +90,15 @@ export function LookModal({ look, onClose }: Props) {
     e.target.value = ''
   }
 
+  async function handleRemove() {
+    await removePhoto()
+    setLightboxOpen(false)
+  }
+
   return (
   <>
     <Overlay onClick={onClose}>
       <Dialog onClick={e => e.stopPropagation()}>
-
-        {/* ── Foto do Look ── */}
-        <PhotoSection>
-          {photoId ? (
-            <>
-              <PhotoImg
-                src={photoUrl(look.id)}
-                alt={`Foto do look ${look.title}`}
-                key={photoId}
-              />
-              <PhotoActions>
-                {/* Trocar foto */}
-                <PhotoBtn as="label" htmlFor={`replace-${look.id}`}>
-                  🔄 Trocar
-                  <PhotoUploadInput
-                    id={`replace-${look.id}`}
-                    ref={replaceInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                  />
-                </PhotoBtn>
-                {/* Remover foto */}
-                <PhotoDelBtn $danger onClick={removePhoto} disabled={photoUploading}>
-                  🗑 Remover
-                </PhotoDelBtn>
-              </PhotoActions>
-              {photoUploading && <PhotoUploading>Enviando…</PhotoUploading>}
-            </>
-          ) : (
-            <PhotoEmpty htmlFor={`upload-${look.id}`}>
-              <PhotoIcon>📸</PhotoIcon>
-              {photoUploading ? 'Enviando…' : 'Adicionar foto do look'}
-              <PhotoUploadInput
-                id={`upload-${look.id}`}
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-              />
-            </PhotoEmpty>
-          )}
-        </PhotoSection>
-
         <Header>
           <div>
             <Title>{look.title}</Title>
@@ -145,6 +108,24 @@ export function LookModal({ look, onClose }: Props) {
             <Formalidade>
               {[1,2,3,4,5].map(i => <Dot key={i} $filled={i <= look.formality} />)}
             </Formalidade>
+
+            {/* ── Botão de foto ── */}
+            {photoId ? (
+              <PhotoViewBtn onClick={() => setLightboxOpen(true)}>
+                📸 Ver look completo
+              </PhotoViewBtn>
+            ) : (
+              <PhotoInlineBtn htmlFor={`upload-photo-${look.id}`}>
+                {photoUploading ? '⏳ Enviando…' : '📸 Adicionar foto'}
+                <PhotoUploadInput
+                  id={`upload-photo-${look.id}`}
+                  ref={uploadRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+              </PhotoInlineBtn>
+            )}
 
             {/* ── Star Rating ── */}
             <RatingRow>
@@ -169,29 +150,15 @@ export function LookModal({ look, onClose }: Props) {
 
             {/* ── Usage ── */}
             <UsageRow>
-              <MarkBtn
-                $loading={loading}
-                disabled={loading}
-                onClick={markUsed}
-                title="Marcar como usado hoje"
-              >
+              <MarkBtn $loading={loading} disabled={loading} onClick={markUsed} title="Marcar como usado hoje">
                 +
               </MarkBtn>
-              {!loading && count === 0 && (
-                <UsageStat>Nunca usado</UsageStat>
-              )}
+              {!loading && count === 0 && <UsageStat>Nunca usado</UsageStat>}
               {!loading && count > 0 && (
                 <>
-                  <UsageStat>
-                    <UsageBadge>{count}×</UsageBadge>
-                    usado{count !== 1 ? 's' : ''}
-                  </UsageStat>
-                  <UsageStat>
-                    · último: <strong>{formatDate(lastDate!)}</strong>
-                  </UsageStat>
-                  <UndoBtn onClick={undoLast} title="Desfazer último registro">
-                    desfazer
-                  </UndoBtn>
+                  <UsageStat><UsageBadge>{count}×</UsageBadge>usado{count !== 1 ? 's' : ''}</UsageStat>
+                  <UsageStat>· último: <strong>{formatDate(lastDate!)}</strong></UsageStat>
+                  <UndoBtn onClick={undoLast}>desfazer</UndoBtn>
                 </>
               )}
             </UsageRow>
@@ -251,6 +218,34 @@ export function LookModal({ look, onClose }: Props) {
         </Body>
       </Dialog>
     </Overlay>
+
+    {/* ── Lightbox full-screen ── */}
+    {lightboxOpen && photoId && (
+      <LightboxOverlay onClick={() => setLightboxOpen(false)}>
+        <LightboxClose onClick={() => setLightboxOpen(false)}>✕</LightboxClose>
+        <LightboxImg
+          src={photoUrl(look.id)}
+          alt={look.title}
+          key={photoId}
+          onClick={e => e.stopPropagation()}
+        />
+        <LightboxActions onClick={e => e.stopPropagation()}>
+          <LightboxBtn htmlFor={`replace-photo-${look.id}`}>
+            🔄 Trocar foto
+            <PhotoUploadInput
+              id={`replace-photo-${look.id}`}
+              ref={replaceRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </LightboxBtn>
+          <LightboxDelBtn onClick={handleRemove} disabled={photoUploading}>
+            🗑 Remover
+          </LightboxDelBtn>
+        </LightboxActions>
+      </LightboxOverlay>
+    )}
 
     {pieceModal && (
       <PecaModal piece={pieceModal} onClose={() => setPieceModal(null)} />
