@@ -6,5 +6,5 @@ import * as schema from './schema'
 // Necessário para usar WebSockets no Node.js (suporta transactions)
 neonConfig.webSocketConstructor = ws
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL! })
+export const pool = new Pool({ connectionString: process.env.DATABASE_URL! })
 export const db = drizzle(pool, { schema })

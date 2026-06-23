@@ -14,6 +14,7 @@ import ratingRouter   from './routes/rating'
 import wishlistRouter from './routes/wishlist'
 import photosRouter   from './routes/photos'
 import { requireApiKey } from './middleware/requireApiKey'
+import { pool } from './db/client'
 
 const app  = express()
 const PORT = process.env.PORT ?? 3001
@@ -93,7 +94,7 @@ app.use('/api/wishlist', requireApiKey, wishlistRouter)  // GET também protegid
 app.use('/api/photos',   requireApiKey, photosRouter)    // GET também protegido
 
 // ── Start ─────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   if (!process.env.API_KEY) {
     console.warn('\n  ⚠️  AVISO: API_KEY não configurada — autenticação desativada!\n')
   }
@@ -102,3 +103,16 @@ app.listen(PORT, () => {
   }
   console.log(`\n  🚀  Backend rodando em http://localhost:${PORT}\n`)
 })
+
+// ── Graceful shutdown ─────────────────────────────────────────────────────────
+async function shutdown(signal: string) {
+  console.log(`\n  ${signal} recebido — encerrando servidor...\n`)
+  server.close(async () => {
+    await pool.end()
+    console.log('  Pool de conexões encerrado. Até logo!\n')
+    process.exit(0)
+  })
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'))
+process.on('SIGINT',  () => shutdown('SIGINT'))
