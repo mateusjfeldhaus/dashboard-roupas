@@ -2,6 +2,8 @@ import { Router } from 'express'
 import { eq } from 'drizzle-orm'
 import { db } from '../db/client'
 import { looks, lookPieces, lookPhotos } from '../db/schema'
+import { LookCreateSchema, LookUpdateSchema, NotesSchema } from '../lib/schemas'
+import { apiError } from '../middleware/errorHandler'
 
 const router = Router()
 
@@ -44,7 +46,7 @@ router.get('/', async (_req, res) => {
         .map(lp => ({ cat: lp.cat, pieceId: lp.pieceId })),
     }))
     res.json(result)
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+  } catch (e) { apiError(res, e) }
 })
 
 // GET /api/looks/:id
@@ -55,13 +57,13 @@ router.get('/:id', async (req, res) => {
     const [photo] = await db.select({ id: lookPhotos.id }).from(lookPhotos).where(eq(lookPhotos.lookId, req.params.id))
     const [result] = await withPieces([look])
     res.json({ ...result, photoId: photo?.id ?? null })
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+  } catch (e) { apiError(res, e) }
 })
 
 // POST /api/looks  body: { id, title, tags, formality, tip, pieces: [{cat, pieceId}] }
 router.post('/', async (req, res) => {
   try {
-    const { pieces: pcs, ...lookData } = req.body as typeof looks.$inferInsert & { pieces: { cat: string; pieceId: string }[] }
+    const { pieces: pcs, ...lookData } = LookCreateSchema.parse(req.body)
 
     const created = await db.transaction(async (tx) => {
       const [look] = await tx.insert(looks).values(lookData).returning()
@@ -73,13 +75,13 @@ router.post('/', async (req, res) => {
 
     const [result] = await withPieces([created])
     res.status(201).json(result)
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+  } catch (e) { apiError(res, e) }
 })
 
 // PUT /api/looks/:id  body: { title?, tags?, formality?, tip?, pieces?: [...] }
 router.put('/:id', async (req, res) => {
   try {
-    const { pieces: pcs, id: _id, createdAt: _ca, ...fields } = req.body
+    const { pieces: pcs, ...fields } = LookUpdateSchema.parse(req.body)
 
     const updated = await db.transaction(async (tx) => {
       const [look] = await tx.update(looks)
@@ -103,7 +105,7 @@ router.put('/:id', async (req, res) => {
 
     const [result] = await withPieces([updated])
     res.json(result)
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+  } catch (e) { apiError(res, e) }
 })
 
 // DELETE /api/looks/:id  (look_pieces cascade via FK)
@@ -111,24 +113,20 @@ router.delete('/:id', async (req, res) => {
   try {
     await db.delete(looks).where(eq(looks.id, req.params.id))
     res.json({ id: req.params.id })
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+  } catch (e) { apiError(res, e) }
 })
 
 // PATCH /api/looks/:id/notes  body: { notes: string }
 router.patch('/:id/notes', async (req, res) => {
   try {
-    const { notes } = req.body as { notes?: string }
-    if (typeof notes !== 'string') {
-      res.status(400).json({ error: 'notes deve ser uma string' })
-      return
-    }
+    const { notes } = NotesSchema.parse(req.body)
     const [updated] = await db.update(looks)
       .set({ notes })
       .where(eq(looks.id, req.params.id))
       .returning()
     if (!updated) { res.status(404).json({ error: 'Look não encontrado' }); return }
     res.json({ notes: updated.notes })
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+  } catch (e) { apiError(res, e) }
 })
 
 export default router
