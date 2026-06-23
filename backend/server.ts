@@ -26,7 +26,7 @@ app.use(helmet())
 app.use(cors({
   origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
 }))
-app.use(express.json())
+app.use(express.json({ limit: '1mb' }))
 
 // ── Image server (/img/*) ────────────────────────────────────────────────────
 const MIME: Record<string, string> = {
@@ -96,6 +96,9 @@ app.use('/api/photos',   requireApiKey, photosRouter)    // GET também protegid
 app.listen(PORT, () => {
   if (!process.env.API_KEY) {
     console.warn('\n  ⚠️  AVISO: API_KEY não configurada — autenticação desativada!\n')
+  }
+  if (!process.env.CORS_ORIGIN) {
+    console.warn('\n  ⚠️  AVISO: CORS_ORIGIN não configurado — aceitando qualquer origem!\n')
   }
   console.log(`\n  🚀  Backend rodando em http://localhost:${PORT}\n`)
 })
