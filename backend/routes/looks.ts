@@ -62,11 +62,14 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { pieces: pcs, ...lookData } = req.body as typeof looks.$inferInsert & { pieces: { cat: string; pieceId: string }[] }
-    const [created] = await db.insert(looks).values(lookData).returning()
 
-    if (pcs?.length) {
-      await db.insert(lookPieces).values(pcs.map(lp => ({ lookId: created.id, ...lp })))
-    }
+    const created = await db.transaction(async (tx) => {
+      const [look] = await tx.insert(looks).values(lookData).returning()
+      if (pcs?.length) {
+        await tx.insert(lookPieces).values(pcs.map(lp => ({ lookId: look.id, ...lp })))
+      }
+      return look
+    })
 
     const [result] = await withPieces([created])
     res.status(201).json(result)
@@ -78,21 +81,25 @@ router.put('/:id', async (req, res) => {
   try {
     const { pieces: pcs, id: _id, createdAt: _ca, ...fields } = req.body
 
-    const [updated] = await db.update(looks)
-      .set(fields)
-      .where(eq(looks.id, req.params.id))
-      .returning()
-    if (!updated) { res.status(404).json({ error: 'Not found' }); return }
+    const updated = await db.transaction(async (tx) => {
+      const [look] = await tx.update(looks)
+        .set(fields)
+        .where(eq(looks.id, req.params.id))
+        .returning()
+      if (!look) return null
 
-    // Replace pieces if provided
-    if (Array.isArray(pcs)) {
-      await db.delete(lookPieces).where(eq(lookPieces.lookId, req.params.id))
-      if (pcs.length) {
-        await db.insert(lookPieces).values(pcs.map((lp: { cat: string; pieceId: string }) => ({
-          lookId: req.params.id, ...lp,
-        })))
+      if (Array.isArray(pcs)) {
+        await tx.delete(lookPieces).where(eq(lookPieces.lookId, req.params.id))
+        if (pcs.length) {
+          await tx.insert(lookPieces).values(pcs.map((lp: { cat: string; pieceId: string }) => ({
+            lookId: req.params.id, ...lp,
+          })))
+        }
       }
-    }
+      return look
+    })
+
+    if (!updated) { res.status(404).json({ error: 'Not found' }); return }
 
     const [result] = await withPieces([updated])
     res.json(result)
