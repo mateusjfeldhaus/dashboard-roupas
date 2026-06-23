@@ -4,6 +4,7 @@ import cors from 'cors'
 import path from 'path'
 import fs from 'fs'
 import jwt from 'jsonwebtoken'
+import rateLimit from 'express-rate-limit'
 
 import piecesRouter   from './routes/pieces'
 import looksRouter    from './routes/looks'
@@ -48,8 +49,17 @@ app.use('/img', (req, res, next) => {
   }
 })
 
+// ── Rate limit: máx 10 tentativas por IP a cada 15 min ───────────────────────
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { error: 'Muitas tentativas. Tente novamente em 15 minutos.' },
+})
+
 // ── POST /api/auth — valida PIN e emite JWT 24h ──────────────────────────────
-app.post('/api/auth', (req, res) => {
+app.post('/api/auth', authLimiter, (req, res) => {
   const { pin }   = req.body as { pin?: string }
   const apiKey    = process.env.API_KEY
   const jwtSecret = process.env.JWT_SECRET ?? apiKey   // JWT_SECRET separado; fallback para API_KEY
@@ -82,5 +92,8 @@ app.use('/api/photos',   photosRouter)
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
+  if (!process.env.API_KEY) {
+    console.warn('\n  ⚠️  AVISO: API_KEY não configurada — autenticação desativada!\n')
+  }
   console.log(`\n  🚀  Backend rodando em http://localhost:${PORT}\n`)
 })
