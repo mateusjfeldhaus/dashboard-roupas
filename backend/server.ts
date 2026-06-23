@@ -87,8 +87,8 @@ app.use('/api/pieces',   piecesRouter)
 app.use('/api/looks',    looksRouter)
 app.use('/api/usage',    usageRouter)
 app.use('/api/rating',   ratingRouter)
-app.use('/api/wishlist', wishlistRouter)
-app.use('/api/photos',   photosRouter)
+app.use('/api/wishlist', requireApiKey, wishlistRouter)  // GET também protegido
+app.use('/api/photos',   requireApiKey, photosRouter)    // GET também protegido
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
