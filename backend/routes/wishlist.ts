@@ -7,7 +7,6 @@ import { apiError } from '../middleware/errorHandler'
 
 const router = Router()
 
-function nanoid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7) }
 
 // GET /api/wishlist  → { items: [...] }
 router.get('/', async (_req, res) => {
@@ -22,7 +21,7 @@ router.post('/', async (req, res) => {
   try {
     const body = WishlistCreateSchema.parse(req.body)
     const [created] = await db.insert(wishlistItems)
-      .values({ ...body, id: nanoid() })
+      .values({ ...body, id: crypto.randomUUID() })
       .returning()
     res.status(201).json(created)
   } catch (e) { apiError(res, e) }
