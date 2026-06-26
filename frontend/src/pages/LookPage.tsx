@@ -1,13 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { useLooks } from '../hooks/useLooks'
-import { usePieces } from '../hooks/usePieces'
+import { useLookPage, photoUrl } from './useLookPage'
 import { imgUrl } from '../utils/imgUrl'
-import { exportLookAsImage } from '../utils/exportLook'
-import { useUsage, formatDate } from '../hooks/useUsage'
-import { useRating } from '../hooks/useRating'
-import { useNotes } from '../hooks/useNotes'
-import { useLookPhoto } from '../hooks/useLookPhoto'
+import { formatDate } from '../hooks/useUsage'
 import {
   Header, Title, TagRow, Tag,
   Body, FlatLayTitle, FlatLay, PieceSlot, PieceImg, Img,
@@ -21,47 +14,16 @@ import {
 import { SkCard, SkStack, SkLine } from '../components/Skeleton'
 import { PageWrap, BackBtn, HideBtn, Card, NotFound } from './LookPage.styles'
 
-const catOrder: Record<string, number> = {
-  'Terno': 0, 'Costume': 0, 'Blazer': 1, 'Sueter': 2,
-  'Camisa': 3, 'Polo': 3, 'Camiseta': 3,
-  'Calca': 4, 'Cinto': 5, 'Sapato': 6,
-  'Gravata': 7, 'Relogio': 8, 'Jaqueta': 9, 'Acessorio': 10,
-}
-
-function catKey(cat: string) {
-  return cat.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-}
-
-function photoUrl(lookId: string) {
-  const base = import.meta.env.VITE_API_URL ?? ''
-  return `${base}/api/photos/${encodeURIComponent(lookId)}`
-}
-
 export function LookPage() {
-  const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') navigate(-1) }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [navigate])
-
-  const { allLooks, toggleHidden, loading: looksLoading } = useLooks()
-  const { pieces } = usePieces()
-
-  const look = allLooks.find(l => l.id === id)
-
-  const { count, lastDate, loading, markUsed, undoLast } = useUsage(look?.id ?? '')
-  const { rating, loading: rLoading, setRating } = useRating(look?.id ?? '')
-  const { notes, status: notesStatus, setNotes } = useNotes('look', look?.id ?? '', look?.notes)
-  const { photoId, uploading: photoUploading, upload: uploadPhoto, remove: removePhoto } = useLookPhoto(look?.id ?? '', look?.photoId)
-
-  const [hovered,      setHovered]      = useState(0)
-  const [exporting,    setExporting]    = useState(false)
-  const [lightboxOpen, setLightboxOpen] = useState(false)
-  const uploadRef  = useRef<HTMLInputElement>(null)
-  const replaceRef = useRef<HTMLInputElement>(null)
+  const {
+    navigate, look, piecesInLook, looksLoading,
+    usage, rating, notes, photo,
+    hovered, setHovered,
+    exporting, lightboxOpen, setLightboxOpen,
+    uploadRef, replaceRef,
+    handleExport, handleStarClick, handleFileChange, handleRemove,
+    toggleHidden,
+  } = useLookPage()
 
   if (looksLoading) return (
     <PageWrap>
@@ -73,47 +35,12 @@ export function LookPage() {
     </PageWrap>
   )
 
-  if (!look) {
-    return (
-      <PageWrap>
-        <BackBtn onClick={() => navigate('/looks')}>← Looks</BackBtn>
-        <NotFound>Look não encontrado.</NotFound>
-      </PageWrap>
-    )
-  }
-
-  const piecesInLook = look.pieces
-    .map(lp => {
-      const piece = pieces.find(p => p.id === lp.pieceId)
-      return piece ? { cat: lp.cat, piece } : null
-    })
-    .filter(Boolean)
-    .sort((a, b) => (catOrder[catKey(a!.cat)] ?? 99) - (catOrder[catKey(b!.cat)] ?? 99)) as { cat: string; piece: import('@data/types').Piece }[]
-
-  const displayRating = hovered > 0 ? hovered : rating
-
-  async function handleExport() {
-    if (exporting) return
-    setExporting(true)
-    try { await exportLookAsImage(look!, piecesInLook) }
-    finally { setExporting(false) }
-  }
-
-  async function handleStarClick(n: number) {
-    if (rLoading) return
-    await setRating(rating === n ? 0 : n)
-  }
-
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (file) uploadPhoto(file)
-    e.target.value = ''
-  }
-
-  async function handleRemove() {
-    await removePhoto()
-    setLightboxOpen(false)
-  }
+  if (!look) return (
+    <PageWrap>
+      <BackBtn onClick={() => navigate('/looks')}>← Looks</BackBtn>
+      <NotFound>Look não encontrado.</NotFound>
+    </PageWrap>
+  )
 
   return (
     <>
@@ -137,13 +64,13 @@ export function LookPage() {
                 {[1,2,3,4,5].map(i => <Dot key={i} $filled={i <= look.formality} />)}
               </Formalidade>
 
-              {photoId ? (
+              {photo.photoId ? (
                 <PhotoViewBtn onClick={() => setLightboxOpen(true)}>
                   📸 Ver look completo
                 </PhotoViewBtn>
               ) : (
                 <PhotoInlineBtn htmlFor={`upload-photo-${look.id}`}>
-                  {photoUploading ? '⏳ Enviando…' : '📸 Adicionar foto'}
+                  {photo.uploading ? '⏳ Enviando…' : '📸 Adicionar foto'}
                   <PhotoUploadInput
                     id={`upload-photo-${look.id}`}
                     ref={uploadRef}
@@ -160,30 +87,30 @@ export function LookPage() {
                   {[1,2,3,4,5,6,7,8,9,10].map(n => (
                     <Star
                       key={n}
-                      $filled={n <= displayRating}
-                      $loading={rLoading}
+                      $filled={n <= rating.displayRating}
+                      $loading={rating.loading}
                       onMouseEnter={() => setHovered(n)}
                       onClick={() => handleStarClick(n)}
                       title={`${n}/10`}
                     >
-                      {n <= displayRating ? '★' : '☆'}
+                      {n <= rating.displayRating ? '★' : '☆'}
                     </Star>
                   ))}
                 </StarRow>
-                {!rLoading && rating > 0  && <RatingLabel style={{ fontWeight: 700, fontSize: 13 }}>{rating}/10</RatingLabel>}
-                {!rLoading && rating === 0 && <RatingLabel>sem avaliação</RatingLabel>}
+                {!rating.loading && rating.rating > 0  && <RatingLabel style={{ fontWeight: 700, fontSize: 13 }}>{rating.rating}/10</RatingLabel>}
+                {!rating.loading && rating.rating === 0 && <RatingLabel>sem avaliação</RatingLabel>}
               </RatingRow>
 
               <UsageRow>
-                <MarkBtn $loading={loading} disabled={loading} onClick={markUsed} title="Marcar como usado hoje">
+                <MarkBtn $loading={usage.loading} disabled={usage.loading} onClick={usage.markUsed} title="Marcar como usado hoje">
                   +
                 </MarkBtn>
-                {!loading && count === 0 && <UsageStat>Nunca usado</UsageStat>}
-                {!loading && count > 0 && (
+                {!usage.loading && usage.count === 0 && <UsageStat>Nunca usado</UsageStat>}
+                {!usage.loading && usage.count > 0 && (
                   <>
-                    <UsageStat><UsageBadge>{count}×</UsageBadge>usado{count !== 1 ? 's' : ''}</UsageStat>
-                    <UsageStat>· último: <strong>{formatDate(lastDate!)}</strong></UsageStat>
-                    <UndoBtn onClick={undoLast}>desfazer</UndoBtn>
+                    <UsageStat><UsageBadge>{usage.count}×</UsageBadge>usado{usage.count !== 1 ? 's' : ''}</UsageStat>
+                    <UsageStat>· último: <strong>{formatDate(usage.lastDate!)}</strong></UsageStat>
+                    <UndoBtn onClick={usage.undoLast}>desfazer</UndoBtn>
                   </>
                 )}
               </UsageRow>
@@ -218,15 +145,15 @@ export function LookPage() {
             <NotesSection>
               <NotesLabel>
                 <NotesTitle>Observações</NotesTitle>
-                <NotesStatus $status={notesStatus}>
-                  {notesStatus === 'saving' ? 'salvando…' :
-                   notesStatus === 'saved'  ? '✓ salvo'   :
-                   notesStatus === 'error'  ? 'erro ao salvar' : ''}
+                <NotesStatus $status={notes.status}>
+                  {notes.status === 'saving' ? 'salvando…' :
+                   notes.status === 'saved'  ? '✓ salvo'   :
+                   notes.status === 'error'  ? 'erro ao salvar' : ''}
                 </NotesStatus>
               </NotesLabel>
               <NotesTextarea
-                value={notes}
-                onChange={e => setNotes(e.target.value)}
+                value={notes.notes}
+                onChange={e => notes.setNotes(e.target.value)}
                 placeholder="Adicione observações sobre este look…"
               />
             </NotesSection>
@@ -244,13 +171,13 @@ export function LookPage() {
         </Card>
       </PageWrap>
 
-      {lightboxOpen && photoId && (
+      {lightboxOpen && photo.photoId && (
         <LightboxOverlay onClick={() => setLightboxOpen(false)}>
           <LightboxClose onClick={() => setLightboxOpen(false)}>✕</LightboxClose>
           <LightboxImg
             src={photoUrl(look.id)}
             alt={look.title}
-            key={photoId}
+            key={photo.photoId}
             onClick={e => e.stopPropagation()}
           />
           <LightboxActions onClick={e => e.stopPropagation()}>
@@ -261,10 +188,10 @@ export function LookPage() {
                 type="file"
                 accept="image/*"
                 ref={replaceRef}
-                onChange={e => { if (e.target.files?.[0]) uploadPhoto(e.target.files[0]) }}
+                onChange={e => { if (e.target.files?.[0]) photo.upload(e.target.files[0]) }}
               />
             </LightboxBtn>
-            <LightboxDelBtn onClick={handleRemove} disabled={photoUploading}>
+            <LightboxDelBtn onClick={handleRemove} disabled={photo.uploading}>
               🗑 Remover foto
             </LightboxDelBtn>
           </LightboxActions>
