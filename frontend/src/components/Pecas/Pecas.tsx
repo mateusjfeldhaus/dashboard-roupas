@@ -8,6 +8,7 @@ import {
   Section, CatTitle, PieceGrid,
   PieceCard, Thumb, ThumbImg, ColorBar, PieceName, PieceBrand,
 } from './Pecas.styles'
+import { SkGrid, SkCard, SkStack, SkLine } from '../Skeleton'
 
 const categories: PieceCategory[] = [
   'Camisa', 'Calça', 'Blazer', 'Costume', 'Terno',
@@ -17,8 +18,16 @@ const categories: PieceCategory[] = [
 
 export function Pecas() {
   const navigate = useNavigate()
-  const { pieces } = usePieces()
+  const { pieces, loading } = usePieces()
   const [selectedCat, setSelectedCat] = useState<PieceCategory | 'Todas'>('Todas')
+
+  if (loading) return (
+    <SkGrid $cols='repeat(auto-fill, minmax(200px, 1fr))'>
+      {Array.from({ length: 12 }).map((_, i) => (
+        <SkCard key={i} $h='220px' />
+      ))}
+    </SkGrid>
+  )
 
   const visibleCats = selectedCat === 'Todas'
     ? categories.filter(c => pieces.some(p => p.category === c))

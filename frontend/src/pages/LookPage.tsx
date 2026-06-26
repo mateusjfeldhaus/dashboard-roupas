@@ -19,6 +19,7 @@ import {
   PhotoInlineBtn, PhotoViewBtn, PhotoUploadInput,
   LightboxOverlay, LightboxImg, LightboxClose, LightboxActions, LightboxBtn, LightboxDelBtn,
 } from '../components/Looks/LookModal.styles'
+import { SkCard, SkStack, SkLine, SkRow } from '../components/Skeleton'
 
 // ── Page layout ───────────────────────────────────────────────────────────────
 
@@ -86,7 +87,7 @@ function photoUrl(lookId: string) {
 export function LookPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { allLooks, toggleHidden } = useLooks()
+  const { allLooks, toggleHidden, loading: looksLoading } = useLooks()
   const { pieces } = usePieces()
 
   const look = allLooks.find(l => l.id === id)
@@ -101,6 +102,16 @@ export function LookPage() {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const uploadRef  = useRef<HTMLInputElement>(null)
   const replaceRef = useRef<HTMLInputElement>(null)
+
+  if (looksLoading) return (
+    <PageWrap>
+      <SkStack $gap="20px">
+        <SkLine $w="80px" $h="14px" />
+        <SkCard $h="420px" />
+        <SkCard $h="180px" />
+      </SkStack>
+    </PageWrap>
+  )
 
   if (!look) {
     return (

@@ -13,10 +13,11 @@ import {
   PiecePanel, PanelTitle, PanelClose,
   PieceGrid, PieceCard, PieceThumb, PieceThumbImg, PieceInfo, PieceName, PieceBrand,
 } from './Overview.styles'
+import { SkGrid, SkCard, SkStack, SkLine, SkRow } from '../Skeleton'
 
 export function Overview() {
-  const { pieces } = usePieces()
-  const { looks } = useLooks()
+  const { pieces, loading: loadingPieces } = usePieces()
+  const { looks, loading: loadingLooks } = useLooks()
   const allCats = [...new Set(pieces.map(p => p.category))]
   const navigate = useNavigate()
   const [selectedCat,    setSelectedCat]    = useState<string | null>(null)
@@ -54,6 +55,20 @@ export function Overview() {
     setSelectedCat(prev => prev === cat ? null : cat)
     setFilterTag(null); setFilterSection(null) // fecha painel de ocasião/estação
   }
+
+  if (loadingPieces || loadingLooks) return (
+    <SkStack $gap='24px'>
+      <SkGrid $cols='repeat(auto-fill, minmax(140px, 1fr))'>
+        {Array.from({ length: 6 }).map((_, i) => <SkCard key={i} $h='90px' />)}
+      </SkGrid>
+      <SkStack>
+        <SkLine $w='120px' $h='20px' />
+        <SkGrid $cols='repeat(auto-fill, minmax(160px, 1fr))'>
+          {Array.from({ length: 8 }).map((_, i) => <SkCard key={i} $h='80px' />)}
+        </SkGrid>
+      </SkStack>
+    </SkStack>
+  )
 
   return (
     <>

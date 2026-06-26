@@ -9,6 +9,7 @@ import {
   Grid, Card, CardTitle, TagRow, Tag,
   FormalityRow, Dot, PieceList, ClickHint,
 } from './Looks.styles'
+import { SkGrid, SkCard, SkStack, SkLine } from '../Skeleton'
 
 const PERIODO  = ['diurno', 'noturno'] as const
 const PERIODO_LABELS: Record<string, string> = { diurno: 'Diurno', noturno: 'Noturno' }
@@ -19,7 +20,7 @@ type EstaTag  = typeof SEASONS[number]['tag']
 
 export function Looks() {
   const navigate = useNavigate()
-  const { looks } = useLooks()
+  const { looks, loading } = useLooks()
   const [ocasiao,  setOcasiao]  = useState<OcasTag  | null>(null)
   const [periodo,  setPeriodo]  = useState<PeriTag  | null>(null)
   const [estacao,  setEstacao]  = useState<EstaTag  | null>(null)
@@ -41,6 +42,22 @@ export function Looks() {
     setPeriodo(null)
     setEstacao(null)
   }
+
+  if (loading) return (
+    <>
+      <SkGrid>
+        {Array.from({ length: 8 }).map((_, i) => (
+          <SkCard key={i} $h='160px'>
+            <SkStack style={{ padding: '18px' }}>
+              <SkLine $w='60%' $h='18px' />
+              <SkLine $w='40%' $h='12px' />
+              <SkLine $w='30%' $h='10px' />
+            </SkStack>
+          </SkCard>
+        ))}
+      </SkGrid>
+    </>
+  )
 
   return (
     <>

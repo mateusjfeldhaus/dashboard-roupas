@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { usePieces } from '../hooks/usePieces'
 import { useLooks } from '../hooks/useLooks'
+import { SkCard, SkStack, SkLine } from '../components/Skeleton'
 import { imgUrl } from '../utils/imgUrl'
 import { getTagColor } from '../styles/tagColors'
 import { useNotes } from '../hooks/useNotes'
@@ -49,14 +50,24 @@ const NotFound = styled.div`
 export function PecaPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { pieces } = usePieces()
-  const { looks } = useLooks()
+  const { pieces, loading: loadingPieces } = usePieces()
+  const { looks, loading: loadingLooks } = useLooks()
 
   const piece = pieces.find(p => p.id === id)
   const { notes, status: notesStatus, setNotes } = useNotes(
     'piece',
     piece?.id ?? '',
     piece?.notes,
+  )
+
+  if (loadingPieces || loadingLooks) return (
+    <PageWrap>
+      <SkStack $gap='20px'>
+        <SkLine $w='80px' $h='14px' />
+        <SkCard $h='300px' />
+        <SkCard $h='200px' />
+      </SkStack>
+    </PageWrap>
   )
 
   if (!piece) {
