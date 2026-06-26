@@ -80,7 +80,9 @@ app.post('/api/auth', authLimiter, (req, res) => {
 
 // ── Auth: bloqueia POST/PUT/DELETE sem token JWT válido ───────────────────────
 app.use((req, res, next) => {
-  if (req.method === 'GET' || req.method === 'OPTIONS') return next()
+  if (req.method === 'OPTIONS') return next()
+  if (req.path === '/api/auth') return next()
+  if (req.path.startsWith('/img')) return next()
   requireApiKey(req, res, next)
 })
 
