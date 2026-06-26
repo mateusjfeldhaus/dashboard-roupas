@@ -92,3 +92,17 @@ export const PieceBrand = styled.div`
   padding: 0 10px 8px;
   @media (max-width: 480px) { padding: 0 8px 6px; }
 `
+
+import { Link } from 'react-router-dom'
+
+export const DescartadasLink = styled(Link)`
+  font-size: 12px; font-weight: 600;
+  color: ${p => p.theme.colors.textMuted};
+  padding: 6px 12px;
+  border: 1px solid ${p => p.theme.colors.border};
+  border-radius: 20px;
+  margin-left: auto;
+  white-space: nowrap;
+  transition: all 0.15s;
+  &:hover { color: ${p => p.theme.colors.text}; border-color: currentColor; }
+`
