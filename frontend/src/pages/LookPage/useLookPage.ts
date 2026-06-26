@@ -8,7 +8,8 @@ import { useNotes } from '../../hooks/useNotes'
 import { useLookPhoto } from '../../hooks/useLookPhoto'
 import { exportLookAsImage } from '../../utils/exportLook'
 import type { Piece } from '@data/types'
-import { CAT_ORDER, catKey, photoUrl } from '../../utils/lookHelpers'
+import { photoUrl } from '../../utils/lookHelpers'
+import { CAT_ORDER, catKey } from '../../utils/wardrobeUtils'
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 

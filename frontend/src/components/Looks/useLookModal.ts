@@ -7,7 +7,7 @@ import { useUsage, formatDate } from '../../hooks/useUsage'
 import { useRating } from '../../hooks/useRating'
 import { useNotes } from '../../hooks/useNotes'
 import { useLookPhoto } from '../../hooks/useLookPhoto'
-import { CAT_ORDER, catKey } from '../../utils/lookHelpers'
+import { CAT_ORDER, catKey } from '../../utils/wardrobeUtils'
 
 export function useLookModal(look: Look, onClose: () => void) {
   const { pieces } = usePieces()

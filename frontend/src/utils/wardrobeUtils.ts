@@ -35,3 +35,21 @@ export function calcStreak(records: UsageRecord[]): { current: number; max: numb
   const current = (last === today || last === yest) ? cur : 0
   return { current, max }
 }
+
+/**
+ * Remove acentos de uma string de categoria para uso como chave em CAT_ORDER.
+ */
+export function catKey(cat: string) {
+  return cat.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+}
+
+/**
+ * Mapa de prioridade para ordenar peças dentro de um look.
+ * Chaves sem acento — usar com catKey().
+ */
+export const CAT_ORDER: Record<string, number> = {
+  'Terno': 0, 'Costume': 0, 'Blazer': 1, 'Sueter': 2, 'Jaqueta': 3,
+  'Camisa': 4, 'Polo': 4, 'Camiseta': 4,
+  'Calca': 5, 'Cinto': 6, 'Sapato': 7,
+  'Gravata': 8, 'Relogio': 9, 'Acessorio': 10,
+}
