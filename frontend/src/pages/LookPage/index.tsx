@@ -1,4 +1,5 @@
-import { useLookPage, photoUrl } from './useLookPage'
+import { useLookPage } from './useLookPage'
+import { photoUrl } from '../../utils/lookHelpers'
 import { imgUrl } from '../../utils/imgUrl'
 import { formatDate } from '../../hooks/useUsage'
 import {

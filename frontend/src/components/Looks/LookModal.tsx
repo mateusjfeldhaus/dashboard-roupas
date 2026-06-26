@@ -8,6 +8,7 @@ import { useRating } from '../../hooks/useRating'
 import { useNotes } from '../../hooks/useNotes'
 import { useLookPhoto } from '../../hooks/useLookPhoto'
 import { PecaModal } from '../Pecas/PecaModal'
+import { CAT_ORDER, catKey, photoUrl } from '../../utils/lookHelpers'
 import {
   Overlay, Dialog, Header, Title, TagRow, Tag, CloseBtn,
   Body, FlatLayTitle, FlatLay, PieceSlot, PieceImg, Img,
@@ -18,22 +19,6 @@ import {
   PhotoInlineBtn, PhotoViewBtn, PhotoUploadInput,
   LightboxOverlay, LightboxImg, LightboxClose, LightboxActions, LightboxBtn, LightboxDelBtn,
 } from './LookModal.styles'
-
-const catOrder: Record<string, number> = {
-  'Terno': 0, 'Costume': 0, 'Blazer': 1, 'Sueter': 2,
-  'Camisa': 3, 'Polo': 3, 'Camiseta': 3,
-  'Calca': 4, 'Cinto': 5, 'Sapato': 6,
-  'Gravata': 7, 'Relogio': 8, 'Jaqueta': 9, 'Acessorio': 10,
-}
-
-function catKey(cat: string) {
-  return cat.normalize('NFD').replace(/[̀-ͯ]/g, '')
-}
-
-function photoUrl(lookId: string) {
-  const base = import.meta.env.VITE_API_URL ?? ''
-  return `${base}/api/photos/${encodeURIComponent(lookId)}`
-}
 
 interface Props { look: Look; onClose: () => void }
 
@@ -68,7 +53,7 @@ export function LookModal({ look, onClose }: Props) {
       return piece ? { cat: lp.cat, piece } : null
     })
     .filter(Boolean)
-    .sort((a, b) => (catOrder[catKey(a!.cat)] ?? 99) - (catOrder[catKey(b!.cat)] ?? 99)) as { cat: string; piece: Piece }[]
+    .sort((a, b) => (CAT_ORDER[catKey(a!.cat)] ?? 99) - (CAT_ORDER[catKey(b!.cat)] ?? 99)) as { cat: string; piece: Piece }[]
 
   const displayRating = hovered > 0 ? hovered : rating
 
