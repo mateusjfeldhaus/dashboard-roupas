@@ -1,4 +1,4 @@
-import type { Look } from '../../../backend/data/types'
+import type { Look } from '@data/types'
 import { createListHook } from './createListHook'
 
 const useList = createListHook<Look>({

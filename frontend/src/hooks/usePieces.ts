@@ -1,4 +1,4 @@
-import type { Piece } from '../../../backend/data/types'
+import type { Piece } from '@data/types'
 import { createListHook } from './createListHook'
 
 const useList = createListHook<Piece>({
