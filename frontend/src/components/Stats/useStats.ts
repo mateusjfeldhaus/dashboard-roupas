@@ -19,7 +19,7 @@ export function cutoffDate(period: Period): string | null {
   const d = new Date()
   if (period === '30d')  d.setDate(d.getDate() - 30)
   if (period === '6m')   d.setMonth(d.getMonth() - 6)
-  if (period === 'year') d.setMonth(0); d.setDate(1)
+  if (period === 'year') { d.setMonth(0); d.setDate(1) }
   return d.toISOString().split('T')[0]
 }
 
@@ -163,5 +163,6 @@ export function useStats() {
     tagDist, formalDist, maxFormal,
     topPieces, insight,
     chartW, chartH, barW, gap, totalBars, svgW,
+
   }
 }
