@@ -1,0 +1,156 @@
+import { useState, useEffect, useMemo } from 'react'
+import api from '../../api/client'
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+export interface WishlistItem {
+  id: string
+  name: string
+  category: string
+  brand: string
+  price: number | null
+  priority: 1 | 2 | 3
+  notes: string
+  addedAt: string
+  purchased: boolean
+  purchasedAt: string | null
+}
+
+export type FormData = Omit<WishlistItem, 'id' | 'addedAt' | 'purchased' | 'purchasedAt'>
+
+export const EMPTY_FORM: FormData = {
+  name: '', category: 'Camisa', brand: '',
+  price: null, priority: 2, notes: '',
+}
+
+export const CAT_LIST = [
+  'Camisa','Polo','Camiseta','Costume','Blazer','Terno',
+  'Calça','Sapato','Cinto','Gravata','Relógio','Suéter','Jaqueta','Acessório',
+]
+
+export const PRIORITY_LABELS: Record<number, string> = { 1: '🔴 Alta', 2: '🟡 Média', 3: '🟢 Baixa' }
+export const PRIORITY_COLORS: Record<number, string> = { 1: '#ef4444',  2: '#f59e0b',  3: '#22c55e' }
+
+export function fmtBRL(n: number | null) {
+  if (n === null || n === 0) return '—'
+  return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 })
+}
+
+export function isUrl(s: string) {
+  try { new URL(s); return true } catch { return false }
+}
+
+// ── API helpers ───────────────────────────────────────────────────────────────
+
+async function apiGet(): Promise<WishlistItem[]> {
+  const r = await api.get<{ items: WishlistItem[] }>('/api/wishlist')
+  return r.data.items
+}
+async function apiPost(data: FormData): Promise<WishlistItem> {
+  const r = await api.post<WishlistItem>('/api/wishlist', data)
+  return r.data
+}
+async function apiPut(id: string, patch: Partial<WishlistItem>): Promise<WishlistItem> {
+  const r = await api.put<WishlistItem>(`/api/wishlist/${id}`, patch)
+  return r.data
+}
+async function apiDelete(id: string): Promise<void> {
+  await api.delete(`/api/wishlist/${id}`)
+}
+
+// ── Hook ──────────────────────────────────────────────────────────────────────
+
+export function useWishlist() {
+  const [items,         setItems]         = useState<WishlistItem[]>([])
+  const [catFilter,     setCatFilter]     = useState<string | null>(null)
+  const [prioFilter,    setPrioFilter]    = useState<1 | 2 | 3 | null>(null)
+  const [showPurchased, setShowPurchased] = useState(false)
+  const [formOpen,      setFormOpen]      = useState(false)
+  const [editItem,      setEditItem]      = useState<WishlistItem | null>(null)
+  const [form,          setForm]          = useState<FormData>(EMPTY_FORM)
+  const [saving,        setSaving]        = useState(false)
+
+  useEffect(() => { apiGet().then(setItems).catch(() => {}) }, [])
+
+  const visible = useMemo(() => {
+    return items.filter(i => {
+      if (!showPurchased && i.purchased) return false
+      if (catFilter  && i.category !== catFilter) return false
+      if (prioFilter && i.priority !== prioFilter) return false
+      return true
+    }).sort((a, b) => {
+      if (a.purchased !== b.purchased) return a.purchased ? 1 : -1
+      return a.priority - b.priority
+    })
+  }, [items, catFilter, prioFilter, showPurchased])
+
+  const pending   = items.filter(i => !i.purchased)
+  const purchased = items.filter(i => i.purchased)
+  const totalEst  = pending.reduce((s, i) => s + (i.price ?? 0), 0)
+  const spentEst  = purchased.reduce((s, i) => s + (i.price ?? 0), 0)
+
+  const presentCats = useMemo(
+    () => [...new Set(items.map(i => i.category))].sort(),
+    [items]
+  )
+
+  function openAdd() {
+    setEditItem(null); setForm(EMPTY_FORM); setFormOpen(true)
+  }
+  function openEdit(item: WishlistItem) {
+    setEditItem(item)
+    setForm({
+      name: item.name, category: item.category, brand: item.brand,
+      price: item.price, priority: item.priority, notes: item.notes,
+    })
+    setFormOpen(true)
+  }
+  function closeForm() { setFormOpen(false); setEditItem(null) }
+
+  async function handleSave() {
+    if (!form.name.trim()) return
+    setSaving(true)
+    try {
+      if (editItem) {
+        const updated = await apiPut(editItem.id, form)
+        setItems(prev => prev.map(i => i.id === editItem.id ? updated : i))
+      } else {
+        const created = await apiPost(form)
+        setItems(prev => [...prev, created])
+      }
+      closeForm()
+    } finally { setSaving(false) }
+  }
+
+  async function togglePurchased(item: WishlistItem) {
+    const patch = item.purchased
+      ? { purchased: false, purchasedAt: null }
+      : { purchased: true,  purchasedAt: new Date().toISOString().split('T')[0] }
+    const updated = await apiPut(item.id, patch)
+    setItems(prev => prev.map(i => i.id === item.id ? updated : i))
+  }
+
+  async function handleDelete(id: string) {
+    await apiDelete(id)
+    setItems(prev => prev.filter(i => i.id !== id))
+  }
+
+  useEffect(() => {
+    if (!formOpen) return
+    const h = (e: KeyboardEvent) => { if (e.key === 'Escape') closeForm() }
+    window.addEventListener('keydown', h)
+    return () => window.removeEventListener('keydown', h)
+  }, [formOpen])
+
+  return {
+    items, visible,
+    catFilter, setCatFilter,
+    prioFilter, setPrioFilter,
+    showPurchased, setShowPurchased,
+    formOpen, editItem, form, setForm, saving,
+    pending, purchased, totalEst, spentEst,
+    presentCats,
+    openAdd, openEdit, closeForm,
+    handleSave, togglePurchased, handleDelete,
+  }
+}
