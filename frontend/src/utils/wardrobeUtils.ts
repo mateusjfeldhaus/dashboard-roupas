@@ -53,3 +53,9 @@ export const CAT_ORDER: Record<string, number> = {
   'Calca': 5, 'Cinto': 6, 'Sapato': 7,
   'Gravata': 8, 'Relogio': 9, 'Acessorio': 10,
 }
+
+/** Formata data ISO (YYYY-MM-DD) para exibição em pt-BR (DD/MM/YYYY). */
+export function formatDate(iso: string): string {
+  const [y, m, d] = iso.split('-')
+  return `${d}/${m}/${y}`
+}

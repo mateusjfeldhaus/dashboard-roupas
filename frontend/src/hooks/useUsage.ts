@@ -15,10 +15,7 @@ interface ApiStats {
   dates: string[]
 }
 
-export function formatDate(iso: string): string {
-  const [y, m, d] = iso.split('-')
-  return `${d}/${m}/${y}`
-}
+export { formatDate } from '../utils/wardrobeUtils'
 
 // Cache por lookId — persiste enquanto a aba estiver aberta
 const cache = new Map<string, ApiStats>()

@@ -12,10 +12,7 @@ export function renderStars(rating: number): string {
   return '★'.repeat(r) + '☆'.repeat(10 - r)
 }
 
-export function formatDate(iso: string): string {
-  const [y, m, d] = iso.split('-')
-  return `${d}/${m}/${y}`
-}
+export { formatDate } from '../../utils/wardrobeUtils'
 
 export function useRanking() {
   const { looks } = useLooks()
