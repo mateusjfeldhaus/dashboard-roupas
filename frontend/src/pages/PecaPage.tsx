@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
 import { usePieces } from '../hooks/usePieces'
 import { useLooks } from '../hooks/useLooks'
 import { SkCard, SkStack, SkLine } from '../components/Skeleton'
@@ -14,51 +13,7 @@ import {
   LookTagRow, LookTag, FormalityDots, FormalityDot, EmptyLooks,
   NotesSection, NotesLabel, NotesTitle, NotesStatus, NotesTextarea,
 } from '../components/Pecas/PecaModal.styles'
-
-// ── Page layout ───────────────────────────────────────────────────────────────
-
-const PageWrap = styled.div`
-  max-width: 560px;
-  margin: 0 auto;
-`
-
-const BackBtn = styled.button`
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 13px; font-weight: 600;
-  color: ${p => p.theme.colors.textMuted};
-  margin-bottom: 20px;
-  padding: 6px 0;
-  transition: color 0.15s;
-  &:hover { color: ${p => p.theme.colors.text}; }
-`
-
-const HideBtn = styled.button`
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12px; font-weight: 600;
-  color: ${p => p.theme.colors.textMuted};
-  margin-bottom: 20px; margin-left: 16px;
-  padding: 6px 10px;
-  border: 1px solid ${p => p.theme.colors.border};
-  border-radius: 8px;
-  transition: all 0.15s;
-  &:hover { color: ${p => p.theme.colors.text}; border-color: currentColor; }
-`
-
-const Card = styled.div`
-  background: ${p => p.theme.colors.surface};
-  border: 1px solid ${p => p.theme.colors.border};
-  border-radius: 16px;
-  overflow: hidden;
-`
-
-const NotFound = styled.div`
-  text-align: center;
-  padding: 60px 24px;
-  color: ${p => p.theme.colors.textMuted};
-  font-size: 15px;
-`
-
-// ─────────────────────────────────────────────────────────────────────────────
+import { PageWrap, BackBtn, HideBtn, Card, NotFound } from './PecaPage.styles'
 
 export function PecaPage() {
   const { id } = useParams<{ id: string }>()
@@ -69,6 +24,7 @@ export function PecaPage() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [navigate])
+
   const { allPieces, toggleHidden, loading: loadingPieces } = usePieces()
   const { looks, loading: loadingLooks } = useLooks()
 
@@ -131,7 +87,6 @@ export function PecaPage() {
             {piece.tips.map((tip, i) => <TipItem key={i}>{tip}</TipItem>)}
           </ul>
 
-          {/* ── Looks com esta peça ─────────────────────────────────── */}
           <LooksSectionTitle>
             Looks com esta peça
             <LooksCount>
@@ -170,7 +125,6 @@ export function PecaPage() {
             ))
           )}
 
-          {/* ── Observações ────────────────────────────────────────────── */}
           <NotesSection>
             <NotesLabel>
               <NotesTitle>Observações</NotesTitle>

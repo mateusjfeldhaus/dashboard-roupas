@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
 import { useLooks } from '../hooks/useLooks'
 import { usePieces } from '../hooks/usePieces'
 import { imgUrl } from '../utils/imgUrl'
@@ -19,52 +18,8 @@ import {
   PhotoInlineBtn, PhotoViewBtn, PhotoUploadInput,
   LightboxOverlay, LightboxImg, LightboxClose, LightboxActions, LightboxBtn, LightboxDelBtn,
 } from '../components/Looks/LookModal.styles'
-import { SkCard, SkStack, SkLine, SkRow } from '../components/Skeleton'
-
-// ── Page layout ───────────────────────────────────────────────────────────────
-
-const PageWrap = styled.div`
-  max-width: 700px;
-  margin: 0 auto;
-`
-
-const BackBtn = styled.button`
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 13px; font-weight: 600;
-  color: ${p => p.theme.colors.textMuted};
-  margin-bottom: 20px;
-  padding: 6px 0;
-  transition: color 0.15s;
-  &:hover { color: ${p => p.theme.colors.text}; }
-`
-
-const HideBtn = styled.button`
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12px; font-weight: 600;
-  color: ${p => p.theme.colors.textMuted};
-  margin-bottom: 20px; margin-left: 16px;
-  padding: 6px 10px;
-  border: 1px solid ${p => p.theme.colors.border};
-  border-radius: 8px;
-  transition: all 0.15s;
-  &:hover { color: ${p => p.theme.colors.text}; border-color: currentColor; }
-`
-
-const Card = styled.div`
-  background: ${p => p.theme.colors.surface};
-  border: 1px solid ${p => p.theme.colors.border};
-  border-radius: 16px;
-  overflow: hidden;
-`
-
-const NotFound = styled.div`
-  text-align: center;
-  padding: 60px 24px;
-  color: ${p => p.theme.colors.textMuted};
-  font-size: 15px;
-`
-
-// ── catOrder (mesma lógica do LookModal) ─────────────────────────────────────
+import { SkCard, SkStack, SkLine } from '../components/Skeleton'
+import { PageWrap, BackBtn, HideBtn, Card, NotFound } from './LookPage.styles'
 
 const catOrder: Record<string, number> = {
   'Terno': 0, 'Costume': 0, 'Blazer': 1, 'Sueter': 2,
@@ -74,15 +29,13 @@ const catOrder: Record<string, number> = {
 }
 
 function catKey(cat: string) {
-  return cat.normalize('NFD').replace(/[̀-ͯ]/g, '')
+  return cat.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
 
 function photoUrl(lookId: string) {
   const base = import.meta.env.VITE_API_URL ?? ''
   return `${base}/api/photos/${encodeURIComponent(lookId)}`
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
 
 export function LookPage() {
   const { id } = useParams<{ id: string }>()
@@ -93,6 +46,7 @@ export function LookPage() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [navigate])
+
   const { allLooks, toggleHidden, loading: looksLoading } = useLooks()
   const { pieces } = usePieces()
 
@@ -183,7 +137,6 @@ export function LookPage() {
                 {[1,2,3,4,5].map(i => <Dot key={i} $filled={i <= look.formality} />)}
               </Formalidade>
 
-              {/* ── Botão de foto ── */}
               {photoId ? (
                 <PhotoViewBtn onClick={() => setLightboxOpen(true)}>
                   📸 Ver look completo
@@ -201,7 +154,6 @@ export function LookPage() {
                 </PhotoInlineBtn>
               )}
 
-              {/* ── Star Rating ── */}
               <RatingRow>
                 <RatingLabel>Avaliação:</RatingLabel>
                 <StarRow onMouseLeave={() => setHovered(0)}>
@@ -222,7 +174,6 @@ export function LookPage() {
                 {!rLoading && rating === 0 && <RatingLabel>sem avaliação</RatingLabel>}
               </RatingRow>
 
-              {/* ── Usage ── */}
               <UsageRow>
                 <MarkBtn $loading={loading} disabled={loading} onClick={markUsed} title="Marcar como usado hoje">
                   +
@@ -293,7 +244,6 @@ export function LookPage() {
         </Card>
       </PageWrap>
 
-      {/* ── Lightbox full-screen ── */}
       {lightboxOpen && photoId && (
         <LightboxOverlay onClick={() => setLightboxOpen(false)}>
           <LightboxClose onClick={() => setLightboxOpen(false)}>✕</LightboxClose>
