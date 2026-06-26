@@ -65,10 +65,10 @@ const authLimiter = rateLimit({
   message: { error: 'Muitas tentativas. Tente novamente em 15 minutos.' },
 })
 
-// ── Rate limit: máx 200 writes por IP por minuto (proteção geral) ─────────────
+// ── Rate limit: máx 60 writes por IP por minuto (POST/PUT/DELETE) ─────────────
 const writeLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  limit: 200,
+  windowMs: 60_000,
+  limit: 60,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   skip: (req) => req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS',
