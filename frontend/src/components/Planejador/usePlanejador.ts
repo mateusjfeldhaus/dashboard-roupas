@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLooks } from '../../hooks/useLooks'
 import type { Look } from '@data/types'
 import { SEASONS, OCCASIONS } from '../../styles/tags'
+import { seededShuffle } from '../../utils/wardrobeUtils'
 
 export type Period   = 'diurno' | 'noturno'
 export type Season   = typeof SEASONS[number]['tag']
@@ -33,16 +34,6 @@ export function daysSince(dateStr: string | null): number | null {
   return Math.floor(diff / (1000 * 60 * 60 * 24))
 }
 
-function seededShuffle<T>(arr: T[], seed: number): T[] {
-  const a = [...arr]
-  let s = (seed + 1) * 1664525 + 1013904223
-  for (let i = a.length - 1; i > 0; i--) {
-    s = (s * 1664525 + 1013904223) & 0x7fffffff
-    const j = s % (i + 1);
-    [a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
-}
 
 function getRotatedSuggestions(
   filtered: Look[], usage: UsageSummary, cooldown: number, seed: number,
