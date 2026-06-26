@@ -1,6 +1,5 @@
-import { useNavigate } from 'react-router-dom'
-import { usePieces } from '../hooks/usePieces'
-import { imgUrl } from '../utils/imgUrl'
+import { usePecasDescartadas } from './usePecasDescartadas'
+import { imgUrl } from '../../utils/imgUrl'
 import {
   Wrap, TopRow, BackBtn, PageTitle, Count,
   Empty, Grid, Card, Thumb, ThumbImg, CardBody,
@@ -8,9 +7,7 @@ import {
 } from './PecasDescartadas.styles'
 
 export function PecasDescartadas() {
-  const navigate = useNavigate()
-  const { allPieces, toggleHidden } = usePieces()
-  const hidden = allPieces.filter(p => p.hidden)
+  const { navigate, hidden, toggleHidden } = usePecasDescartadas()
 
   return (
     <Wrap>
@@ -20,7 +17,10 @@ export function PecasDescartadas() {
       </TopRow>
 
       {hidden.length === 0 ? (
-        <Empty>Nenhuma peça descartada ainda.<br />Use o botão "Ocultar peça" em qualquer peça para enviá-la aqui.</Empty>
+        <Empty>
+          Nenhuma peça descartada ainda.<br />
+          Use o botão "Ocultar peça" em qualquer peça para enviá-la aqui.
+        </Empty>
       ) : (
         <Grid>
           {hidden.map(piece => (

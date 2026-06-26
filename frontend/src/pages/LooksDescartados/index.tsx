@@ -1,14 +1,11 @@
-import { useNavigate } from 'react-router-dom'
-import { useLooks } from '../hooks/useLooks'
+import { useLooksDescartados } from './useLooksDescartados'
 import {
   Wrap, TopRow, BackBtn, PageTitle, Count,
   Empty, Grid, Card, CardTitle, FormalityRow, Dot, RestoreBtn,
 } from './LooksDescartados.styles'
 
 export function LooksDescartados() {
-  const navigate = useNavigate()
-  const { allLooks, toggleHidden } = useLooks()
-  const hidden = allLooks.filter(l => l.hidden)
+  const { navigate, hidden, toggleHidden } = useLooksDescartados()
 
   return (
     <Wrap>
@@ -18,7 +15,10 @@ export function LooksDescartados() {
       </TopRow>
 
       {hidden.length === 0 ? (
-        <Empty>Nenhum look descartado ainda.<br />Use o botão "Ocultar look" em qualquer look para enviá-lo aqui.</Empty>
+        <Empty>
+          Nenhum look descartado ainda.<br />
+          Use o botão "Ocultar look" em qualquer look para enviá-lo aqui.
+        </Empty>
       ) : (
         <Grid>
           {hidden.map(look => (

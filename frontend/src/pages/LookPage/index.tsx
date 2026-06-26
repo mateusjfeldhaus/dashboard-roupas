@@ -1,6 +1,6 @@
 import { useLookPage, photoUrl } from './useLookPage'
-import { imgUrl } from '../utils/imgUrl'
-import { formatDate } from '../hooks/useUsage'
+import { imgUrl } from '../../utils/imgUrl'
+import { formatDate } from '../../hooks/useUsage'
 import {
   Header, Title, TagRow, Tag,
   Body, FlatLayTitle, FlatLay, PieceSlot, PieceImg, Img,
@@ -10,8 +10,8 @@ import {
   NotesSection, NotesLabel, NotesTitle, NotesStatus, NotesTextarea,
   PhotoInlineBtn, PhotoViewBtn, PhotoUploadInput,
   LightboxOverlay, LightboxImg, LightboxClose, LightboxActions, LightboxBtn, LightboxDelBtn,
-} from '../components/Looks/LookModal.styles'
-import { SkCard, SkStack, SkLine } from '../components/Skeleton'
+} from '../../components/Looks/LookModal.styles'
+import { SkCard, SkStack, SkLine } from '../../components/Skeleton'
 import { PageWrap, BackBtn, HideBtn, Card, NotFound } from './LookPage.styles'
 
 export function LookPage() {
