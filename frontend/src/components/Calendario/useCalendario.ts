@@ -1,9 +1,8 @@
 import api from '../../api/client'
+import { UsageRecord, calcStreak as calcStreakUtil } from '../../utils/wardrobeUtils'
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLooks } from '../../hooks/useLooks'
-
-interface UsageRecord { lookId: string; date: string }
 
 export const WEEK_DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 
@@ -23,21 +22,6 @@ export function todayISO() {
 
 function daysInMonth(y: number, m: number) { return new Date(y, m + 1, 0).getDate() }
 function firstDayOfWeek(y: number, m: number) { return new Date(y, m, 1).getDay() }
-
-function calcStreak(records: UsageRecord[]): number {
-  if (records.length === 0) return 0
-  const used = new Set(records.map(r => r.date))
-  let streak = 0
-  const cursor = new Date()
-  if (!used.has(todayISO())) cursor.setDate(cursor.getDate() - 1)
-  while (true) {
-    const iso = toISO(cursor.getFullYear(), cursor.getMonth(), cursor.getDate())
-    if (!used.has(iso)) break
-    streak++
-    cursor.setDate(cursor.getDate() - 1)
-  }
-  return streak
-}
 
 export function useCalendario() {
   const { looks } = useLooks()
@@ -84,7 +68,7 @@ export function useCalendario() {
     return { activeDays, totalUses, topLook }
   }, [records, year, month, looks])
 
-  const streak = useMemo(() => calcStreak(records), [records])
+  const streak = useMemo(() => calcStreakUtil(records).current, [records])
 
   const firstDow = firstDayOfWeek(year, month)
   const numDays  = daysInMonth(year, month)

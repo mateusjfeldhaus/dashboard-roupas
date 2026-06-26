@@ -2,10 +2,9 @@ import { useState, useEffect, useMemo } from 'react'
 import { useLooks } from '../../hooks/useLooks'
 import { usePieces } from '../../hooks/usePieces'
 import api from '../../api/client'
+import { UsageRecord, calcStreak } from '../../utils/wardrobeUtils'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-
-export interface UsageRecord { lookId: string; date: string }
 
 export type Period = 'all' | 'year' | '6m' | '30d'
 
@@ -22,23 +21,6 @@ export function cutoffDate(period: Period): string | null {
   if (period === '6m')   d.setMonth(d.getMonth() - 6)
   if (period === 'year') d.setMonth(0); d.setDate(1)
   return d.toISOString().split('T')[0]
-}
-
-export function calcStreak(records: UsageRecord[]): { current: number; max: number } {
-  if (records.length === 0) return { current: 0, max: 0 }
-  const days = [...new Set(records.map(r => r.date))].sort()
-  let max = 1; let cur = 1
-  for (let i = 1; i < days.length; i++) {
-    const prev = new Date(days[i - 1]); const curr = new Date(days[i])
-    const diff = (curr.getTime() - prev.getTime()) / 86400000
-    if (diff === 1) { cur++; max = Math.max(max, cur) }
-    else cur = 1
-  }
-  const today = new Date().toISOString().split('T')[0]
-  const yest  = new Date(Date.now() - 86400000).toISOString().split('T')[0]
-  const last  = days[days.length - 1]
-  const currentStreak = (last === today || last === yest) ? cur : 0
-  return { current: currentStreak, max }
 }
 
 export function avgPerWeek(records: UsageRecord[], totalDays: number): string {

@@ -12,3 +12,26 @@ export function seededShuffle<T>(arr: T[], seed: number): T[] {
   }
   return a
 }
+
+export interface UsageRecord { lookId: string; date: string }
+
+/**
+ * Calcula streak atual e máximo a partir de um array de registros de uso.
+ * Considera sequência como dias consecutivos com pelo menos um uso.
+ */
+export function calcStreak(records: UsageRecord[]): { current: number; max: number } {
+  if (records.length === 0) return { current: 0, max: 0 }
+  const days = [...new Set(records.map(r => r.date))].sort()
+  let max = 1; let cur = 1
+  for (let i = 1; i < days.length; i++) {
+    const prev = new Date(days[i - 1]); const curr = new Date(days[i])
+    const diff = (curr.getTime() - prev.getTime()) / 86400000
+    if (diff === 1) { cur++; max = Math.max(max, cur) }
+    else cur = 1
+  }
+  const today = new Date().toISOString().split('T')[0]
+  const yest  = new Date(Date.now() - 86400000).toISOString().split('T')[0]
+  const last  = days[days.length - 1]
+  const current = (last === today || last === yest) ? cur : 0
+  return { current, max }
+}
