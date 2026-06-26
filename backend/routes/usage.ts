@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { eq, desc } from 'drizzle-orm'
 import { db } from '../db/client'
 import { usageRecords } from '../db/schema'
+import { apiError } from '../middleware/errorHandler'
 
 const router = Router()
 
@@ -30,7 +31,7 @@ router.get('/', async (_req, res) => {
     ids.forEach(id => { summary[id] = buildStats(records, id) })
 
     res.json({ records, summary })
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+  } catch (e) { apiError(res, e) }
 })
 
 // GET /api/usage/:lookId
@@ -44,7 +45,7 @@ router.get('/:lookId', async (req, res) => {
       .orderBy(usageRecords.date)
 
     res.json(buildStats(records, req.params.lookId))
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+  } catch (e) { apiError(res, e) }
 })
 
 // POST /api/usage/:lookId  → mark today
@@ -63,7 +64,7 @@ router.post('/:lookId', async (req, res) => {
       .orderBy(usageRecords.date)
 
     res.json(buildStats(records, req.params.lookId))
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+  } catch (e) { apiError(res, e) }
 })
 
 // DELETE /api/usage/:lookId/last  → undo last use
@@ -87,7 +88,7 @@ router.delete('/:lookId/last', async (req, res) => {
       .orderBy(usageRecords.date)
 
     res.json(buildStats(records, req.params.lookId))
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+  } catch (e) { apiError(res, e) }
 })
 
 export default router
