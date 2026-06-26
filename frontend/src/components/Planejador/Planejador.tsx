@@ -1,9 +1,9 @@
 import api from '../../api/client'
 import { useState, useMemo, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useLooks } from '../../hooks/useLooks'
 import type { Look } from '@data/types'
 import { SEASONS, OCCASIONS } from '../../styles/tags'
-import { LookModal } from '../Looks/LookModal'
 import {
   Wrap, Intro,
   FilterSection, FilterGroup, GroupLabel, ChipRow, Chip,
@@ -85,7 +85,7 @@ export function Planejador() {
   const [occasion,  setOccasion] = useState<Occasion | null>(null)
   const [seed,      setSeed]     = useState(0)
   const [showed,    setShowed]   = useState(false)
-  const [modal,     setModal]    = useState<Look | null>(null)
+  const navigate = useNavigate()
   const [cooldown,  setCooldown] = useState(14)
   const [usage,     setUsage]    = useState<UsageSummary>({})
 
@@ -95,14 +95,6 @@ export function Planejador() {
       .then(r => setUsage(((r.data as {summary?: UsageSummary}).summary) ?? {}))
       .catch(() => {})
   }, [])
-
-  // Re-fetch after closing modal (might have recorded a use)
-  function handleModalClose() {
-    setModal(null)
-    api.get('/api/usage')
-      .then(r => setUsage(((r.data as {summary?: UsageSummary}).summary) ?? {}))
-      .catch(() => {})
-  }
 
   const filtered = useMemo(() => {
     return looks.filter(l => {
@@ -231,7 +223,7 @@ export function Planejador() {
                 : Math.min(100, Math.round((days / cooldown) * 100))
 
               return (
-                <LookCard key={l.id} $dimmed={isRecent} onClick={() => setModal(l)}>
+                <LookCard key={l.id} $dimmed={isRecent} onClick={() => navigate(`/looks/${l.id}`)}>
                   <LookNum>Opção {i + 1}</LookNum>
                   <LookTitle>{l.title}</LookTitle>
                   <TagRow>
@@ -264,8 +256,6 @@ export function Planejador() {
           </LookGrid>
         </>
       )}
-
-      {modal && <LookModal look={modal} onClose={handleModalClose} />}
     </Wrap>
   )
 }

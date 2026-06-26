@@ -1,8 +1,8 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
-import type { Piece, PieceCategory } from '@data/types'
+import type { PieceCategory } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
-import { PecaModal } from './PecaModal'
 import {
   FilterStickyWrap, FilterBar, FilterBtn,
   Section, CatTitle, PieceGrid,
@@ -16,9 +16,9 @@ const categories: PieceCategory[] = [
 ]
 
 export function Pecas() {
+  const navigate = useNavigate()
   const { pieces } = usePieces()
   const [selectedCat, setSelectedCat] = useState<PieceCategory | 'Todas'>('Todas')
-  const [modal, setModal] = useState<Piece | null>(null)
 
   const visibleCats = selectedCat === 'Todas'
     ? categories.filter(c => pieces.some(p => p.category === c))
@@ -47,7 +47,7 @@ export function Pecas() {
             <CatTitle>{cat} ({catPieces.length})</CatTitle>
             <PieceGrid>
               {catPieces.map(piece => (
-                <PieceCard key={piece.id} onClick={() => setModal(piece)}>
+                <PieceCard key={piece.id} onClick={() => navigate(`/pecas/${piece.id}`)}>
                   <Thumb>
                     {piece.img && (
                       <ThumbImg
@@ -67,7 +67,6 @@ export function Pecas() {
         )
       })}
 
-      {modal && <PecaModal piece={modal} onClose={() => setModal(null)} />}
     </>
   )
 }

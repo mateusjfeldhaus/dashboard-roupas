@@ -1,11 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
-import type { Look, Piece } from '@data/types'
+import type { Piece } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
 import { SEASONS, OCCASIONS } from '../../styles/tags'
-import { PecaModal } from '../Pecas/PecaModal'
-import { LookModal } from '../Looks/LookModal'
 import {
   Grid, Card, ClickCard, StatValue, StatLabel,
   Section, SectionTitle,
@@ -19,9 +18,8 @@ export function Overview() {
   const { pieces } = usePieces()
   const { looks } = useLooks()
   const allCats = [...new Set(pieces.map(p => p.category))]
+  const navigate = useNavigate()
   const [selectedCat,    setSelectedCat]    = useState<string | null>(null)
-  const [selectedPiece,  setSelectedPiece]  = useState<Piece | null>(null)
-  const [selectedLook,   setSelectedLook]   = useState<Look | null>(null)
   const [filterTag,      setFilterTag]      = useState<string | null>(null)
   const [filterSection,  setFilterSection]  = useState<'ocasiao' | 'estacao' | null>(null)
 
@@ -54,7 +52,6 @@ export function Overview() {
 
   function toggleCat(cat: string) {
     setSelectedCat(prev => prev === cat ? null : cat)
-    setSelectedPiece(null)
     setFilterTag(null); setFilterSection(null) // fecha painel de ocasião/estação
   }
 
@@ -100,7 +97,7 @@ export function Overview() {
             </PanelTitle>
             <LookList>
               {filteredLooks.map(look => (
-                <LookListCard key={look.id} onClick={() => setSelectedLook(look)}>
+                <LookListCard key={look.id} onClick={() => navigate(`/looks/${look.id}`)}>
                   <LookListTitle>{look.title}</LookListTitle>
                   <LookListTags>
                     {look.tags.map(t => <LookListTag key={t}>{t}</LookListTag>)}
@@ -138,7 +135,7 @@ export function Overview() {
               </PanelTitle>
               <LookList>
                 {filteredLooks.map(look => (
-                  <LookListCard key={look.id} onClick={() => setSelectedLook(look)}>
+                  <LookListCard key={look.id} onClick={() => navigate(`/looks/${look.id}`)}>
                     <LookListTitle>{look.title}</LookListTitle>
                     <LookListTags>
                       {look.tags.map(t => <LookListTag key={t}>{t}</LookListTag>)}
@@ -179,7 +176,7 @@ export function Overview() {
             </PanelTitle>
             <PieceGrid>
               {piecesInCat.map(piece => (
-                <PieceCard key={piece.id} onClick={() => setSelectedPiece(piece)}>
+                <PieceCard key={piece.id} onClick={() => navigate(`/pecas/${piece.id}`)}>
                   <PieceThumb $color={piece.color}>
                     <PieceThumbImg
                       src={imgUrl(piece.img)}
@@ -202,13 +199,6 @@ export function Overview() {
         )}
       </Section>
 
-      {selectedPiece && (
-        <PecaModal piece={selectedPiece} onClose={() => setSelectedPiece(null)} />
-      )}
-
-      {selectedLook && (
-        <LookModal look={selectedLook} onClose={() => setSelectedLook(null)} />
-      )}
     </>
   )
 }

@@ -1,10 +1,8 @@
 import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
-import type { Piece, Look } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
-import { PecaModal } from '../Pecas/PecaModal'
-import { LookModal } from '../Looks/LookModal'
 import {
   Wrap, SearchBar, SearchInput, SearchIcon,
   Hint, EmptyState,
@@ -18,11 +16,10 @@ function normalize(s: string) {
 }
 
 export function Busca() {
+  const navigate = useNavigate()
   const { pieces } = usePieces()
   const { looks } = useLooks()
   const [query, setQuery] = useState('')
-  const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null)
-  const [selectedLook, setSelectedLook] = useState<Look | null>(null)
 
   const q = normalize(query.trim())
 
@@ -77,7 +74,7 @@ export function Busca() {
           </SectionHeader>
           <PieceGrid>
             {matchedPieces.map(p => (
-              <PieceCard key={p.id} onClick={() => setSelectedPiece(p)}>
+              <PieceCard key={p.id} onClick={() => navigate(`/pecas/${p.id}`)}>
                 <PieceThumb $color={p.color}>
                   <PieceThumbImg src={imgUrl(p.img)} alt={p.name} />
                 </PieceThumb>
@@ -100,7 +97,7 @@ export function Busca() {
           </SectionHeader>
           <LookGrid>
             {matchedLooks.map(l => (
-              <LookCard key={l.id} onClick={() => setSelectedLook(l)}>
+              <LookCard key={l.id} onClick={() => navigate(`/looks/${l.id}`)}>
                 <LookTitle>{l.title}</LookTitle>
                 <TagRow>
                   {l.tags.map(t => <Tag key={t} $tag={t}>{t}</Tag>)}
@@ -111,8 +108,6 @@ export function Busca() {
         </ResultSection>
       )}
 
-      {selectedPiece && <PecaModal piece={selectedPiece} onClose={() => setSelectedPiece(null)} />}
-      {selectedLook  && <LookModal look={selectedLook}   onClose={() => setSelectedLook(null)} />}
     </Wrap>
   )
 }

@@ -1,8 +1,8 @@
 import api from '../../api/client'
 import { useState, useEffect, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useLooks } from '../../hooks/useLooks'
 import type { Look } from '@data/types'
-import { LookModal } from '../Looks/LookModal'
 import {
   Wrap,
   MonthNav, NavArrow, MonthLabel, TodayBtn,
@@ -67,19 +67,13 @@ export function Calendario() {
   const [month,   setMonth]   = useState(today.getMonth())
   const [records, setRecords] = useState<UsageRecord[]>([])
   const [selDay,  setSelDay]  = useState<string | null>(null)
-  const [modal,   setModal]   = useState<Look | null>(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     api.get('/api/usage')
       .then(r => setRecords((r.data as {records: {lookId:string;date:string}[]}).records ?? []))
       .catch(() => {})
   }, [])
-
-  function refetch() {
-    api.get('/api/usage')
-      .then(r => setRecords((r.data as {records: {lookId:string;date:string}[]}).records ?? []))
-      .catch(() => {})
-  }
 
   // Map: date → look list worn that day
   const byDate = useMemo(() => {
@@ -230,7 +224,7 @@ export function Calendario() {
           ) : (
             <LookList>
               {selectedLooks.map(look => (
-                <LookRow key={look.id} onClick={() => setModal(look)}>
+                <LookRow key={look.id} onClick={() => navigate(`/looks/${look.id}`)}>
                   <LookName>{look.title}</LookName>
                   <LookTags>
                     {look.tags.map(t => <TagChip key={t}>{t}</TagChip>)}
@@ -240,13 +234,6 @@ export function Calendario() {
             </LookList>
           )}
         </DayPanel>
-      )}
-
-      {modal && (
-        <LookModal
-          look={modal}
-          onClose={() => { setModal(null); refetch() }}
-        />
       )}
     </Wrap>
   )

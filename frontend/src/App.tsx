@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { Nav } from './components/Nav/Nav'
 import { Overview } from './components/Overview/Overview'
@@ -15,22 +15,8 @@ import { Montar } from './components/Montar/Montar'
 import { Viagem } from './components/Viagem/Viagem'
 import { Wishlist } from './components/Wishlist/Wishlist'
 import { Stats } from './components/Stats/Stats'
-
-export type Tab =
-  | 'overview' | 'pecas' | 'looks' | 'lacunas' | 'estacoes'
-  | 'porpeca'  | 'busca' | 'planejador' | 'ranking' | 'calendario'
-  | 'montar'   | 'viagem' | 'wishlist' | 'stats'
-
-const VALID_TABS = new Set<Tab>([
-  'overview', 'pecas', 'looks', 'lacunas', 'estacoes',
-  'porpeca', 'busca', 'planejador', 'ranking', 'calendario',
-  'montar', 'viagem', 'wishlist', 'stats',
-])
-
-function getTabFromHash(): Tab {
-  const hash = window.location.hash.slice(1) as Tab
-  return VALID_TABS.has(hash) ? hash : 'overview'
-}
+import { PecaPage } from './pages/PecaPage'
+import { LookPage } from './pages/LookPage'
 
 const Main = styled.main`
   max-width: 1400px;
@@ -42,37 +28,29 @@ const Main = styled.main`
 `
 
 export default function App() {
-  const [tab, setTab] = useState<Tab>(getTabFromHash)
-
-  // Sync hash ↔ tab
-  useEffect(() => {
-    window.location.hash = tab
-  }, [tab])
-
-  useEffect(() => {
-    function onHashChange() { setTab(getTabFromHash()) }
-    window.addEventListener('hashchange', onHashChange)
-    return () => window.removeEventListener('hashchange', onHashChange)
-  }, [])
-
   return (
     <>
-      <Nav activeTab={tab} onTabChange={setTab} />
+      <Nav />
       <Main>
-        {tab === 'overview'    && <Overview />}
-        {tab === 'pecas'       && <Pecas />}
-        {tab === 'looks'       && <Looks />}
-        {tab === 'lacunas'     && <Lacunas />}
-        {tab === 'estacoes'    && <Estacoes />}
-        {tab === 'porpeca'     && <PorPeca />}
-        {tab === 'busca'       && <Busca />}
-        {tab === 'planejador'  && <Planejador />}
-        {tab === 'ranking'     && <Ranking />}
-        {tab === 'calendario'  && <Calendario />}
-        {tab === 'montar'      && <Montar />}
-        {tab === 'viagem'      && <Viagem />}
-        {tab === 'wishlist'    && <Wishlist />}
-        {tab === 'stats'       && <Stats />}
+        <Routes>
+          <Route path="/"           element={<Overview />} />
+          <Route path="/pecas"      element={<Pecas />} />
+          <Route path="/pecas/:id"  element={<PecaPage />} />
+          <Route path="/looks"      element={<Looks />} />
+          <Route path="/looks/:id"  element={<LookPage />} />
+          <Route path="/lacunas"    element={<Lacunas />} />
+          <Route path="/estacoes"   element={<Estacoes />} />
+          <Route path="/porpeca"    element={<PorPeca />} />
+          <Route path="/busca"      element={<Busca />} />
+          <Route path="/planejador" element={<Planejador />} />
+          <Route path="/ranking"    element={<Ranking />} />
+          <Route path="/calendario" element={<Calendario />} />
+          <Route path="/montar"     element={<Montar />} />
+          <Route path="/viagem"     element={<Viagem />} />
+          <Route path="/wishlist"   element={<Wishlist />} />
+          <Route path="/stats"      element={<Stats />} />
+          <Route path="*"           element={<Navigate to="/" replace />} />
+        </Routes>
       </Main>
     </>
   )

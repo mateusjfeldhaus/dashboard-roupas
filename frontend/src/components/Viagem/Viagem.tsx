@@ -1,11 +1,10 @@
 import { useState, useMemo, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
-import type { Look, LookTag, Piece } from '@data/types'
+import type { Look, LookTag } from '@data/types'
 import { getTagColor } from '../../styles/tagColors'
 import { SEASONS, OCCASIONS } from '../../styles/tags'
-import { LookModal } from '../Looks/LookModal'
-import { PecaModal } from '../Pecas/PecaModal'
 import {
   Wrapper, Panel, PanelTitle,
   SettingsGrid, FieldGroup, FieldLabel, ChipRow, Chip, DaysInput,
@@ -96,8 +95,7 @@ export function Viagem() {
   const [capsule,       setCapsule]       = useState<Look[]>([])
   const [generated,     setGenerated]     = useState(false)
   const [checkedIds,    setCheckedIds]    = useState<Set<string>>(new Set())
-  const [modal,         setModal]         = useState<Look | null>(null)
-  const [pieceModal,    setPieceModal]    = useState<Piece | null>(null)
+  const navigate = useNavigate()
   const [copiedMsg,     setCopiedMsg]     = useState(false)
 
   // ── Filtered pool ──────────────────────────────────────────────────────────
@@ -254,7 +252,7 @@ export function Viagem() {
               <LookList>
                 {capsule.map(look => (
                   <LookRow key={look.id}>
-                    <LookRowBtn onClick={() => setModal(look)}>
+                    <LookRowBtn onClick={() => navigate(`/looks/${look.id}`)}>
                       <LookRowTitle>{look.title}</LookRowTitle>
                       <TagRow>
                         {look.tags.map(t => {
@@ -343,7 +341,7 @@ export function Viagem() {
                       <CheckLabel $checked={checkedIds.has(p.id)}>{p.name}</CheckLabel>
                       <CheckCat>{p.brand}</CheckCat>
                       <ViewPieceBtn
-                        onClick={e => { e.preventDefault(); setPieceModal(p) }}
+                        onClick={e => { e.preventDefault(); navigate(`/pecas/${p.id}`) }}
                         title="Ver peça"
                       >👁</ViewPieceBtn>
                     </CheckItem>
@@ -355,8 +353,6 @@ export function Viagem() {
         </Panel>
       </Wrapper>
 
-      {modal && <LookModal look={modal} onClose={() => setModal(null)} />}
-      {pieceModal && <PecaModal piece={pieceModal} onClose={() => setPieceModal(null)} />}
     </>
   )
 }

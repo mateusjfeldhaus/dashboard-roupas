@@ -1,10 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
 import type { Look } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
 import { CamisaLooks } from '../CamisaLooks/CamisaLooks'
-import { LookModal } from '../Looks/LookModal'
 import {
   StickyGroup,
   CategoryNav, NavLabel, CategoryChip,
@@ -179,9 +179,9 @@ export function PorPeca() {
     ...allPieceCats.filter(c => !CATEGORY_ORDER.includes(c)),
   ].map(id => ({ id, label: labelMap[id] ?? id }))
 
+  const navigate = useNavigate()
   const [activeCat, setActiveCat] = useState('Camisa')
   const [activeSubcat, setActiveSubcat] = useState<string | null>(null)
-  const [modal, setModal] = useState<Look | null>(null)
 
   function handleCatChange(cat: string) {
     setActiveCat(cat)
@@ -271,7 +271,7 @@ export function PorPeca() {
                   {pieceLooks.length > 0 ? (
                     <LookRows>
                       {pieceLooks.map(look => (
-                        <LookRow key={look.id} onClick={() => setModal(look)}>
+                        <LookRow key={look.id} onClick={() => navigate(`/looks/${look.id}`)}>
                           <LookTitle>{look.title}</LookTitle>
                           <LookTagRow>
                             {look.tags.map(t => (
@@ -294,8 +294,6 @@ export function PorPeca() {
               )
             })}
           </PieceList>
-
-          {modal && <LookModal look={modal} onClose={() => setModal(null)} />}
         </>
       )}
     </>

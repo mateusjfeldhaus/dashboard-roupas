@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useLooks } from '../../hooks/useLooks'
-import type { Look } from '@data/types'
-import { LookModal } from '../Looks/LookModal'
 import api from '../../api/client'
 import {
   Wrap, SectionLabel, RankList, RankCard,
@@ -30,7 +29,7 @@ export function Ranking() {
   const [ratings,  setRatings]  = useState<Record<string, number>>({})
   const [summary,  setSummary]  = useState<Record<string, LookStats>>({})
   const [loading,  setLoading]  = useState(true)
-  const [modal,    setModal]    = useState<Look | null>(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     Promise.all([
@@ -79,7 +78,7 @@ export function Ranking() {
           <SectionLabel>Looks Avaliados — {ranked.length}</SectionLabel>
           <RankList>
             {ranked.map((item, idx) => (
-              <RankCard key={item.look.id} onClick={() => setModal(item.look)}>
+              <RankCard key={item.look.id} onClick={() => navigate(`/looks/${item.look.id}`)}>
                 <Position $top={idx < 3}>#{idx + 1}</Position>
                 <LookInfo>
                   <LookTitle>{item.look.title}</LookTitle>
@@ -107,7 +106,7 @@ export function Ranking() {
       <SectionLabel>Sem Avaliação — {unrated.length}</SectionLabel>
       <RankList>
         {unrated.map(look => (
-          <RankCard key={look.id} onClick={() => setModal(look)}>
+          <RankCard key={look.id} onClick={() => navigate(`/looks/${look.id}`)}>
             <Position $top={false}>—</Position>
             <LookInfo>
               <LookTitle>{look.title}</LookTitle>
@@ -125,7 +124,6 @@ export function Ranking() {
         ))}
       </RankList>
 
-      {modal && <LookModal look={modal} onClose={() => setModal(null)} />}
     </Wrap>
   )
 }

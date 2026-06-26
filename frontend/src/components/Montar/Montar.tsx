@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
 import type { Piece, Look } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
 import { getTagColor } from '../../styles/tagColors'
-import { LookModal } from '../Looks/LookModal'
 import { SEASONS } from '../../styles/tags'
 import {
   Wrapper, Panel, PanelTitle,
@@ -82,9 +82,9 @@ export function Montar() {
     ...allCats.filter(c => !CAT_ORDER.includes(c)),
   ]
 
+  const navigate = useNavigate()
   const [activeCat,    setActiveCat]    = useState<string>('Camisa')
   const [selectedIds,  setSelectedIds]  = useState<string[]>([])
-  const [modal,        setModal]        = useState<Look | null>(null)
 
   // Filtros de look
   const [filterSeason, setFilterSeason] = useState<SeasonFilter>(null)
@@ -246,7 +246,7 @@ export function Montar() {
             </NoMatch>
           ) : (
             filteredMatches.map(({ look, havePieceIds, allPieceIds, missing }) => (
-              <LookCard key={look.id} onClick={() => setModal(look)}>
+              <LookCard key={look.id} onClick={() => navigate(`/looks/${look.id}`)}>
                 <LookCardHeader>
                   <LookCardTitle>{look.title}</LookCardTitle>
                   <TagRow>
@@ -291,7 +291,6 @@ export function Montar() {
         </Panel>
       </Wrapper>
 
-      {modal && <LookModal look={modal} onClose={() => setModal(null)} />}
     </>
   )
 }

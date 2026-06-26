@@ -1,8 +1,8 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useLooks } from '../../hooks/useLooks'
-import type { Look, LookTag } from '@data/types'
+import type { LookTag } from '@data/types'
 import { SEASONS, OCCASIONS, TAG_LABELS } from '../../styles/tags'
-import { LookModal } from './LookModal'
 import {
   FilterStickyWrap, FilterPanel, FilterRow, GroupLabel,
   FilterChip, Divider, MetaRow, Count, ClearBtn,
@@ -18,11 +18,11 @@ type PeriTag  = typeof PERIODO[number]
 type EstaTag  = typeof SEASONS[number]['tag']
 
 export function Looks() {
+  const navigate = useNavigate()
   const { looks } = useLooks()
   const [ocasiao,  setOcasiao]  = useState<OcasTag  | null>(null)
   const [periodo,  setPeriodo]  = useState<PeriTag  | null>(null)
   const [estacao,  setEstacao]  = useState<EstaTag  | null>(null)
-  const [modal,    setModal]    = useState<Look | null>(null)
 
   const toggle = <T,>(val: T, cur: T | null, set: (v: T | null) => void) =>
     set(cur === val ? null : val)
@@ -89,7 +89,7 @@ export function Looks() {
 
       <Grid>
         {filtered.map(look => (
-          <Card key={look.id} onClick={() => setModal(look)}>
+          <Card key={look.id} onClick={() => navigate(`/looks/${look.id}`)}>
             <CardTitle>{look.title}</CardTitle>
             <TagRow>
               {look.tags.map(t => <Tag key={t} $tag={t}>{t}</Tag>)}
@@ -104,8 +104,6 @@ export function Looks() {
           </Card>
         ))}
       </Grid>
-
-      {modal && <LookModal look={modal} onClose={() => setModal(null)} />}
     </>
   )
 }

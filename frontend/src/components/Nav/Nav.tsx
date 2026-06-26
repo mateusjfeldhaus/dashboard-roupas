@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import type { Tab } from '../../App'
+import { useNavigate, useLocation } from 'react-router-dom'
 import {
   NavBar, Inner, Brand, TabList, TabBtn,
   BurgerBtn, BurgerLine,
@@ -7,44 +7,50 @@ import {
   DropdownWrap, DropdownBtn, DropdownArrow, DropdownMenu, DropdownItem,
 } from './Nav.styles'
 
-const primaryTabs: { id: Tab; label: string; icon: string }[] = [
-  { id: 'overview',  label: 'Visão Geral', icon: '📊' },
-  { id: 'pecas',     label: 'Peças',       icon: '👔' },
-  { id: 'looks',     label: 'Looks',       icon: '✨' },
-  { id: 'montar',    label: 'Completar',   icon: '🧩' },
-  { id: 'viagem',    label: 'Viagem',      icon: '✈️' },
+const primaryTabs = [
+  { path: '/',          label: 'Visão Geral', icon: '📊' },
+  { path: '/pecas',     label: 'Peças',       icon: '👔' },
+  { path: '/looks',     label: 'Looks',       icon: '✨' },
+  { path: '/montar',    label: 'Completar',   icon: '🧩' },
+  { path: '/viagem',    label: 'Viagem',      icon: '✈️' },
 ]
 
-const afterDropdown: { id: Tab; label: string; icon: string }[] = [
-  { id: 'wishlist',  label: 'Wishlist',    icon: '🛍️' },
+const afterDropdown = [
+  { path: '/wishlist',  label: 'Wishlist',    icon: '🛍️' },
 ]
 
-const analyticalTabs: { id: Tab; label: string; icon: string }[] = [
-  { id: 'stats',      label: 'Estatísticas', icon: '📈' },
-  { id: 'porpeca',    label: 'Por Peça',     icon: '🔍' },
-  { id: 'busca',      label: 'Busca',        icon: '🔎' },
-  { id: 'planejador', label: 'Planejador',   icon: '📅' },
-  { id: 'calendario', label: 'Calendário',   icon: '🗓' },
-  { id: 'ranking',    label: 'Ranking',      icon: '★'  },
-  { id: 'lacunas',    label: 'Lacunas',      icon: '⚠️' },
-  { id: 'estacoes',   label: 'Estações',     icon: '🌿' },
+const analyticalTabs = [
+  { path: '/stats',      label: 'Estatísticas', icon: '📈' },
+  { path: '/porpeca',    label: 'Por Peça',     icon: '🔍' },
+  { path: '/busca',      label: 'Busca',        icon: '🔎' },
+  { path: '/planejador', label: 'Planejador',   icon: '📅' },
+  { path: '/calendario', label: 'Calendário',   icon: '🗓' },
+  { path: '/ranking',    label: 'Ranking',      icon: '★'  },
+  { path: '/lacunas',    label: 'Lacunas',      icon: '⚠️' },
+  { path: '/estacoes',   label: 'Estações',     icon: '🌿' },
 ]
 
 const drawerPrimary = [...primaryTabs, ...afterDropdown]
+const analyticalPaths = new Set(analyticalTabs.map(t => t.path))
 
-interface Props {
-  activeTab: Tab
-  onTabChange: (t: Tab) => void
-}
+export function Nav() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const pathname = location.pathname
 
-export function Nav({ activeTab, onTabChange }: Props) {
   const [drawerOpen,   setDrawerOpen]   = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [menuPos,      setMenuPos]      = useState({ top: 0, left: 0 })
   const btnRef      = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const inAnalytical = analyticalTabs.some(t => t.id === activeTab)
+  // "/pecas/some-id" → "/pecas"
+  const activeBase   = '/' + pathname.split('/')[1]
+  const inAnalytical = analyticalPaths.has(activeBase)
+
+  function isActive(path: string) {
+    return path === '/' ? activeBase === '/' : activeBase === path
+  }
 
   function toggleDropdown() {
     if (btnRef.current) {
@@ -54,21 +60,17 @@ export function Nav({ activeTab, onTabChange }: Props) {
     setDropdownOpen(o => !o)
   }
 
-  // close dropdown on outside click
   useEffect(() => {
     function handle(e: MouseEvent) {
       if (
         dropdownRef.current && !dropdownRef.current.contains(e.target as Node) &&
         btnRef.current && !btnRef.current.contains(e.target as Node)
-      ) {
-        setDropdownOpen(false)
-      }
+      ) setDropdownOpen(false)
     }
     document.addEventListener('mousedown', handle)
     return () => document.removeEventListener('mousedown', handle)
   }, [])
 
-  // close drawer on desktop resize
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 769px)')
     const handler = (e: MediaQueryListEvent) => { if (e.matches) setDrawerOpen(false) }
@@ -81,27 +83,29 @@ export function Nav({ activeTab, onTabChange }: Props) {
     return () => { document.body.style.overflow = '' }
   }, [drawerOpen])
 
-  function selectTab(t: Tab) {
-    onTabChange(t)
+  // Fecha drawer/dropdown ao navegar
+  useEffect(() => {
     setDrawerOpen(false)
     setDropdownOpen(false)
+  }, [pathname])
+
+  function go(path: string) {
+    navigate(path)
   }
 
   return (
     <>
       <NavBar>
         <Inner>
-          <Brand onClick={() => onTabChange('overview')}>Guarda-Roupa</Brand>
+          <Brand onClick={() => go('/')}>Guarda-Roupa</Brand>
 
-          {/* ── Desktop tab list (all tabs flow together) ─────────────── */}
           <TabList>
             {primaryTabs.map(t => (
-              <TabBtn key={t.id} $active={activeTab === t.id} onClick={() => selectTab(t.id)}>
+              <TabBtn key={t.path} $active={isActive(t.path)} onClick={() => go(t.path)}>
                 {t.label}
               </TabBtn>
             ))}
 
-            {/* Analisar — position:fixed menu escapa o overflow:auto */}
             <DropdownWrap ref={dropdownRef}>
               <DropdownBtn ref={btnRef} $active={inAnalytical} onClick={toggleDropdown}>
                 Analisar
@@ -110,11 +114,7 @@ export function Nav({ activeTab, onTabChange }: Props) {
 
               <DropdownMenu $open={dropdownOpen} $top={menuPos.top} $left={menuPos.left}>
                 {analyticalTabs.map(t => (
-                  <DropdownItem
-                    key={t.id}
-                    $active={activeTab === t.id}
-                    onClick={() => selectTab(t.id)}
-                  >
+                  <DropdownItem key={t.path} $active={isActive(t.path)} onClick={() => go(t.path)}>
                     <span style={{ width: 20, textAlign: 'center' }}>{t.icon}</span>
                     {t.label}
                   </DropdownItem>
@@ -123,13 +123,12 @@ export function Nav({ activeTab, onTabChange }: Props) {
             </DropdownWrap>
 
             {afterDropdown.map(t => (
-              <TabBtn key={t.id} $active={activeTab === t.id} onClick={() => selectTab(t.id)}>
+              <TabBtn key={t.path} $active={isActive(t.path)} onClick={() => go(t.path)}>
                 {t.label}
               </TabBtn>
             ))}
           </TabList>
 
-          {/* ── Burger (mobile only) ─────────────────────────────────── */}
           <BurgerBtn $open={drawerOpen} onClick={() => setDrawerOpen(o => !o)} aria-label="Menu">
             <BurgerLine $open={drawerOpen} $pos="top" />
             <BurgerLine $open={drawerOpen} $pos="mid" />
@@ -138,12 +137,11 @@ export function Nav({ activeTab, onTabChange }: Props) {
         </Inner>
       </NavBar>
 
-      {/* ── Mobile drawer ────────────────────────────────────────────── */}
       <DrawerOverlay $open={drawerOpen} onClick={() => setDrawerOpen(false)} />
 
       <Drawer $open={drawerOpen}>
         {drawerPrimary.map(t => (
-          <DrawerItem key={t.id} $active={activeTab === t.id} onClick={() => selectTab(t.id)}>
+          <DrawerItem key={t.path} $active={isActive(t.path)} onClick={() => go(t.path)}>
             <span style={{ fontSize: 20, width: 28, textAlign: 'center', flexShrink: 0 }}>{t.icon}</span>
             {t.label}
           </DrawerItem>
@@ -152,7 +150,7 @@ export function Nav({ activeTab, onTabChange }: Props) {
         <DrawerDivider />
 
         {analyticalTabs.map(t => (
-          <DrawerItem key={t.id} $active={activeTab === t.id} onClick={() => selectTab(t.id)}>
+          <DrawerItem key={t.path} $active={isActive(t.path)} onClick={() => go(t.path)}>
             <span style={{ fontSize: 20, width: 28, textAlign: 'center', flexShrink: 0 }}>{t.icon}</span>
             {t.label}
           </DrawerItem>

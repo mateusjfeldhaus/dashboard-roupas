@@ -1,8 +1,7 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useLooks } from '../../hooks/useLooks'
-import type { Look } from '@data/types'
 import { SEASONS } from '../../styles/tags'
-import { LookModal } from '../Looks/LookModal'
 import {
   Grid, SeasonCard, SeasonHeader, SeasonEmoji, SeasonName, LookCount,
   Strategy, TipsList, TipItem,
@@ -55,9 +54,9 @@ const SEASON_DETAILS: Record<string, { strategy: string; tips: string[] }> = {
 }
 
 export function Estacoes() {
+  const navigate = useNavigate()
   const { looks } = useLooks()
   const [activeSeason, setActiveSeason] = useState<string>('verao')
-  const [modal, setModal] = useState<Look | null>(null)
 
   const seasonLooks = (tag: string) =>
     looks.filter(l => l.tags.includes(tag as never))
@@ -99,7 +98,7 @@ export function Estacoes() {
       {seasonLooks(active.tag).length > 0 ? (
         <LookGrid>
           {seasonLooks(active.tag).map(l => (
-            <LookCard key={l.id} onClick={() => setModal(l)}>
+            <LookCard key={l.id} onClick={() => navigate(`/looks/${l.id}`)}>
               <LookTitle>{l.title}</LookTitle>
               <LookTags>
                 {l.tags.map(t => <Tag key={t} $tag={t}>{t}</Tag>)}
@@ -111,7 +110,6 @@ export function Estacoes() {
         <EmptyNote>Nenhum look com tag {active.tag} cadastrado.</EmptyNote>
       )}
 
-      {modal && <LookModal look={modal} onClose={() => setModal(null)} />}
     </>
   )
 }
