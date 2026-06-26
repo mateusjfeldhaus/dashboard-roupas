@@ -28,6 +28,7 @@ const analyticalTabs = [
   { path: '/ranking',    label: 'Ranking',      icon: '★'  },
   { path: '/lacunas',    label: 'Lacunas',      icon: '⚠️' },
   { path: '/estacoes',   label: 'Estações',     icon: '🌿' },
+  { path: '/capsula',    label: 'Cápsula',      icon: '🧳' },
 ]
 
 const drawerPrimary = [...primaryTabs, ...afterDropdown]

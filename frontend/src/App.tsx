@@ -15,6 +15,7 @@ import { Montar } from './components/Montar/Montar'
 import { Viagem } from './components/Viagem/Viagem'
 import { Wishlist } from './components/Wishlist/Wishlist'
 import { Stats } from './components/Stats/Stats'
+import { Capsula } from './components/Capsula/Capsula'
 import { PecaPage } from './pages/PecaPage'
 import { LookPage } from './pages/LookPage'
 import { NovoLookPage } from './pages/NovoLookPage'
@@ -55,6 +56,7 @@ export default function App() {
           <Route path="/viagem"            element={<Viagem />} />
           <Route path="/wishlist"          element={<Wishlist />} />
           <Route path="/stats"             element={<Stats />} />
+          <Route path="/capsula"           element={<Capsula />} />
           <Route path="*"                  element={<Navigate to="/" replace />} />
         </Routes>
       </Main>
