@@ -14,7 +14,6 @@ import ratingRouter   from './routes/rating'
 import wishlistRouter from './routes/wishlist'
 import photosRouter   from './routes/photos'
 import { requireApiKey } from './middleware/requireApiKey'
-import { pool } from './db/client'
 
 const app  = express()
 const PORT = process.env.PORT ?? 3001
@@ -90,29 +89,10 @@ app.use('/api/pieces',   piecesRouter)
 app.use('/api/looks',    looksRouter)
 app.use('/api/usage',    usageRouter)
 app.use('/api/rating',   ratingRouter)
-app.use('/api/wishlist', requireApiKey, wishlistRouter)  // GET também protegido
-app.use('/api/photos',   requireApiKey, photosRouter)    // GET também protegido
+app.use('/api/wishlist', wishlistRouter)
+app.use('/api/photos',   photosRouter)
 
 // ── Start ─────────────────────────────────────────────────────────────────────
-const server = app.listen(PORT, () => {
-  if (!process.env.API_KEY) {
-    console.warn('\n  ⚠️  AVISO: API_KEY não configurada — autenticação desativada!\n')
-  }
-  if (!process.env.CORS_ORIGIN) {
-    console.warn('\n  ⚠️  AVISO: CORS_ORIGIN não configurado — aceitando qualquer origem!\n')
-  }
-  console.log(`\n  🚀  Backend rodando em http://localhost:${PORT}\n`)
+app.listen(PORT, () => {
+  console.log(`[wardrobe] servidor rodando em http://localhost:${PORT}`)
 })
-
-// ── Graceful shutdown ─────────────────────────────────────────────────────────
-async function shutdown(signal: string) {
-  console.log(`\n  ${signal} recebido — encerrando servidor...\n`)
-  server.close(async () => {
-    await pool.end()
-    console.log('  Pool de conexões encerrado. Até logo!\n')
-    process.exit(0)
-  })
-}
-
-process.on('SIGTERM', () => shutdown('SIGTERM'))
-process.on('SIGINT',  () => shutdown('SIGINT'))

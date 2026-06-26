@@ -3,8 +3,8 @@ import { drizzle } from 'drizzle-orm/neon-serverless'
 import ws from 'ws'
 import * as schema from './schema'
 
-// Necessário para usar WebSockets no Node.js (suporta transactions)
+// Necessário para usar WebSockets no Node.js (Neon serverless usa WS internamente)
 neonConfig.webSocketConstructor = ws
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL! })
+const pool = new Pool({ connectionString: process.env.DATABASE_URL })
 export const db = drizzle(pool, { schema })

@@ -4,10 +4,11 @@ import multer from 'multer'
 import { randomUUID } from 'crypto'
 import { db } from '../db/client'
 import { lookPhotos, looks } from '../db/schema'
+import { supabase, BUCKET } from '../lib/supabase'
+import { apiError } from '../middleware/errorHandler'
 
 const router = Router()
 
-// Armazena em memória (max 8 MB por upload)
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 8 * 1024 * 1024 },
@@ -17,7 +18,7 @@ const upload = multer({
   },
 })
 
-// ── GET /api/photos/:lookId  — serve a imagem (sem autenticação) ──────────────
+// ── GET /api/photos/:lookId  — redireciona para URL pública do Supabase ───────
 router.get('/:lookId', async (req, res) => {
   try {
     const [photo] = await db
@@ -25,19 +26,16 @@ router.get('/:lookId', async (req, res) => {
       .from(lookPhotos)
       .where(eq(lookPhotos.lookId, req.params.lookId))
 
-    if (!photo) {
+    if (!photo || !photo.url) {
       res.status(404).json({ error: 'Foto não encontrada' })
       return
     }
 
-    const buf = Buffer.from(photo.data, 'base64')
-    res.setHeader('Content-Type', photo.mimeType)
-    res.setHeader('Cache-Control', 'public, max-age=86400')
-    res.send(buf)
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+    res.redirect(302, photo.url)
+  } catch (e) { apiError(res, e) }
 })
 
-// ── POST /api/photos/:lookId  — upload (autenticado via middleware global) ────
+// ── POST /api/photos/:lookId  — upload para Supabase Storage ─────────────────
 router.post('/:lookId', upload.single('photo'), async (req, res) => {
   try {
     if (!req.file) {
@@ -45,48 +43,53 @@ router.post('/:lookId', upload.single('photo'), async (req, res) => {
       return
     }
 
-    // Verifica se o look existe
     const [look] = await db.select().from(looks).where(eq(looks.id, req.params.lookId))
     if (!look) {
       res.status(404).json({ error: 'Look não encontrado' })
       return
     }
 
-    const photoId = randomUUID()
-    const base64  = req.file.buffer.toString('base64')
+    // Caminho no bucket: lookId (sem extensão — o mime-type é preservado nos metadados)
+    const storagePath = req.params.lookId
 
-    // Upsert: troca a foto se já existir
+    const { error: uploadError } = await supabase.storage
+      .from(BUCKET)
+      .upload(storagePath, req.file.buffer, {
+        contentType: req.file.mimetype,
+        upsert: true,          // substitui se já existir
+      })
+
+    if (uploadError) throw uploadError
+
+    const { data: { publicUrl } } = supabase.storage
+      .from(BUCKET)
+      .getPublicUrl(storagePath)
+
+    // Upsert no banco — grava apenas a URL pública (sem base64)
+    const photoId = randomUUID()
     await db
       .insert(lookPhotos)
-      .values({
-        id:       photoId,
-        lookId:   req.params.lookId,
-        mimeType: req.file.mimetype,
-        data:     base64,
-      })
+      .values({ id: photoId, lookId: req.params.lookId, url: publicUrl })
       .onConflictDoUpdate({
         target: lookPhotos.lookId,
-        set: {
-          id:         photoId,
-          mimeType:   req.file.mimetype,
-          data:       base64,
-          uploadedAt: new Date(),
-        },
+        set: { url: publicUrl, uploadedAt: new Date() },
       })
 
-    res.status(201).json({
-      id:     photoId,
-      lookId: req.params.lookId,
-    })
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+    res.status(201).json({ id: photoId, lookId: req.params.lookId })
+  } catch (e) { apiError(res, e) }
 })
 
-// ── DELETE /api/photos/:lookId  — remove a foto (autenticado) ────────────────
+// ── DELETE /api/photos/:lookId  — remove do Supabase e do banco ──────────────
 router.delete('/:lookId', async (req, res) => {
   try {
+    // Remove do Supabase Storage (ignora erro se não existir)
+    await supabase.storage.from(BUCKET).remove([req.params.lookId])
+
+    // Remove do banco
     await db.delete(lookPhotos).where(eq(lookPhotos.lookId, req.params.lookId))
+
     res.json({ lookId: req.params.lookId })
-  } catch (e) { res.status(500).json({ error: String(e) }) }
+  } catch (e) { apiError(res, e) }
 })
 
 export default router
