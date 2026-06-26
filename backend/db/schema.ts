@@ -25,6 +25,7 @@ export const looks = pgTable('looks', {
   formality: integer('formality').notNull().default(1),
   tip:       text('tip').notNull().default(''),
   notes:     text('notes').notNull().default(''),
+  hidden:    boolean('hidden').notNull().default(false),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 

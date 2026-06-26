@@ -10,17 +10,17 @@ const listeners: Set<() => void> = new Set()
 function notify() { listeners.forEach(fn => fn()) }
 
 export function useLooks() {
-  const [looks,   setLooks]   = useState<Look[]>(cache ?? [])
-  const [loading, setLoading] = useState(!cache)
-  const [error,   setError]   = useState<string | null>(null)
+  const [allLooks, setAllLooks] = useState<Look[]>(cache ?? [])
+  const [loading,  setLoading]  = useState(!cache)
+  const [error,    setError]    = useState<string | null>(null)
 
   useEffect(() => {
-    if (cache) { setLooks(cache); setLoading(false); return }
+    if (cache) { setAllLooks(cache); setLoading(false); return }
 
     api.get<ApiLook[]>('/api/looks')
       .then(r => {
         cache = r.data
-        setLooks(cache)
+        setAllLooks(cache)
         setLoading(false)
         notify()
       })
@@ -28,7 +28,7 @@ export function useLooks() {
   }, [])
 
   useEffect(() => {
-    const refresh = () => { if (cache) setLooks([...cache]) }
+    const refresh = () => { if (cache) setAllLooks([...cache]) }
     listeners.add(refresh)
     return () => { listeners.delete(refresh) }
   }, [])
@@ -37,9 +37,17 @@ export function useLooks() {
     cache = null
     setLoading(true)
     api.get<ApiLook[]>('/api/looks')
-      .then(r => { cache = r.data; setLooks(cache); setLoading(false); notify() })
+      .then(r => { cache = r.data; setAllLooks(cache!); setLoading(false); notify() })
       .catch(e => { setError(String(e)); setLoading(false) })
   }
 
-  return { looks, loading, error, invalidate }
+  async function toggleHidden(lookId: string, hidden: boolean) {
+    await api.patch(`/api/looks/${encodeURIComponent(lookId)}/hidden`, { hidden })
+    invalidate()
+  }
+
+  // looks = apenas visíveis (hidden: false)
+  const looks = allLooks.filter(l => !l.hidden)
+
+  return { looks, allLooks, loading, error, invalidate, toggleHidden }
 }

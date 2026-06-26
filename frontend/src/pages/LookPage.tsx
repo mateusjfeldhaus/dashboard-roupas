@@ -37,6 +37,18 @@ const BackBtn = styled.button`
   &:hover { color: ${p => p.theme.colors.text}; }
 `
 
+const HideBtn = styled.button`
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600;
+  color: ${p => p.theme.colors.textMuted};
+  margin-bottom: 20px; margin-left: 16px;
+  padding: 6px 10px;
+  border: 1px solid ${p => p.theme.colors.border};
+  border-radius: 8px;
+  transition: all 0.15s;
+  &:hover { color: ${p => p.theme.colors.text}; border-color: currentColor; }
+`
+
 const Card = styled.div`
   background: ${p => p.theme.colors.surface};
   border: 1px solid ${p => p.theme.colors.border};
@@ -74,10 +86,10 @@ function photoUrl(lookId: string) {
 export function LookPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { looks } = useLooks()
+  const { allLooks, toggleHidden } = useLooks()
   const { pieces } = usePieces()
 
-  const look = looks.find(l => l.id === id)
+  const look = allLooks.find(l => l.id === id)
 
   const { count, lastDate, loading, markUsed, undoLast } = useUsage(look?.id ?? '')
   const { rating, loading: rLoading, setRating } = useRating(look?.id ?? '')
@@ -136,6 +148,12 @@ export function LookPage() {
     <>
       <PageWrap>
         <BackBtn onClick={() => navigate(-1)}>← Voltar</BackBtn>
+        <HideBtn
+          onClick={() => toggleHidden(look.id, !look.hidden)}
+          title={look.hidden ? 'Tornar visível' : 'Ocultar look'}
+        >
+          {look.hidden ? '👁 Tornar visível' : '🙈 Ocultar look'}
+        </HideBtn>
 
         <Card>
           <Header>
@@ -273,14 +291,14 @@ export function LookPage() {
               🔄 Trocar foto
               <PhotoUploadInput
                 id={`replace-photo-${look.id}`}
-                ref={replaceRef}
                 type="file"
                 accept="image/*"
-                onChange={handleFileChange}
+                ref={replaceRef}
+                onChange={e => { if (e.target.files?.[0]) uploadPhoto(e.target.files[0]) }}
               />
             </LightboxBtn>
             <LightboxDelBtn onClick={handleRemove} disabled={photoUploading}>
-              🗑 Remover
+              🗑 Remover foto
             </LightboxDelBtn>
           </LightboxActions>
         </LightboxOverlay>

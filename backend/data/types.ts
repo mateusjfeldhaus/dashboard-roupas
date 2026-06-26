@@ -49,6 +49,7 @@ export interface Look {
   tip: string
   notes?: string
   photoId?: string    // ID único da foto do look real (look_photos.id)
+  hidden?: boolean
   pieces: LookPiece[]
 }
 

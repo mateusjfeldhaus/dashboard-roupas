@@ -18,6 +18,7 @@ import { Stats } from './components/Stats/Stats'
 import { PecaPage } from './pages/PecaPage'
 import { LookPage } from './pages/LookPage'
 import { NovoLookPage } from './pages/NovoLookPage'
+ import { LooksDescartados } from './pages/LooksDescartados'
 
 const Main = styled.main`
   max-width: 1400px;
@@ -39,6 +40,7 @@ export default function App() {
           <Route path="/pecas/:id"  element={<PecaPage />} />
           <Route path="/looks"      element={<Looks />} />
           <Route path="/looks/novo" element={<NovoLookPage />} />
+          <Route path="/looks/descartados" element={<LooksDescartados />} />
           <Route path="/looks/:id"  element={<LookPage />} />
           <Route path="/lacunas"    element={<Lacunas />} />
           <Route path="/estacoes"   element={<Estacoes />} />
