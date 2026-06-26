@@ -87,7 +87,7 @@ function uniquePieceIds(selectedLooks: Look[]): string[] {
 export function Viagem() {
   const { pieces } = usePieces()
   const { looks } = useLooks()
-  const [days,     setDays]     = useState(5)
+  const [days,     setDays]     = useState(2)
   const [occasion, setOccasion] = useState<OccasionFilter>(null)
   const [season,   setSeason]   = useState<SeasonFilter>(null)
   const [seed,     setSeed]     = useState(1)
