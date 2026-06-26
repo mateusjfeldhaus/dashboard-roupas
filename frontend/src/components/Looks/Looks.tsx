@@ -85,6 +85,12 @@ export function Looks() {
       <MetaRow>
         <Count>{filtered.length} look{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}</Count>
         {hasFilter && <ClearBtn onClick={clearAll}>Limpar filtros</ClearBtn>}
+        <ClearBtn
+          onClick={() => navigate('/looks/novo')}
+          style={{ marginLeft: 'auto', color: 'var(--accent, #c8a96e)', fontWeight: 700 }}
+        >
+          + Novo look
+        </ClearBtn>
       </MetaRow>
 
       <Grid>
