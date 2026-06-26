@@ -7,31 +7,42 @@ interface RatingState {
   setRating: (n: number) => Promise<void>
 }
 
+// Cache por lookId
+const cache = new Map<string, number>()
+
 export function useRating(lookId: string): RatingState {
-  const [rating,  setRatingState] = useState<number>(0)
-  const [loading, setLoading]     = useState(true)
+  const [rating,  setRatingState] = useState<number>(cache.get(lookId) ?? 0)
+  const [loading, setLoading]     = useState(!cache.has(lookId))
 
   useEffect(() => {
+    if (cache.has(lookId)) return   // já em cache, não re-fetch
     setLoading(true)
     api.get<{ rating: number }>(`/api/rating/${encodeURIComponent(lookId)}`)
-      .then(r => { setRatingState(r.data.rating ?? 0); setLoading(false) })
+      .then(r => {
+        const v = r.data.rating ?? 0
+        cache.set(lookId, v)
+        setRatingState(v)
+        setLoading(false)
+      })
       .catch(() => setLoading(false))
   }, [lookId])
 
   async function setRating(n: number) {
     if (loading) return
     const previous = rating
-    // Atualização otimista — responde imediatamente ao clique
     setRatingState(n)
+    cache.set(lookId, n)
     setLoading(true)
     try {
       const r = await api.post<{ rating: number }>(
         `/api/rating/${encodeURIComponent(lookId)}`,
         { rating: n }
       )
-      setRatingState(r.data.rating ?? 0)
+      const v = r.data.rating ?? 0
+      cache.set(lookId, v)
+      setRatingState(v)
     } catch {
-      // Reverte se o servidor rejeitar
+      cache.set(lookId, previous)
       setRatingState(previous)
     } finally {
       setLoading(false)

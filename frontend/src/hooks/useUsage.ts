@@ -20,18 +20,27 @@ export function formatDate(iso: string): string {
   return `${d}/${m}/${y}`
 }
 
+// Cache por lookId — persiste enquanto a aba estiver aberta
+const cache = new Map<string, ApiStats>()
+
 export function useUsage(lookId: string): UsageStats & {
   markUsed: () => Promise<void>
   undoLast: () => Promise<void>
 } {
-  const [stats, setStats] = useState<UsageStats>({
-    count: 0, lastDate: null, dates: [], loading: true,
-  })
+  const cached = cache.get(lookId)
+  const [stats, setStats] = useState<UsageStats>(
+    cached
+      ? { count: cached.count, lastDate: cached.lastDate, dates: cached.dates, loading: false }
+      : { count: 0, lastDate: null, dates: [], loading: true }
+  )
 
-  const apply = (data: ApiStats) =>
+  function apply(data: ApiStats) {
+    cache.set(lookId, data)
     setStats({ count: data.count, lastDate: data.lastDate, dates: data.dates, loading: false })
+  }
 
   useEffect(() => {
+    if (cache.has(lookId)) return   // já em cache, não re-fetch
     let cancelled = false
     api.get<ApiStats>(`/api/usage/${encodeURIComponent(lookId)}`)
       .then(r => { if (!cancelled) apply(r.data) })
