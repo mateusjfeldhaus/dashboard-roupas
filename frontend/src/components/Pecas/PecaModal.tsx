@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useLooks } from '../../hooks/useLooks'
 import type { Piece, Look } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
-import { LookModal } from '../Looks/LookModal'
 import { getTagColor } from '../../styles/tagColors'
 import { useNotes } from '../../hooks/useNotes'
 import {
@@ -16,20 +16,18 @@ import {
 interface Props { piece: Piece; onClose: () => void }
 
 export function PecaModal({ piece, onClose }: Props) {
+  const navigate = useNavigate()
   const { looks } = useLooks()
-  const [lookModal, setLookModal] = useState<Look | null>(null)
   const { notes, status: notesStatus, setNotes } = useNotes('piece', piece.id, piece.notes)
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
-      e.stopImmediatePropagation() // impede que o LookModal (ou qualquer pai) também capture
-      if (lookModal) setLookModal(null)
-      else onClose()
+      onClose()
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [onClose, lookModal])
+  }, [onClose])
 
   const pieceLooks = looks.filter(l => l.pieces.some(lp => lp.pieceId === piece.id))
 
@@ -72,7 +70,7 @@ export function PecaModal({ piece, onClose }: Props) {
               <EmptyLooks>Nenhum look cadastrado com esta peça ainda.</EmptyLooks>
             ) : (
               pieceLooks.map(look => (
-                <LookRow key={look.id} onClick={() => setLookModal(look)}>
+                <LookRow key={look.id} onClick={() => { navigate(`/looks/${look.id}`); onClose() }}>
                   <LookRowTitle>{look.title}</LookRowTitle>
                   <LookTagRow>
                     {look.tags.map(t => (
@@ -117,9 +115,6 @@ export function PecaModal({ piece, onClose }: Props) {
         </Dialog>
       </Overlay>
 
-      {lookModal && (
-        <LookModal look={lookModal} onClose={() => setLookModal(null)} />
-      )}
     </>
   )
 }

@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { Look, Piece } from '@data/types'
 import { exportLookAsImage } from '../../utils/exportLook'
 import { usePieces } from '../../hooks/usePieces'
@@ -7,7 +8,6 @@ import { useUsage, formatDate } from '../../hooks/useUsage'
 import { useRating } from '../../hooks/useRating'
 import { useNotes } from '../../hooks/useNotes'
 import { useLookPhoto } from '../../hooks/useLookPhoto'
-import { PecaModal } from '../Pecas/PecaModal'
 import { CAT_ORDER, catKey, photoUrl } from '../../utils/lookHelpers'
 import {
   Overlay, Dialog, Header, Title, TagRow, Tag, CloseBtn,
@@ -28,9 +28,9 @@ export function LookModal({ look, onClose }: Props) {
   const { rating, loading: rLoading, setRating } = useRating(look.id)
   const { notes, status: notesStatus, setNotes } = useNotes('look', look.id, look.notes)
   const { photoId, uploading: photoUploading, upload: uploadPhoto, remove: removePhoto } = useLookPhoto(look.id, look.photoId)
+  const navigate = useNavigate()
   const [hovered,     setHovered]     = useState<number>(0)
   const [exporting,   setExporting]   = useState(false)
-  const [pieceModal,  setPieceModal]  = useState<Piece | null>(null)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const uploadRef  = useRef<HTMLInputElement>(null)
   const replaceRef = useRef<HTMLInputElement>(null)
@@ -40,12 +40,11 @@ export function LookModal({ look, onClose }: Props) {
     const h = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       if (lightboxOpen) { setLightboxOpen(false); return }
-      if (pieceModal)   { setPieceModal(null);     return }
       onClose()
     }
     window.addEventListener('keydown', h)
     return () => window.removeEventListener('keydown', h)
-  }, [onClose, pieceModal, lightboxOpen])
+  }, [onClose, lightboxOpen])
 
   const piecesInLook = look.pieces
     .map(lp => {
@@ -155,7 +154,7 @@ export function LookModal({ look, onClose }: Props) {
           <FlatLayTitle>Flat-Lay do Look</FlatLayTitle>
           <FlatLay>
             {piecesInLook.map(({ cat, piece }) => (
-              <PieceSlot key={piece.id} onClick={() => setPieceModal(piece)} title={`Ver ${piece.name}`}>
+              <PieceSlot key={piece.id} onClick={() => { navigate(`/pecas/${piece.id}`); onClose() }} title={`Ver ${piece.name}`}>
                 <PieceImg $color={piece.color}>
                   <Img
                     src={imgUrl(piece.img)}
@@ -232,9 +231,6 @@ export function LookModal({ look, onClose }: Props) {
       </LightboxOverlay>
     )}
 
-    {pieceModal && (
-      <PecaModal piece={pieceModal} onClose={() => setPieceModal(null)} />
-    )}
   </>
   )
 }
