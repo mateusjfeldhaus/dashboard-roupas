@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { useLooks } from '../hooks/useLooks'
@@ -87,6 +87,12 @@ function photoUrl(lookId: string) {
 export function LookPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') navigate(-1) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [navigate])
   const { allLooks, toggleHidden, loading: looksLoading } = useLooks()
   const { pieces } = usePieces()
 

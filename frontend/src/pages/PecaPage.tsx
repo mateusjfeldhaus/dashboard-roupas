@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { usePieces } from '../hooks/usePieces'
@@ -62,6 +63,12 @@ const NotFound = styled.div`
 export function PecaPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') navigate(-1) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [navigate])
   const { allPieces, toggleHidden, loading: loadingPieces } = usePieces()
   const { looks, loading: loadingLooks } = useLooks()
 
