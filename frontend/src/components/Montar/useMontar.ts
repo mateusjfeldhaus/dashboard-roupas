@@ -4,14 +4,9 @@ import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
 import type { Look } from '@data/types'
 import { SEASONS } from '../../styles/tags'
+import { CAT_LIST, CAT_LABELS } from '../../utils/lookHelpers'
 
-export const CAT_LABELS: Record<string, string> = {
-  'Camisa':'Camisas','Terno':'Ternos','Costume':'Costumes','Blazer':'Blazers',
-  'Calça':'Calças','Sapato':'Sapatos','Gravata':'Gravatas','Polo':'Polos',
-  'Camiseta':'Camisetas','Jaqueta':'Jaquetas','Suéter':'Suéteres',
-  'Relógio':'Relógios','Cinto':'Cintos','Acessório':'Acessórios',
-}
-const CAT_ORDER = Object.keys(CAT_LABELS)
+export { CAT_LABELS }
 
 export type SeasonFilter = typeof SEASONS[number]['tag'] | null
 export type TimeFilter   = 'diurno' | 'noturno' | null
@@ -43,8 +38,8 @@ export function useMontar() {
 
   const allCats = [...new Set(pieces.map(p => p.category as string))]
   const CATEGORIES = [
-    ...CAT_ORDER.filter(c => allCats.includes(c)),
-    ...allCats.filter(c => !CAT_ORDER.includes(c)),
+    ...CAT_LIST.filter(c => allCats.includes(c)),
+    ...allCats.filter(c => !(CAT_LIST as readonly string[]).includes(c)),
   ]
 
   const [activeCat,    setActiveCat]    = useState<string>('Camisa')

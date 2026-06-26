@@ -23,8 +23,11 @@ const ROUPAS_DIR = path.resolve(__dirname, '../..')
 
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(helmet())
+const isDev = process.env.NODE_ENV === 'development'
 app.use(cors({
-  origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
+  origin: process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',')
+    : isDev ? 'http://localhost:5173' : false,
 }))
 app.use(express.json({ limit: '1mb' }))
 
@@ -38,6 +41,8 @@ app.use('/img', (req, res, next) => {
   try {
     const decoded   = decodeURIComponent(req.path)
     const filePath  = path.join(ROUPAS_DIR, decoded)
+    // Guard against path traversal (e.g. /img/../../../etc/passwd)
+    if (!filePath.startsWith(ROUPAS_DIR + path.sep)) { res.status(403).end(); return }
     if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
       const ext = path.extname(filePath).toLowerCase()
       res.setHeader('Content-Type', MIME[ext] ?? 'application/octet-stream')
@@ -51,13 +56,23 @@ app.use('/img', (req, res, next) => {
   }
 })
 
-// ── Rate limit: máx 10 tentativas por IP a cada 15 min ───────────────────────
+// ── Rate limit: máx 10 tentativas de login por IP a cada 15 min ──────────────
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 10,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   message: { error: 'Muitas tentativas. Tente novamente em 15 minutos.' },
+})
+
+// ── Rate limit: máx 200 writes por IP por minuto (proteção geral) ─────────────
+const writeLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 200,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  skip: (req) => req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS',
+  message: { error: 'Muitas requisições. Tente novamente em instantes.' },
 })
 
 // ── POST /api/auth — valida PIN e emite JWT 24h ──────────────────────────────
@@ -87,6 +102,7 @@ app.use((req, res, next) => {
 })
 
 // ── API routes ────────────────────────────────────────────────────────────────
+app.use('/api', writeLimiter)
 app.use('/api/pieces',   piecesRouter)
 app.use('/api/looks',    looksRouter)
 app.use('/api/usage',    usageRouter)

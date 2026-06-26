@@ -67,8 +67,6 @@ router.patch('/:id/notes', async (req, res) => {
   } catch (e) { apiError(res, e) }
 })
 
-export default router
-
 // PATCH /api/pieces/:id/hidden
 router.patch('/:id/hidden', async (req, res) => {
   try {
@@ -85,4 +83,6 @@ router.patch('/:id/hidden', async (req, res) => {
     res.json({ hidden: updated.hidden })
   } catch (e) { apiError(res, e) }
 })
+
+export default router
 

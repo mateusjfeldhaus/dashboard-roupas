@@ -4,16 +4,12 @@ import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
 import type { Look, LookTag } from '@data/types'
 import { SEASONS, OCCASIONS } from '../../styles/tags'
+import { CAT_LIST } from '../../utils/lookHelpers'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export type OccasionFilter = 'formal' | 'casual' | 'esportes' | null
 export type SeasonFilter   = typeof SEASONS[number]['tag'] | null
-
-export const CAT_ORDER = [
-  'Camisa','Polo','Camiseta','Costume','Blazer','Terno',
-  'Calça','Sapato','Cinto','Gravata','Relógio','Suéter','Jaqueta','Acessório',
-]
 
 // ── Module-level state (persists across navigation) ───────────────────────────
 
@@ -130,8 +126,8 @@ export function useViagem() {
       .map(id => pieces.find(p => p.id === id))
       .filter(Boolean)
       .sort((a, b) => {
-        const ai = CAT_ORDER.indexOf(a!.category as string)
-        const bi = CAT_ORDER.indexOf(b!.category as string)
+        const ai = (CAT_LIST as readonly string[]).indexOf(a!.category as string)
+        const bi = (CAT_LIST as readonly string[]).indexOf(b!.category as string)
         return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi)
       }) as typeof pieces
   }, [allPieceIds, pieces])
