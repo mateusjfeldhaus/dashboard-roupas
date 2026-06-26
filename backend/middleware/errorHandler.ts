@@ -6,7 +6,7 @@ const IS_DEV = process.env.NODE_ENV === 'development'
 
 /** Converte um ZodError em mensagem legível */
 function formatZodError(e: ZodError): string {
-  return e.errors.map(err => `${err.path.join('.')}: ${err.message}`).join(', ')
+  return e.issues.map((err: { path: (string | number | symbol)[]; message: string }) => `${err.path.map(String).join('.')}: ${err.message}`).join(', ')
 }
 
 /** Helper para rotas — substitui o try/catch inline */

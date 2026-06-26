@@ -62,7 +62,9 @@ export const WishlistCreateSchema = z.object({
   purchased: z.boolean().default(false),
 })
 
-export const WishlistUpdateSchema = WishlistCreateSchema.partial()
+export const WishlistUpdateSchema = WishlistCreateSchema.partial().extend({
+  purchasedAt: z.coerce.date().optional().nullable(),
+})
 
 // ── Rating ────────────────────────────────────────────────────────────────────
 

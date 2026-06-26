@@ -1,0 +1,61 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RatingSchema = exports.WishlistUpdateSchema = exports.WishlistCreateSchema = exports.LookUpdateSchema = exports.LookCreateSchema = exports.NotesSchema = exports.PieceUpdateSchema = exports.PieceCreateSchema = void 0;
+const zod_1 = require("zod");
+// ── Piece ─────────────────────────────────────────────────────────────────────
+const PIECE_CATEGORIES = [
+    'Camisa', 'Calça', 'Blazer', 'Costume', 'Terno', 'Sapato',
+    'Cinto', 'Gravata', 'Relógio', 'Suéter', 'Polo', 'Camiseta',
+    'Jaqueta', 'Acessório',
+];
+exports.PieceCreateSchema = zod_1.z.object({
+    id: zod_1.z.string().min(1),
+    name: zod_1.z.string().min(1),
+    brand: zod_1.z.string().default(''),
+    category: zod_1.z.enum(PIECE_CATEGORIES),
+    img: zod_1.z.string().default(''),
+    color: zod_1.z.string().default(''),
+    tips: zod_1.z.array(zod_1.z.string()).default([]),
+    notes: zod_1.z.string().default(''),
+});
+exports.PieceUpdateSchema = exports.PieceCreateSchema.partial().omit({ id: true });
+exports.NotesSchema = zod_1.z.object({
+    notes: zod_1.z.string(),
+});
+// ── Look ──────────────────────────────────────────────────────────────────────
+const LOOK_TAGS = [
+    'formal', 'casual', 'esportes', 'diurno', 'noturno',
+    'verao', 'inverno', 'primavera', 'outono',
+];
+const LookPieceSchema = zod_1.z.object({
+    cat: zod_1.z.string(),
+    pieceId: zod_1.z.string().min(1),
+});
+exports.LookCreateSchema = zod_1.z.object({
+    id: zod_1.z.string().min(1),
+    title: zod_1.z.string().min(1),
+    tags: zod_1.z.array(zod_1.z.enum(LOOK_TAGS)).default([]),
+    formality: zod_1.z.number().int().min(1).max(5).default(1),
+    tip: zod_1.z.string().default(''),
+    notes: zod_1.z.string().default(''),
+    pieces: zod_1.z.array(LookPieceSchema).default([]),
+});
+exports.LookUpdateSchema = exports.LookCreateSchema.partial().omit({ id: true });
+// ── Wishlist ──────────────────────────────────────────────────────────────────
+exports.WishlistCreateSchema = zod_1.z.object({
+    name: zod_1.z.string().min(1),
+    category: zod_1.z.string().default(''),
+    brand: zod_1.z.string().default(''),
+    price: zod_1.z.number().positive().nullable().optional(),
+    priority: zod_1.z.number().int().min(1).max(3).default(2),
+    notes: zod_1.z.string().default(''),
+    link: zod_1.z.string().default(''),
+    purchased: zod_1.z.boolean().default(false),
+});
+exports.WishlistUpdateSchema = exports.WishlistCreateSchema.partial().extend({
+    purchasedAt: zod_1.z.coerce.date().optional().nullable(),
+});
+// ── Rating ────────────────────────────────────────────────────────────────────
+exports.RatingSchema = zod_1.z.object({
+    rating: zod_1.z.number().int().min(0).max(10),
+});
