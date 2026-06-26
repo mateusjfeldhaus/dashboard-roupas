@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
@@ -14,6 +14,19 @@ export const CAT_ORDER = [
   'Camisa','Polo','Camiseta','Costume','Blazer','Terno',
   'Calça','Sapato','Cinto','Gravata','Relógio','Suéter','Jaqueta','Acessório',
 ]
+
+// ── Module-level state (persists across navigation) ───────────────────────────
+
+let _days:      number          = 2
+let _occasion:  OccasionFilter  = null
+let _season:    SeasonFilter    = null
+let _seed:      number          = 1
+let _capsule:   Look[]          = []
+let _generated: boolean         = false
+let _checkedIds: Set<string>    = new Set()
+
+const listeners = new Set<() => void>()
+function notify() { listeners.forEach(fn => fn()) }
 
 // ── Algorithm ─────────────────────────────────────────────────────────────────
 
@@ -63,44 +76,54 @@ export function useViagem() {
   const { pieces } = usePieces()
   const { looks } = useLooks()
   const navigate = useNavigate()
-  const [days,     setDays]     = useState(2)
-  const [occasion, setOccasion] = useState<OccasionFilter>(null)
-  const [season,   setSeason]   = useState<SeasonFilter>(null)
-  const [seed,     setSeed]     = useState(1)
-  const [capsule,     setCapsule]     = useState<Look[]>([])
-  const [generated,   setGenerated]   = useState(false)
-  const [checkedIds,  setCheckedIds]  = useState<Set<string>>(new Set())
-  const [copiedMsg,   setCopiedMsg]   = useState(false)
+
+  const [, rerender] = useState(0)
+
+  useEffect(() => {
+    const fn = () => rerender(n => n + 1)
+    listeners.add(fn)
+    return () => { listeners.delete(fn) }
+  }, [])
+
+  // setters that write to module state and notify
+  function setDays(v: number)               { _days = v;       notify() }
+  function setOccasion(v: OccasionFilter)   { _occasion = v;   notify() }
+  function setSeason(v: SeasonFilter)       { _season = v;     notify() }
+  function setCheckedIds(fn: (prev: Set<string>) => Set<string>) {
+    _checkedIds = fn(_checkedIds); notify()
+  }
+
+  const [copiedMsg, setCopiedMsg] = useState(false)
 
   const pool = useMemo(() => {
     let l = looks
-    if (occasion) l = l.filter(x => x.tags.includes(occasion as LookTag))
-    if (season)   l = l.filter(x => x.tags.includes(season   as LookTag))
+    if (_occasion) l = l.filter(x => x.tags.includes(_occasion as LookTag))
+    if (_season)   l = l.filter(x => x.tags.includes(_season   as LookTag))
     return l
-  }, [looks, occasion, season])
+  }, [looks, _occasion, _season])
 
   const generate = useCallback((newSeed?: number) => {
-    const s = newSeed ?? seed
-    const result = buildCapsule(pool, Math.max(days, 1), s)
-    setCapsule(result)
-    setGenerated(true)
-    setCheckedIds(new Set())
-  }, [pool, days, seed])
+    const s = newSeed ?? _seed
+    _capsule   = buildCapsule(pool, Math.max(_days, 1), s)
+    _generated = true
+    _checkedIds = new Set()
+    notify()
+  }, [pool])
 
   function handleGenerate() {
     const s = Math.floor(Math.random() * 999999) + 1
-    setSeed(s); generate(s)
+    _seed = s; generate(s)
   }
 
   function handleShuffle() {
-    const s = seed + 1; setSeed(s); generate(s)
+    const s = _seed + 1; _seed = s; generate(s)
   }
 
   function removeLook(id: string) {
-    setCapsule(prev => prev.filter(l => l.id !== id))
+    _capsule = _capsule.filter(l => l.id !== id); notify()
   }
 
-  const allPieceIds = useMemo(() => uniquePieceIds(capsule), [capsule])
+  const allPieceIds = useMemo(() => uniquePieceIds(_capsule), [_capsule])
 
   const checklistItems = useMemo(() => {
     return allPieceIds
@@ -123,10 +146,10 @@ export function useViagem() {
     return map
   }, [checklistItems])
 
-  const checkedCount = checkedIds.size
+  const checkedCount = _checkedIds.size
   const totalCount   = checklistItems.length
   const pct = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0
-  const efficiency = totalCount > 0 ? (capsule.length / totalCount).toFixed(1) : '—'
+  const efficiency = totalCount > 0 ? (_capsule.length / totalCount).toFixed(1) : '—'
 
   function toggleCheck(id: string) {
     setCheckedIds(prev => {
@@ -137,10 +160,10 @@ export function useViagem() {
   }
 
   function copyList() {
-    const lines: string[] = [`🧳 Mala — ${days} dias\n`]
+    const lines: string[] = [`🧳 Mala — ${_days} dias\n`]
     byCategory.forEach((items, cat) => {
       lines.push(`${cat}:`)
-      items.forEach(p => lines.push(`  ${checkedIds.has(p.id) ? '✓' : '□'} ${p.name}`))
+      items.forEach(p => lines.push(`  ${_checkedIds.has(p.id) ? '✓' : '□'} ${p.name}`))
     })
     navigator.clipboard.writeText(lines.join('\n')).then(() => {
       setCopiedMsg(true)
@@ -150,11 +173,11 @@ export function useViagem() {
 
   return {
     pieces, looks, navigate,
-    days, setDays,
-    occasion, setOccasion,
-    season, setSeason,
-    pool, capsule, generated,
-    checkedIds, setCheckedIds,
+    days: _days,       setDays,
+    occasion: _occasion, setOccasion,
+    season: _season,   setSeason,
+    pool, capsule: _capsule, generated: _generated,
+    checkedIds: _checkedIds, setCheckedIds,
     copiedMsg,
     handleGenerate, handleShuffle, removeLook,
     checklistItems, byCategory,

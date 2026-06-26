@@ -144,7 +144,7 @@ export function Viagem() {
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <CopyBtn onClick={copyList}>{copiedMsg ? '✓ copiado' : '📋 copiar'}</CopyBtn>
                 {checkedCount > 0 && (
-                  <ClearCheckBtn onClick={() => setCheckedIds(new Set())}>limpar</ClearCheckBtn>
+                  <ClearCheckBtn onClick={() => setCheckedIds(() => new Set<string>())}>limpar</ClearCheckBtn>
                 )}
               </div>
             )}
