@@ -1,9 +1,17 @@
 import { useState, useEffect, FormEvent } from 'react'
 import api, { setApiKey, STORAGE_KEY } from '../../api/client'
 
-const TOKEN_TTL = 24 * 60 * 60 * 1000
-
 interface StoredAuth { token: string; expiresAt: number }
+
+/** Lê o campo `exp` (Unix s) do payload JWT sem verificar assinatura */
+function jwtExp(token: string): number | null {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    return typeof payload.exp === 'number' ? payload.exp * 1000 : null
+  } catch {
+    return null
+  }
+}
 
 function loadStoredAuth(): StoredAuth | null {
   try {
@@ -39,7 +47,8 @@ export function usePinGate() {
     try {
       const res = await api.post<{ token: string }>('/api/auth', { pin })
       const { token } = res.data
-      const auth: StoredAuth = { token, expiresAt: Date.now() + TOKEN_TTL }
+      const expiresAt = jwtExp(token) ?? (Date.now() + 24 * 60 * 60 * 1000)
+      const auth: StoredAuth = { token, expiresAt }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(auth))
       setApiKey(token)
       setStatus('unlocked')
