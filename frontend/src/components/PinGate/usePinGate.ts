@@ -1,8 +1,7 @@
 import { useState, useEffect, FormEvent } from 'react'
-import api, { setApiKey } from '../../api/client'
+import api, { setApiKey, STORAGE_KEY } from '../../api/client'
 
-const STORAGE_KEY = 'wardrobeAuth'
-const TOKEN_TTL   = 24 * 60 * 60 * 1000
+const TOKEN_TTL = 24 * 60 * 60 * 1000
 
 interface StoredAuth { token: string; expiresAt: number }
 

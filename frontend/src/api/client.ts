@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const STORAGE_KEY = 'wardrobeAuth'
+export const STORAGE_KEY = 'wardrobeAuth'
 
 // In development, VITE_API_URL is unset → uses '/' → Vite proxies /api and /img to :3001.
 // In production, set VITE_API_URL to the deployed backend URL (e.g. https://api.railway.app).
