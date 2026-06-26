@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import styled from 'styled-components'
 import { usePieces } from '../../hooks/usePieces'
 import type { PieceCategory } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
@@ -8,7 +9,19 @@ import {
   Section, CatTitle, PieceGrid,
   PieceCard, Thumb, ThumbImg, ColorBar, PieceName, PieceBrand,
 } from './Pecas.styles'
-import { SkGrid, SkCard, SkStack, SkLine } from '../Skeleton'
+import { SkGrid, SkCard } from '../Skeleton'
+
+const DescartadasLink = styled(Link)`
+  font-size: 12px; font-weight: 600;
+  color: ${p => p.theme.colors.textMuted};
+  padding: 6px 12px;
+  border: 1px solid ${p => p.theme.colors.border};
+  border-radius: 20px;
+  margin-left: auto;
+  white-space: nowrap;
+  transition: all 0.15s;
+  &:hover { color: ${p => p.theme.colors.text}; border-color: currentColor; }
+`
 
 const categories: PieceCategory[] = [
   'Camisa', 'Calça', 'Blazer', 'Costume', 'Terno',
@@ -45,6 +58,7 @@ export function Pecas() {
               {cat}
             </FilterBtn>
           ))}
+          <DescartadasLink to="/pecas/descartadas">🗄 Descartadas</DescartadasLink>
         </FilterBar>
       </FilterStickyWrap>
 

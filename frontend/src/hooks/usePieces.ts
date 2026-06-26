@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import api from '../api/client'
 import type { Piece } from '../../../backend/data/types'
 
-// API returns the same shape as the static Piece type (plus createdAt which we ignore)
 type ApiPiece = Piece & { createdAt?: string }
 
 let cache: Piece[] | null = null
@@ -11,26 +10,25 @@ const listeners: Set<() => void> = new Set()
 function notify() { listeners.forEach(fn => fn()) }
 
 export function usePieces() {
-  const [pieces, setPieces] = useState<Piece[]>(cache ?? [])
-  const [loading, setLoading] = useState(!cache)
-  const [error,   setError]   = useState<string | null>(null)
+  const [allPieces, setAllPieces] = useState<Piece[]>(cache ?? [])
+  const [loading,   setLoading]   = useState(!cache)
+  const [error,     setError]     = useState<string | null>(null)
 
   useEffect(() => {
-    if (cache) { setPieces(cache); setLoading(false); return }
+    if (cache) { setAllPieces(cache); setLoading(false); return }
 
     api.get<ApiPiece[]>('/api/pieces')
       .then(r => {
         cache = r.data
-        setPieces(cache)
+        setAllPieces(cache)
         setLoading(false)
         notify()
       })
       .catch(e => { setError(String(e)); setLoading(false) })
   }, [])
 
-  // Subscribe to external cache updates (e.g. after a mutation)
   useEffect(() => {
-    const refresh = () => { if (cache) setPieces([...cache]) }
+    const refresh = () => { if (cache) setAllPieces([...cache]) }
     listeners.add(refresh)
     return () => { listeners.delete(refresh) }
   }, [])
@@ -39,9 +37,17 @@ export function usePieces() {
     cache = null
     setLoading(true)
     api.get<ApiPiece[]>('/api/pieces')
-      .then(r => { cache = r.data; setPieces(cache); setLoading(false); notify() })
+      .then(r => { cache = r.data; setAllPieces(cache!); setLoading(false); notify() })
       .catch(e => { setError(String(e)); setLoading(false) })
   }
 
-  return { pieces, loading, error, invalidate }
+  async function toggleHidden(pieceId: string, hidden: boolean) {
+    await api.patch(`/api/pieces/${encodeURIComponent(pieceId)}/hidden`, { hidden })
+    invalidate()
+  }
+
+  // pieces = apenas visíveis (hidden: false)
+  const pieces = allPieces.filter(p => !p.hidden)
+
+  return { pieces, allPieces, loading, error, invalidate, toggleHidden }
 }

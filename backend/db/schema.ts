@@ -13,6 +13,7 @@ export const pieces = pgTable('pieces', {
   color:     text('color').notNull().default(''),
   tips:      text('tips').array().notNull().default([]),
   notes:     text('notes').notNull().default(''),
+  hidden:    boolean('hidden').notNull().default(false),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 

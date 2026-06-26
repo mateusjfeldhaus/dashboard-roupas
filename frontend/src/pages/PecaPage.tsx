@@ -31,6 +31,18 @@ const BackBtn = styled.button`
   &:hover { color: ${p => p.theme.colors.text}; }
 `
 
+const HideBtn = styled.button`
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600;
+  color: ${p => p.theme.colors.textMuted};
+  margin-bottom: 20px; margin-left: 16px;
+  padding: 6px 10px;
+  border: 1px solid ${p => p.theme.colors.border};
+  border-radius: 8px;
+  transition: all 0.15s;
+  &:hover { color: ${p => p.theme.colors.text}; border-color: currentColor; }
+`
+
 const Card = styled.div`
   background: ${p => p.theme.colors.surface};
   border: 1px solid ${p => p.theme.colors.border};
@@ -50,10 +62,10 @@ const NotFound = styled.div`
 export function PecaPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { pieces, loading: loadingPieces } = usePieces()
+  const { allPieces, toggleHidden, loading: loadingPieces } = usePieces()
   const { looks, loading: loadingLooks } = useLooks()
 
-  const piece = pieces.find(p => p.id === id)
+  const piece = allPieces.find(p => p.id === id)
   const { notes, status: notesStatus, setNotes } = useNotes(
     'piece',
     piece?.id ?? '',
@@ -84,6 +96,12 @@ export function PecaPage() {
   return (
     <PageWrap>
       <BackBtn onClick={() => navigate(-1)}>← Voltar</BackBtn>
+      <HideBtn
+        onClick={() => toggleHidden(piece.id, !piece.hidden)}
+        title={piece.hidden ? 'Tornar visível' : 'Ocultar peça'}
+      >
+        {piece.hidden ? '👁 Tornar visível' : '🙈 Ocultar peça'}
+      </HideBtn>
 
       <Card>
         <ImgWrap>

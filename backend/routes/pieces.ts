@@ -68,3 +68,21 @@ router.patch('/:id/notes', async (req, res) => {
 })
 
 export default router
+
+// PATCH /api/pieces/:id/hidden
+router.patch('/:id/hidden', async (req, res) => {
+  try {
+    const { hidden } = req.body as { hidden: boolean }
+    if (typeof hidden !== 'boolean') {
+      res.status(400).json({ error: 'hidden deve ser boolean' })
+      return
+    }
+    const [updated] = await db.update(pieces)
+      .set({ hidden })
+      .where(eq(pieces.id, req.params.id))
+      .returning()
+    if (!updated) { res.status(404).json({ error: 'Peça não encontrada' }); return }
+    res.json({ hidden: updated.hidden })
+  } catch (e) { apiError(res, e) }
+})
+

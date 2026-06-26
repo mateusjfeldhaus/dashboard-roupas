@@ -34,6 +34,7 @@ export interface Piece {
   color: string
   tips: string[]
   notes?: string
+  hidden?: boolean
 }
 
 export interface LookPiece {
