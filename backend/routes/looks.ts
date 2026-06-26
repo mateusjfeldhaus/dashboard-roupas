@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { eq } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 import { db } from '../db/client'
 import { looks, lookPieces, lookPhotos } from '../db/schema'
 import { LookCreateSchema, LookUpdateSchema, NotesSchema } from '../lib/schemas'
@@ -11,20 +11,12 @@ const router = Router()
 async function withPieces(lookRows: (typeof looks.$inferSelect)[]) {
   if (lookRows.length === 0) return []
   const ids = lookRows.map(l => l.id)
-  const allLp = await db.select().from(lookPieces)
-    .where(
-      ids.length === 1
-        ? eq(lookPieces.lookId, ids[0])
-        // for multiple looks fetch all and filter in JS (simpler than SQL IN with Drizzle)
-        : undefined
-    )
-  const lpAll = ids.length > 1
-    ? allLp.filter(lp => ids.includes(lp.lookId))
-    : allLp
+  const lps = await db.select().from(lookPieces)
+    .where(ids.length === 1 ? eq(lookPieces.lookId, ids[0]) : inArray(lookPieces.lookId, ids))
 
   return lookRows.map(look => ({
     ...look,
-    pieces: lpAll
+    pieces: lps
       .filter(lp => lp.lookId === look.id)
       .map(lp => ({ cat: lp.cat, pieceId: lp.pieceId })),
   }))
