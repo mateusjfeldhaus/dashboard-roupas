@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
-import type { Piece, LookTag } from '@data/types'
+import type { Piece, LookTag, PieceCategory } from '@data/types'
 import { CAT_LIST as CATEGORIES } from '../../utils/lookHelpers'
 import api from '../../api/client'
 
