@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RatingSchema = exports.WishlistUpdateSchema = exports.WishlistCreateSchema = exports.LookUpdateSchema = exports.LookCreateSchema = exports.NotesSchema = exports.PieceUpdateSchema = exports.PieceCreateSchema = void 0;
+exports.RatingSchema = exports.HiddenSchema = exports.WishlistUpdateSchema = exports.WishlistCreateSchema = exports.LookUpdateSchema = exports.LookCreateSchema = exports.TIME_TAGS = exports.OCCASION_TAGS = exports.SEASON_TAGS = exports.NotesSchema = exports.PieceUpdateSchema = exports.PieceCreateSchema = void 0;
 const zod_1 = require("zod");
 // ── Piece ─────────────────────────────────────────────────────────────────────
 const PIECE_CATEGORIES = [
-    'Camisa', 'Calça', 'Blazer', 'Costume', 'Terno', 'Sapato',
+    'Camisa', 'Calça', 'Blazer', 'Colete', 'Sapato',
     'Cinto', 'Gravata', 'Relógio', 'Suéter', 'Polo', 'Camiseta',
     'Jaqueta', 'Acessório',
 ];
@@ -23,10 +23,22 @@ exports.NotesSchema = zod_1.z.object({
     notes: zod_1.z.string(),
 });
 // ── Look ──────────────────────────────────────────────────────────────────────
-const LOOK_TAGS = [
-    'formal', 'casual', 'esportes', 'diurno', 'noturno',
-    'verao', 'inverno', 'primavera', 'outono',
-];
+exports.SEASON_TAGS = ['verao', 'inverno', 'primavera', 'outono'];
+exports.OCCASION_TAGS = ['formal', 'casual', 'esportes'];
+exports.TIME_TAGS = ['diurno', 'noturno'];
+const LOOK_TAGS = [...exports.SEASON_TAGS, ...exports.OCCASION_TAGS, ...exports.TIME_TAGS];
+/**
+ * Regras rígidas de tags:
+ *  - no máximo 1 tag de estação  (verao | inverno | primavera | outono)
+ *  - no máximo 1 tag de ocasião  (formal | casual | esportes)
+ *  - no máximo 1 tag de horário  (diurno | noturno)
+ *  - sem duplicatas
+ */
+const tagsSchema = zod_1.z.array(zod_1.z.enum(LOOK_TAGS))
+    .refine(t => t.filter(x => exports.SEASON_TAGS.includes(x)).length <= 1, { message: 'Máximo 1 tag de estação (verao/inverno/primavera/outono)' })
+    .refine(t => t.filter(x => exports.OCCASION_TAGS.includes(x)).length <= 1, { message: 'Máximo 1 tag de ocasião (formal/casual/esportes)' })
+    .refine(t => t.filter(x => exports.TIME_TAGS.includes(x)).length <= 1, { message: 'Máximo 1 tag de horário (diurno/noturno)' })
+    .refine(t => new Set(t).size === t.length, { message: 'Tags duplicadas não são permitidas' });
 const LookPieceSchema = zod_1.z.object({
     cat: zod_1.z.string(),
     pieceId: zod_1.z.string().min(1),
@@ -34,7 +46,7 @@ const LookPieceSchema = zod_1.z.object({
 exports.LookCreateSchema = zod_1.z.object({
     id: zod_1.z.string().min(1),
     title: zod_1.z.string().min(1),
-    tags: zod_1.z.array(zod_1.z.enum(LOOK_TAGS)).default([]),
+    tags: tagsSchema.default([]),
     formality: zod_1.z.number().int().min(1).max(5).default(1),
     tip: zod_1.z.string().default(''),
     notes: zod_1.z.string().default(''),
@@ -54,6 +66,10 @@ exports.WishlistCreateSchema = zod_1.z.object({
 });
 exports.WishlistUpdateSchema = exports.WishlistCreateSchema.partial().extend({
     purchasedAt: zod_1.z.coerce.date().optional().nullable(),
+});
+// ── Hidden ────────────────────────────────────────────────────────────────────
+exports.HiddenSchema = zod_1.z.object({
+    hidden: zod_1.z.boolean(),
 });
 // ── Rating ────────────────────────────────────────────────────────────────────
 exports.RatingSchema = zod_1.z.object({

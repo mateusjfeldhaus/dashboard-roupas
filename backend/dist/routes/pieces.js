@@ -63,7 +63,11 @@ router.put('/:id', async (req, res) => {
 // DELETE /api/pieces/:id
 router.delete('/:id', async (req, res) => {
     try {
-        await client_1.db.delete(schema_1.pieces).where((0, drizzle_orm_1.eq)(schema_1.pieces.id, req.params.id));
+        const [deleted] = await client_1.db.delete(schema_1.pieces).where((0, drizzle_orm_1.eq)(schema_1.pieces.id, req.params.id)).returning();
+        if (!deleted) {
+            res.status(404).json({ error: 'Peça não encontrada' });
+            return;
+        }
         res.json({ id: req.params.id });
     }
     catch (e) {
@@ -83,6 +87,24 @@ router.patch('/:id/notes', async (req, res) => {
             return;
         }
         res.json({ notes: updated.notes });
+    }
+    catch (e) {
+        (0, errorHandler_1.apiError)(res, e);
+    }
+});
+// PATCH /api/pieces/:id/hidden
+router.patch('/:id/hidden', async (req, res) => {
+    try {
+        const { hidden } = schemas_1.HiddenSchema.parse(req.body);
+        const [updated] = await client_1.db.update(schema_1.pieces)
+            .set({ hidden })
+            .where((0, drizzle_orm_1.eq)(schema_1.pieces.id, req.params.id))
+            .returning();
+        if (!updated) {
+            res.status(404).json({ error: 'Peça não encontrada' });
+            return;
+        }
+        res.json({ hidden: updated.hidden });
     }
     catch (e) {
         (0, errorHandler_1.apiError)(res, e);

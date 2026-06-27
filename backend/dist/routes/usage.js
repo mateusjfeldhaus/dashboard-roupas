@@ -4,6 +4,7 @@ const express_1 = require("express");
 const drizzle_orm_1 = require("drizzle-orm");
 const client_1 = require("../db/client");
 const schema_1 = require("../db/schema");
+const errorHandler_1 = require("../middleware/errorHandler");
 const router = (0, express_1.Router)();
 function today() { return new Date().toISOString().split('T')[0]; }
 function buildStats(records, lookId) {
@@ -28,7 +29,7 @@ router.get('/', async (_req, res) => {
         res.json({ records, summary });
     }
     catch (e) {
-        res.status(500).json({ error: String(e) });
+        (0, errorHandler_1.apiError)(res, e);
     }
 });
 // GET /api/usage/:lookId
@@ -43,16 +44,23 @@ router.get('/:lookId', async (req, res) => {
         res.json(buildStats(records, req.params.lookId));
     }
     catch (e) {
-        res.status(500).json({ error: String(e) });
+        (0, errorHandler_1.apiError)(res, e);
     }
 });
-// POST /api/usage/:lookId  → mark today
+// POST /api/usage/:lookId  → mark today (idempotente: ignora se já existir)
 router.post('/:lookId', async (req, res) => {
     try {
-        await client_1.db.insert(schema_1.usageRecords).values({
-            lookId: req.params.lookId,
-            date: today(),
-        });
+        const dateStr = today();
+        const [existing] = await client_1.db.select({ id: schema_1.usageRecords.id })
+            .from(schema_1.usageRecords)
+            .where((0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(schema_1.usageRecords.lookId, req.params.lookId), (0, drizzle_orm_1.eq)(schema_1.usageRecords.date, dateStr)))
+            .limit(1);
+        if (!existing) {
+            await client_1.db.insert(schema_1.usageRecords).values({
+                lookId: req.params.lookId,
+                date: dateStr,
+            });
+        }
         const records = await client_1.db.select({
             lookId: schema_1.usageRecords.lookId,
             date: schema_1.usageRecords.date,
@@ -62,7 +70,7 @@ router.post('/:lookId', async (req, res) => {
         res.json(buildStats(records, req.params.lookId));
     }
     catch (e) {
-        res.status(500).json({ error: String(e) });
+        (0, errorHandler_1.apiError)(res, e);
     }
 });
 // DELETE /api/usage/:lookId/last  → undo last use
@@ -85,7 +93,7 @@ router.delete('/:lookId/last', async (req, res) => {
         res.json(buildStats(records, req.params.lookId));
     }
     catch (e) {
-        res.status(500).json({ error: String(e) });
+        (0, errorHandler_1.apiError)(res, e);
     }
 });
 exports.default = router;

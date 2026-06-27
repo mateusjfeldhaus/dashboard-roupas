@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.requireApiKey = requireApiKey;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 function requireApiKey(req, res, next) {
-    const secret = process.env.JWT_SECRET ?? process.env.API_KEY; // JWT_SECRET separado; fallback para API_KEY
+    const secret = process.env.JWT_SECRET;
     if (!secret) {
-        res.status(500).json({ error: 'Servidor mal configurado: API_KEY ausente' });
+        res.status(500).json({ error: 'Servidor mal configurado: JWT_SECRET ausente' });
         return;
     }
     const token = req.headers['x-api-key'];
@@ -17,10 +17,10 @@ function requireApiKey(req, res, next) {
         return;
     }
     try {
-        jsonwebtoken_1.default.verify(token, secret);
+        jsonwebtoken_1.default.verify(token, secret, { algorithms: ['HS256'] });
         next();
     }
     catch {
-        res.status(401).json({ error: 'Token inválido ou expirado' });
+        res.status(401).json({ error: 'Token inválido' });
     }
 }

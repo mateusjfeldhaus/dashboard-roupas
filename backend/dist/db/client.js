@@ -36,12 +36,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.db = exports.pool = void 0;
+exports.db = void 0;
 const serverless_1 = require("@neondatabase/serverless");
 const neon_serverless_1 = require("drizzle-orm/neon-serverless");
 const ws_1 = __importDefault(require("ws"));
 const schema = __importStar(require("./schema"));
-// Necessário para usar WebSockets no Node.js (suporta transactions)
+// Necessário para usar WebSockets no Node.js (Neon serverless usa WS internamente)
 serverless_1.neonConfig.webSocketConstructor = ws_1.default;
-exports.pool = new serverless_1.Pool({ connectionString: process.env.DATABASE_URL });
-exports.db = (0, neon_serverless_1.drizzle)(exports.pool, { schema });
+const pool = new serverless_1.Pool({ connectionString: process.env.DATABASE_URL });
+exports.db = (0, neon_serverless_1.drizzle)(pool, { schema });

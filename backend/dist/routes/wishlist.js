@@ -55,7 +55,11 @@ router.put('/:id', async (req, res) => {
 // DELETE /api/wishlist/:id
 router.delete('/:id', async (req, res) => {
     try {
-        await client_1.db.delete(schema_1.wishlistItems).where((0, drizzle_orm_1.eq)(schema_1.wishlistItems.id, req.params.id));
+        const [deleted] = await client_1.db.delete(schema_1.wishlistItems).where((0, drizzle_orm_1.eq)(schema_1.wishlistItems.id, req.params.id)).returning();
+        if (!deleted) {
+            res.status(404).json({ error: 'Item não encontrado' });
+            return;
+        }
         res.json({ id: req.params.id });
     }
     catch (e) {

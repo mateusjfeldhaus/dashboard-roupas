@@ -12,17 +12,11 @@ async function withPieces(lookRows) {
     if (lookRows.length === 0)
         return [];
     const ids = lookRows.map(l => l.id);
-    const allLp = await client_1.db.select().from(schema_1.lookPieces)
-        .where(ids.length === 1
-        ? (0, drizzle_orm_1.eq)(schema_1.lookPieces.lookId, ids[0])
-        // for multiple looks fetch all and filter in JS (simpler than SQL IN with Drizzle)
-        : undefined);
-    const lpAll = ids.length > 1
-        ? allLp.filter(lp => ids.includes(lp.lookId))
-        : allLp;
+    const lps = await client_1.db.select().from(schema_1.lookPieces)
+        .where(ids.length === 1 ? (0, drizzle_orm_1.eq)(schema_1.lookPieces.lookId, ids[0]) : (0, drizzle_orm_1.inArray)(schema_1.lookPieces.lookId, ids));
     return lookRows.map(look => ({
         ...look,
-        pieces: lpAll
+        pieces: lps
             .filter(lp => lp.lookId === look.id)
             .map(lp => ({ cat: lp.cat, pieceId: lp.pieceId })),
     }));
@@ -116,8 +110,30 @@ router.put('/:id', async (req, res) => {
 // DELETE /api/looks/:id  (look_pieces cascade via FK)
 router.delete('/:id', async (req, res) => {
     try {
-        await client_1.db.delete(schema_1.looks).where((0, drizzle_orm_1.eq)(schema_1.looks.id, req.params.id));
+        const [deleted] = await client_1.db.delete(schema_1.looks).where((0, drizzle_orm_1.eq)(schema_1.looks.id, req.params.id)).returning();
+        if (!deleted) {
+            res.status(404).json({ error: 'Look não encontrado' });
+            return;
+        }
         res.json({ id: req.params.id });
+    }
+    catch (e) {
+        (0, errorHandler_1.apiError)(res, e);
+    }
+});
+// PATCH /api/looks/:id/hidden  body: { hidden: boolean }
+router.patch('/:id/hidden', async (req, res) => {
+    try {
+        const { hidden } = schemas_1.HiddenSchema.parse(req.body);
+        const [updated] = await client_1.db.update(schema_1.looks)
+            .set({ hidden })
+            .where((0, drizzle_orm_1.eq)(schema_1.looks.id, req.params.id))
+            .returning();
+        if (!updated) {
+            res.status(404).json({ error: 'Look não encontrado' });
+            return;
+        }
+        res.json({ hidden: updated.hidden });
     }
     catch (e) {
         (0, errorHandler_1.apiError)(res, e);
