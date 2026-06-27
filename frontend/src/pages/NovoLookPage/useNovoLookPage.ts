@@ -2,8 +2,11 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
-import type { Piece, LookTag, PieceCategory } from '@data/types'
+import type { Piece, LookTag } from '@data/types'
+import { CAT_LIST as CATEGORIES } from '../../utils/lookHelpers'
 import api from '../../api/client'
+
+export { CATEGORIES }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -18,12 +21,6 @@ export const TAG_LABEL: Record<string, string> = {
   diurno: 'Diurno', noturno: 'Noturno',
   verao: 'Verão', outono: 'Outono', inverno: 'Inverno', primavera: 'Primavera',
 }
-
-export const CATEGORIES: PieceCategory[] = [
-  'Camisa', 'Calça', 'Blazer', 'Costume', 'Terno',
-  'Sapato', 'Gravata', 'Cinto', 'Relógio', 'Suéter',
-  'Polo', 'Camiseta', 'Jaqueta', 'Acessório',
-]
 
 export const FORMALITY_LABELS = ['', 'Casual', 'Smart Casual', 'Business Casual', 'Formal', 'Black Tie']
 
