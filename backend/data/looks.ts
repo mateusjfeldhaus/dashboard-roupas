@@ -1163,7 +1163,7 @@ export const looks: Look[] = [
   {
     id: 'L079',
     title: 'Suéter Preto e Cinza',
-    tags: ['casual', 'inverno'],
+    tags: ['casual', 'inverno', 'diurno'],
     formality: 2,
     tip: 'Suéter preto com cinza médio e Derby preto: look de inverno sem complicação.',
     pieces: [
@@ -1177,7 +1177,7 @@ export const looks: Look[] = [
   {
     id: 'L080',
     title: 'Suéter Preto e Jeans',
-    tags: ['casual', 'inverno'],
+    tags: ['casual', 'inverno', 'noturno'],
     formality: 2,
     tip: 'Suéter preto com jeans e Chelsea: o look de frio mais direto e certeiro.',
     pieces: [
@@ -1205,7 +1205,7 @@ export const looks: Look[] = [
   {
     id: 'L082',
     title: 'Suéter Petróleo e Natural',
-    tags: ['casual', 'inverno'],
+    tags: ['casual', 'inverno', 'diurno'],
     formality: 2,
     tip: 'Petróleo com natural e bota social: outono sofisticado sem precisar de blazer.',
     pieces: [
@@ -1219,7 +1219,7 @@ export const looks: Look[] = [
   {
     id: 'L083',
     title: 'Suéter Branco e Cinza',
-    tags: ['casual', 'outono'],
+    tags: ['casual', 'outono', 'diurno'],
     formality: 2,
     tip: 'Suéter branco com cinza e penny loafer: o inverno mais limpo e elegante.',
     pieces: [
@@ -1233,7 +1233,7 @@ export const looks: Look[] = [
   {
     id: 'L084',
     title: 'Suéter com Blazer Cinza',
-    tags: ['formal', 'inverno'],
+    tags: ['formal', 'inverno', 'noturno'],
     formality: 3,
     tip: 'Suéter preto sob blazer cinza: o layering mais elegante do frio.',
     pieces: [
@@ -1276,7 +1276,7 @@ export const looks: Look[] = [
   {
     id: 'L087',
     title: 'Suéter Branco e Caramelo',
-    tags: ['casual', 'inverno'],
+    tags: ['casual', 'inverno', 'noturno'],
     formality: 2,
     tip: 'Branco quente com caramelo: tons de café com leite para o inverno.',
     pieces: [
@@ -1290,7 +1290,7 @@ export const looks: Look[] = [
   {
     id: 'L088',
     title: 'Suéter Preto e Malha',
-    tags: ['casual', 'inverno'],
+    tags: ['casual', 'inverno', 'diurno'],
     formality: 2,
     tip: 'Dois pretos com texturas diferentes: malha do suéter e malha da calça.',
     pieces: [
@@ -1332,7 +1332,7 @@ export const looks: Look[] = [
   {
     id: 'L091',
     title: 'Sobretudo Cinza Business',
-    tags: ['formal', 'inverno'],
+    tags: ['formal', 'inverno', 'noturno'],
     formality: 3,
     tip: 'Sobretudo Homem SA sobre camisa branca e Raffer chumbo: inverno de escritório.',
     pieces: [
@@ -1362,7 +1362,7 @@ export const looks: Look[] = [
   {
     id: 'L093',
     title: 'Overcoat Preto Elegante',
-    tags: ['formal', 'inverno'],
+    tags: ['formal', 'inverno', 'diurno'],
     formality: 5,
     tip: 'Raffer Overcoat cashmere sobre terno Tevah: o look de inverno mais refinado do armário.',
     pieces: [
@@ -1378,7 +1378,7 @@ export const looks: Look[] = [
   {
     id: 'L094',
     title: 'Sobretudo Cinza e Polo',
-    tags: ['casual', 'inverno'],
+    tags: ['casual', 'inverno', 'noturno'],
     formality: 2,
     tip: 'Sobretudo sobre polo petróleo: inverno casual com classe inesperada.',
     pieces: [
@@ -1393,7 +1393,7 @@ export const looks: Look[] = [
   {
     id: 'L095',
     title: 'Jaqueta Bege Casual',
-    tags: ['casual', 'outono'],
+    tags: ['casual', 'outono', 'noturno'],
     formality: 2,
     tip: 'Safira bege com Pima branca e sarja creme: tons de areia do outono suave.',
     pieces: [
@@ -1408,7 +1408,7 @@ export const looks: Look[] = [
   {
     id: 'L096',
     title: 'Jaqueta Bege e Polo Creme',
-    tags: ['casual', 'outono'],
+    tags: ['casual', 'outono', 'diurno'],
     formality: 2,
     tip: 'Bege sobre creme com linho natural: tons neutros que se harmonizam perfeitamente.',
     pieces: [
@@ -1423,7 +1423,7 @@ export const looks: Look[] = [
   {
     id: 'L097',
     title: 'Casaco Poliéster e Cinza',
-    tags: ['casual', 'inverno'],
+    tags: ['casual', 'inverno', 'diurno'],
     formality: 2,
     tip: 'Casaco Docthos sobre camisa cinza e malha preta: frio prático com estilo.',
     pieces: [
@@ -1437,7 +1437,7 @@ export const looks: Look[] = [
   {
     id: 'L098',
     title: 'Overcoat e Blazer Cinza',
-    tags: ['formal', 'inverno'],
+    tags: ['formal', 'inverno', 'noturno'],
     formality: 4,
     tip: 'Raffer Overcoat sobre blazer cinza e camisa azul: inverno formal com profundidade visual.',
     pieces: [
@@ -1453,7 +1453,7 @@ export const looks: Look[] = [
   {
     id: 'L099',
     title: 'Couro Marrom e Camisa Azul',
-    tags: ['casual', 'outono'],
+    tags: ['casual', 'outono', 'diurno'],
     formality: 2,
     tip: 'Dublin marrom com azul linho e sarja creme: o casual mais completo do outono.',
     pieces: [
