@@ -49,6 +49,12 @@ export const subcatConfig: Partial<Record<string, SubcatDef[]>> = {
 
 const CATEGORY_ORDER = Object.keys(CAT_LABELS)
 
+// Persiste estado entre navegações (ex: voltar da LookPage com ESC)
+const store = {
+  activeCat:    'Camisa' as string,
+  activeSubcat: null     as string | null,
+}
+
 export function looksForPiece(looks: Look[], pieceId: string): Look[] {
   return looks.filter(l => l.pieces.some(lp => lp.pieceId === pieceId))
 }
@@ -64,10 +70,15 @@ export function usePorPeca() {
     ...allPieceCats.filter(c => !CATEGORY_ORDER.includes(c)),
   ].map(id => ({ id, label: CAT_LABELS[id] ?? id }))
 
-  const [activeCat,    setActiveCat]    = useState('Camisa')
-  const [activeSubcat, setActiveSubcat] = useState<string | null>(null)
+  const [activeCat,    setActiveCat]    = useState(store.activeCat)
+  const [activeSubcat, setActiveSubcat] = useState<string | null>(store.activeSubcat)
 
-  function handleCatChange(cat: string) { setActiveCat(cat); setActiveSubcat(null) }
+  function handleCatChange(cat: string) {
+    store.activeCat    = cat
+    store.activeSubcat = null
+    setActiveCat(cat)
+    setActiveSubcat(null)
+  }
 
   const subcats         = subcatConfig[activeCat] ?? []
   const hasSubcats      = subcats.length > 0
@@ -78,9 +89,14 @@ export function usePorPeca() {
     p.category === activeCat && (!filterIds || filterIds.includes(p.id))
   )
 
+  function handleSubcatChange(id: string | null) {
+    store.activeSubcat = id
+    setActiveSubcat(id)
+  }
+
   return {
     pieces, looks, navigate,
-    categories, activeCat, activeSubcat, setActiveSubcat,
+    categories, activeCat, activeSubcat, setActiveSubcat: handleSubcatChange,
     handleCatChange, subcats, hasSubcats, filterIds, piecesInCat,
     looksForPiece,
   }

@@ -54,8 +54,13 @@ async function seed() {
       cat:     lp.cat,
     }))
   )
-  console.log('Inserting ' + allLookPieces.length + ' look_pieces rows...')
-  await db.insert(lookPieces).values(allLookPieces)
+  console.log('Inserting ' + allLookPieces.length + ' look_pieces rows (in chunks)...')
+  const CHUNK = 200
+  for (let i = 0; i < allLookPieces.length; i += CHUNK) {
+    const chunk = allLookPieces.slice(i, i + CHUNK)
+    await db.insert(lookPieces).values(chunk)
+    console.log('  chunk ' + (i / CHUNK + 1) + '/' + Math.ceil(allLookPieces.length / CHUNK) + ' done (' + Math.min(i + CHUNK, allLookPieces.length) + '/' + allLookPieces.length + ')')
+  }
   console.log('Look pieces done')
 
   console.log('Seed complete!')
