@@ -103,7 +103,8 @@ router.put('/:id', async (req, res) => {
 // DELETE /api/looks/:id  (look_pieces cascade via FK)
 router.delete('/:id', async (req, res) => {
   try {
-    await db.delete(looks).where(eq(looks.id, req.params.id))
+    const [deleted] = await db.delete(looks).where(eq(looks.id, req.params.id)).returning()
+    if (!deleted) { res.status(404).json({ error: 'Look não encontrado' }); return }
     res.json({ id: req.params.id })
   } catch (e) { apiError(res, e) }
 })

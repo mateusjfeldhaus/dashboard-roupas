@@ -49,7 +49,8 @@ router.put('/:id', async (req, res) => {
 // DELETE /api/pieces/:id
 router.delete('/:id', async (req, res) => {
   try {
-    await db.delete(pieces).where(eq(pieces.id, req.params.id))
+    const [deleted] = await db.delete(pieces).where(eq(pieces.id, req.params.id)).returning()
+    if (!deleted) { res.status(404).json({ error: 'Peça não encontrada' }); return }
     res.json({ id: req.params.id })
   } catch (e) { apiError(res, e) }
 })
