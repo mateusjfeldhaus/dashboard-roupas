@@ -57,11 +57,12 @@ export function usePlanejador() {
   const [showed,   setShowed]   = useState(false)
   const [cooldown, setCooldown] = useState(14)
   const [usage,    setUsage]    = useState<UsageSummary>({})
+  const [error,    setError]    = useState<string | null>(null)
 
   useEffect(() => {
     api.get('/api/usage')
       .then(r => setUsage(((r.data as { summary?: UsageSummary }).summary) ?? {}))
-      .catch(() => {})
+      .catch(() => setError('Erro ao carregar histórico de uso'))
   }, [])
 
   const filtered = useMemo(() => {
@@ -94,6 +95,6 @@ export function usePlanejador() {
     seed, setSeed, showed, cooldown, setCooldown, usage,
     filtered, suggestions,
     toggle, handleSuggest, noFilters,
-    daysSince,
+    daysSince, error,
   }
 }

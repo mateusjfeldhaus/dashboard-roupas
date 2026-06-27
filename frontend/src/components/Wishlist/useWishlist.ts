@@ -68,8 +68,9 @@ export function useWishlist() {
   const [editItem,      setEditItem]      = useState<WishlistItem | null>(null)
   const [form,          setForm]          = useState<FormData>(EMPTY_FORM)
   const [saving,        setSaving]        = useState(false)
+  const [error,         setError]         = useState<string | null>(null)
 
-  useEffect(() => { apiGet().then(setItems).catch(() => {}) }, [])
+  useEffect(() => { apiGet().then(setItems).catch(() => setError('Erro ao carregar wishlist')) }, [])
 
   const visible = useMemo(() => {
     return items.filter(i => {
@@ -151,5 +152,6 @@ export function useWishlist() {
     presentCats,
     openAdd, openEdit, closeForm,
     handleSave, togglePurchased, handleDelete,
+    error,
   }
 }

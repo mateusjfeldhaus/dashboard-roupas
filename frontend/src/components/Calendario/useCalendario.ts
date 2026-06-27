@@ -31,11 +31,12 @@ export function useCalendario() {
   const [month,   setMonth]   = useState(today.getMonth())
   const [records, setRecords] = useState<UsageRecord[]>([])
   const [selDay,  setSelDay]  = useState<string | null>(null)
+  const [error,   setError]   = useState<string | null>(null)
 
   useEffect(() => {
     api.get('/api/usage')
       .then(r => setRecords((r.data as { records: UsageRecord[] }).records ?? []))
-      .catch(() => {})
+      .catch(() => setError('Erro ao carregar registros de uso'))
   }, [])
 
   const byDate = useMemo(() => {
@@ -102,5 +103,6 @@ export function useCalendario() {
     byDate, monthStats, streak, cells,
     prevMonth, nextMonth, goToday,
     selectedLooks, todayStr, selDateLabel,
+    error,
   }
 }
