@@ -4,7 +4,7 @@ export const looks: Look[] = [
   {
     id: 'L001',
     title: 'Executivo Zegna',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Lã 180s pede gravata de seda e Oxford clássico — não misture estilos aqui.',
     pieces: [
@@ -20,7 +20,7 @@ export const looks: Look[] = [
   {
     id: 'L002',
     title: 'Terno Azul Tropical',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Gravata de padrão miúdo equilibra o azul vibrante — evite gravatas lisas da mesma cor.',
     pieces: [
@@ -36,7 +36,7 @@ export const looks: Look[] = [
   {
     id: 'L003',
     title: 'Tonal Cinza Executivo',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Look tonal cinza ganha vida com a gravata azul poá — o detalhe que quebra a monotonia.',
     pieces: [
@@ -52,7 +52,7 @@ export const looks: Look[] = [
   {
     id: 'L004',
     title: 'Vinho e Preto',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Blazer vinho com gravata bordô e calça preta: o look de autoridade máxima.',
     pieces: [
@@ -68,7 +68,7 @@ export const looks: Look[] = [
   {
     id: 'L005',
     title: 'Chumbo Executivo',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Maquineta chumbo com gravata azul royal: textura e cor criam interesse visual profissional.',
     pieces: [
@@ -84,7 +84,7 @@ export const looks: Look[] = [
   {
     id: 'L006',
     title: 'Terno Marrom Clássico',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Look all-marrom exige sapatos e cinto na mesma paleta — o dourado no relógio une tudo.',
     pieces: [
@@ -100,7 +100,7 @@ export const looks: Look[] = [
   {
     id: 'L007',
     title: 'Blazer Creme e Azul Escuro',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Creme com azul escuro cria contraste elegante — gravata marinho reforça a paleta.',
     pieces: [
@@ -116,7 +116,7 @@ export const looks: Look[] = [
   {
     id: 'L008',
     title: 'Azul Royal Total',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Malha sem passador — o blazer fecha o visual sem precisar de cinto.',
     pieces: [
@@ -131,7 +131,7 @@ export const looks: Look[] = [
   {
     id: 'L009',
     title: 'Terno Caramelo',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Terno caramelo com gravata bordô e Oxford café: paleta quente de alto impacto.',
     pieces: [
@@ -147,7 +147,7 @@ export const looks: Look[] = [
   {
     id: 'L010',
     title: 'Preto e Branco Clássico',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'O look mais clássico possível — gravata preta com camisa branca e terno preto.',
     pieces: [
@@ -179,7 +179,7 @@ export const looks: Look[] = [
   {
     id: 'L012',
     title: 'Cinza e Passador',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Calça Raffer com passador decorativo — sem cinto por design. Sapato preto ancora o look.',
     pieces: [
@@ -194,7 +194,7 @@ export const looks: Look[] = [
   {
     id: 'L013',
     title: 'Terno 3 Peças Areia',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 5,
     tip: 'Colete, blazer e calça Homem SA Areia: o look de terno 3 peças mais elegante do armário.',
     pieces: [
@@ -211,7 +211,7 @@ export const looks: Look[] = [
   {
     id: 'L014',
     title: 'Colete Preto Malha',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Colete preto com malha preta: o estilo de barman de luxo moderno.',
     pieces: [
@@ -227,7 +227,7 @@ export const looks: Look[] = [
   {
     id: 'L015',
     title: 'Veludo Preto Noturno',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Veludo canalê é a escolha para eventos especiais — o look perfeito para teatro e jantar.',
     pieces: [
@@ -273,7 +273,7 @@ export const looks: Look[] = [
   {
     id: 'L018',
     title: 'Tevah Inglês',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Blazer Tevah com Dudalina Inglesa e Oxford preto: o look mais britânico do guarda-roupa.',
     pieces: [
@@ -289,7 +289,7 @@ export const looks: Look[] = [
   {
     id: 'L019',
     title: 'Listrado Azul e Cinza',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Camisa listrada com blazer cinza: sólido no blazer equilibra o padrão da camisa.',
     pieces: [
@@ -304,7 +304,7 @@ export const looks: Look[] = [
   {
     id: 'L020',
     title: 'Sarja Creme e Azul Royal',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Blazer slim preto com sarja creme e gravata azul royal: equilíbrio de escuro e claro.',
     pieces: [
@@ -336,7 +336,7 @@ export const looks: Look[] = [
   {
     id: 'L022',
     title: 'Punho Francês Marrom',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 5,
     tip: 'Punho francês com blazer Decinel Marrom e gravata Mocha: tudo na paleta terrosa.',
     pieces: [
@@ -352,7 +352,7 @@ export const looks: Look[] = [
   {
     id: 'L023',
     title: 'Zegna e Xadrez',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'O terno Zegna Chumbo com gravata xadrez: classe e sofisticação máximas.',
     pieces: [
@@ -384,7 +384,7 @@ export const looks: Look[] = [
   {
     id: 'L025',
     title: 'Suspensório Formal',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Suspensório substitui o cinto — nunca use os dois. Colete e suspensório = máximo da alfaiataria.',
     pieces: [
@@ -417,7 +417,7 @@ export const looks: Look[] = [
   {
     id: 'L027',
     title: 'Azul e Cinza Elegante',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Clifield Azul com cinza médio e Raffer chumbo: look de reunião sem gravata.',
     pieces: [
@@ -431,7 +431,7 @@ export const looks: Look[] = [
   {
     id: 'L028',
     title: 'Caramelo Sem Gravata',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Blazer Homem SA caramelo com branca e linho natural: verão executivo descontraído.',
     pieces: [
@@ -446,7 +446,7 @@ export const looks: Look[] = [
   {
     id: 'L029',
     title: 'Preta Tech Urbana',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Camisa Tech não amassa — ideal para um dia longo que termina num jantar.',
     pieces: [
@@ -475,7 +475,7 @@ export const looks: Look[] = [
   {
     id: 'L031',
     title: 'Azul Bebê e Preto Slim',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Azul bebê da Consolatio com Blazer slim preto: contraste limpo e profissional.',
     pieces: [
@@ -535,7 +535,7 @@ export const looks: Look[] = [
   {
     id: 'L035',
     title: 'Azul Fideli e Cinza',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Fideli azul com cinza médio e tassel loafer preto: smart casual de quem entende do assunto.',
     pieces: [
@@ -565,7 +565,7 @@ export const looks: Look[] = [
   {
     id: 'L037',
     title: 'Colete Linho Areia',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Colete Homem SA com camisa azul linho: o look do gentleman sem exagero.',
     pieces: [
@@ -580,7 +580,7 @@ export const looks: Look[] = [
   {
     id: 'L038',
     title: 'Veludo Preto Smart',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Veludo com camisa cinza: textura e tom criam look de sofisticação discreta.',
     pieces: [
@@ -610,7 +610,7 @@ export const looks: Look[] = [
   {
     id: 'L040',
     title: 'Preta e Creme',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Consolatio preta com blazer creme: contraste elegante e inesperado.',
     pieces: [
@@ -624,7 +624,7 @@ export const looks: Look[] = [
   {
     id: 'L041',
     title: 'Preston Field e Zegna',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'A camisa mais refinada com o blazer mais refinado: o look de alto status.',
     pieces: [
@@ -654,7 +654,7 @@ export const looks: Look[] = [
   {
     id: 'L043',
     title: 'Maquineta e Branca',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Maquineta chumbo com branca e Raffer chumbo: trio monocromático discreto.',
     pieces: [
@@ -668,7 +668,7 @@ export const looks: Look[] = [
   {
     id: 'L044',
     title: 'Vinho e Preto Casual',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Camisa cinza com blazer vinho: o blazer rouba a cena com sofisticação.',
     pieces: [
@@ -683,7 +683,7 @@ export const looks: Look[] = [
   {
     id: 'L045',
     title: 'Azul Escuro e Preto Slim',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Blazer slim preto com azul escuro: look de happy hour que vai a jantar.',
     pieces: [
@@ -712,7 +712,7 @@ export const looks: Look[] = [
   {
     id: 'L047',
     title: 'Tevah e Linho',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Blazer Tevah com linho natural 2 e loafer café: clássico descomplicado.',
     pieces: [
@@ -727,7 +727,7 @@ export const looks: Look[] = [
   {
     id: 'L048',
     title: 'Verde e Preto',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Camisa verde com blazer preto: o verde fica incrível com o contraste do preto.',
     pieces: [
@@ -757,7 +757,7 @@ export const looks: Look[] = [
   {
     id: 'L050',
     title: 'Vinho e Chumbo',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Camisa vinho com blazer maquineta chumbo: paleta de outono e inverno com impacto.',
     pieces: [
@@ -771,7 +771,7 @@ export const looks: Look[] = [
   {
     id: 'L051',
     title: 'Polo Petróleo Casual',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 2,
     tip: 'Polo petróleo com malha areia: verde-azul e bege são complementares perfeitos.',
     pieces: [
@@ -798,7 +798,7 @@ export const looks: Look[] = [
   {
     id: 'L053',
     title: 'Polo Vermelho e Jeans',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 2,
     tip: 'Polo vermelha com jeans preto: contraste máximo no casual.',
     pieces: [
@@ -840,7 +840,7 @@ export const looks: Look[] = [
   {
     id: 'L056',
     title: 'Polo Petróleo e Jeans',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 2,
     tip: 'Petróleo com jeans preto e Chelsea: o casual que funciona o dia inteiro.',
     pieces: [
@@ -883,7 +883,7 @@ export const looks: Look[] = [
   {
     id: 'L059',
     title: 'Polo Rosa com Blazer',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Polo rosa com blazer cinza: o polo ganha sofisticação sem perder a leveza.',
     pieces: [
@@ -898,7 +898,7 @@ export const looks: Look[] = [
   {
     id: 'L060',
     title: 'Polo Petróleo com Blazer Slim',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Polo petróleo com blazer slim preto: estilo urbano noturno sem esforço.',
     pieces: [
@@ -968,7 +968,7 @@ export const looks: Look[] = [
   {
     id: 'L065',
     title: 'Polo Vermelha com Blazer Azul',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Polo vermelha com azul tropical e calça natural: ousadia com estrutura.',
     pieces: [
@@ -983,7 +983,7 @@ export const looks: Look[] = [
   {
     id: 'L066',
     title: 'Banda e Jeans',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 1,
     tip: 'Camiseta de banda com coturno: autenticidade acima de tudo.',
     pieces: [
@@ -996,7 +996,7 @@ export const looks: Look[] = [
   {
     id: 'L067',
     title: 'Vasco e Chelsea',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 1,
     tip: 'A camisa do coração com Chelsea preto: torcedor com estilo.',
     pieces: [
@@ -1009,7 +1009,7 @@ export const looks: Look[] = [
   {
     id: 'L068',
     title: 'Malha Marinho Casual',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 2,
     tip: 'Guillemo malha com malha areia: textura elegante no casual sem esforço.',
     pieces: [
@@ -1022,7 +1022,7 @@ export const looks: Look[] = [
   {
     id: 'L069',
     title: 'Branca e Sarja',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 2,
     tip: 'Pima branca com sarja creme e Sider tan: o look neutro mais fácil do armário.',
     pieces: [
@@ -1036,7 +1036,7 @@ export const looks: Look[] = [
   {
     id: 'L070',
     title: 'Marinho e Jeans',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 1,
     tip: 'Pima marinho com jeans preto: dois tons escuros que funcionam perfeitamente.',
     pieces: [
@@ -1050,7 +1050,7 @@ export const looks: Look[] = [
   {
     id: 'L071',
     title: 'Preta Básica e Cinza',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 1,
     tip: 'Malwee preta com calça cinza e coturno: o uniforme urbano minimalista.',
     pieces: [
@@ -1077,7 +1077,7 @@ export const looks: Look[] = [
   {
     id: 'L073',
     title: 'Branca com Blazer Areia',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Camiseta Pima com blazer areia: o smart casual mais fácil e certeiro.',
     pieces: [
@@ -1092,7 +1092,7 @@ export const looks: Look[] = [
   {
     id: 'L074',
     title: 'Marinho com Blazer Preto',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Pima marinho com blazer slim preto e jeans: do escritório para o bar sem trocar de roupa.',
     pieces: [
@@ -1107,7 +1107,7 @@ export const looks: Look[] = [
   {
     id: 'L075',
     title: 'Preta com Blazer Cinza',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Malwee preta com blazer cinza e loafer: minimalismo que vai de happy hour a jantar.',
     pieces: [
@@ -1134,7 +1134,7 @@ export const looks: Look[] = [
   {
     id: 'L077',
     title: 'Malha Marinho e Caramelo',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 2,
     tip: 'Guillemo com caramelo e loafer café: o casual que surpreende pela coordenação.',
     pieces: [
@@ -1148,7 +1148,7 @@ export const looks: Look[] = [
   {
     id: 'L078',
     title: 'Banda com Blazer Preto',
-    tags: ['casual', 'noturno'],
+    tags: ['casual', 'noturno', 'verao', 'primavera'],
     formality: 2,
     tip: 'Camiseta de banda com blazer preto: o rock ganha estrutura sem perder atitude.',
     pieces: [
@@ -1303,7 +1303,7 @@ export const looks: Look[] = [
   {
     id: 'L089',
     title: 'Couro Marrom e Jeans',
-    tags: ['casual', 'noturno'],
+    tags: ['casual', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 2,
     tip: 'Jack Dublin marrom com camisa branca e jeans: o casual mais completo do guarda-roupa.',
     pieces: [
@@ -1318,7 +1318,7 @@ export const looks: Look[] = [
   {
     id: 'L090',
     title: 'Couro Preto Rock',
-    tags: ['casual', 'noturno'],
+    tags: ['casual', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 1,
     tip: 'Jack slim preta com camiseta preta e coturno: o visual rock mais autêntico.',
     pieces: [
@@ -1507,7 +1507,7 @@ export const looks: Look[] = [
   {
     id: 'L103',
     title: 'Look Azul Total',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Consolatio azul bebê com blazer azul tropical e Bellucci marinho: tonal em tons de azul.',
     pieces: [
@@ -1521,7 +1521,7 @@ export const looks: Look[] = [
   {
     id: 'L104',
     title: 'Ankle Boot Azul Noturno',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Camisa azul escura com blazer slim e ankle boot azul: look de evento com personalidade.',
     pieces: [
@@ -1536,7 +1536,7 @@ export const looks: Look[] = [
   {
     id: 'L105',
     title: 'Ankle Boot Azul Casual',
-    tags: ['casual', 'noturno'],
+    tags: ['casual', 'noturno', 'verao', 'primavera'],
     formality: 2,
     tip: 'Ankle boot azul com jeans preto: o detalhe que transforma um look simples em especial.',
     pieces: [
@@ -1562,7 +1562,7 @@ export const looks: Look[] = [
   {
     id: 'L107',
     title: 'Bazeli e Coturno',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 1,
     tip: 'Bazeli verde com banda e coturno: personalidade máxima no casual.',
     pieces: [
@@ -1590,7 +1590,7 @@ export const looks: Look[] = [
   {
     id: 'L109',
     title: 'Cinto Azul e Mocassim',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Cinto azul com mocassim azul e camisa linho: coordenação intencional que chama atenção.',
     pieces: [
@@ -1605,7 +1605,7 @@ export const looks: Look[] = [
   {
     id: 'L110',
     title: 'Ash Marrom e Creme',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Ash marrom com creme: terra e nata — dois tons de natureza que harmonizam.',
     pieces: [
@@ -1620,7 +1620,7 @@ export const looks: Look[] = [
   {
     id: 'L111',
     title: 'Ash Marrom com Gravata',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 4,
     tip: 'Ash marrom com areia e gravata Mocha: paleta terrosa impecável no formal.',
     pieces: [
@@ -1666,7 +1666,7 @@ export const looks: Look[] = [
   {
     id: 'L114',
     title: 'Ash Marrom Formal Zegna',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Ash marrom com Zegna Chumbo e gravata xadrez: o máximo do contraste.',
     pieces: [
@@ -1682,7 +1682,7 @@ export const looks: Look[] = [
   {
     id: 'L115',
     title: 'Vermelha e Preto Slim',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Caw vermelha com blazer slim preto e malha preta: o look de quem quer causar.',
     pieces: [
@@ -1696,7 +1696,7 @@ export const looks: Look[] = [
   {
     id: 'L116',
     title: 'Vermelha e Cinza',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Caw vermelha com cinza médio: o cinza absorve a intensidade do vermelho.',
     pieces: [
@@ -1711,7 +1711,7 @@ export const looks: Look[] = [
   {
     id: 'L117',
     title: 'Vermelha Casual',
-    tags: ['casual', 'noturno'],
+    tags: ['casual', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 2,
     tip: 'Caw vermelha sem blazer com jeans preto: impacto máximo com o mínimo de peças.',
     pieces: [
@@ -1725,7 +1725,7 @@ export const looks: Look[] = [
   {
     id: 'L118',
     title: 'Vermelha e Cliffield Preto',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Caw vermelha com Cliffield preto: contraste máximo e muito impacto.',
     pieces: [
@@ -1740,7 +1740,7 @@ export const looks: Look[] = [
   {
     id: 'L119',
     title: 'Vermelha e Creme',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Caw vermelha com blazer creme: o creme suaviza o vermelho criando equilíbrio.',
     pieces: [
@@ -1755,7 +1755,7 @@ export const looks: Look[] = [
   {
     id: 'L120',
     title: 'Roxa e Cinza Elegante',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'China roxa com cinza médio: o cinza é o único que compete com a roxa de igual para igual.',
     pieces: [
@@ -1770,7 +1770,7 @@ export const looks: Look[] = [
   {
     id: 'L121',
     title: 'Roxa e Preto Slim',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'China roxa com blazer slim preto e malha: o mais ousado dos looks escuros.',
     pieces: [
@@ -1784,7 +1784,7 @@ export const looks: Look[] = [
   {
     id: 'L122',
     title: 'Roxa e Veludo',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Roxa com veludo preto: a combinação mais teatral e sofisticada do guarda-roupa.',
     pieces: [
@@ -1799,7 +1799,7 @@ export const looks: Look[] = [
   {
     id: 'L123',
     title: 'Roxa Casual',
-    tags: ['casual', 'noturno'],
+    tags: ['casual', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 2,
     tip: 'China roxa sem blazer com jeans preto: estilo visual inesquecível no casual.',
     pieces: [
@@ -1813,7 +1813,7 @@ export const looks: Look[] = [
   {
     id: 'L124',
     title: 'Roxa e Azul Tropical',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'China roxa com blazer azul tropical: dois tons frios que criam profundidade visual.',
     pieces: [
@@ -1828,7 +1828,7 @@ export const looks: Look[] = [
   {
     id: 'L125',
     title: 'Listrada Preta e Cinza',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Listrado preto com cinza médio: look de jantar executivo com sofisticação sutil.',
     pieces: [
@@ -1842,7 +1842,7 @@ export const looks: Look[] = [
   {
     id: 'L126',
     title: 'Listrada Preta e Chumbo',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Listrado preto com blazer chumbo maquineta e Oxford preto: três texturas escuras.',
     pieces: [
@@ -1857,7 +1857,7 @@ export const looks: Look[] = [
   {
     id: 'L127',
     title: 'Listrada Preta Casual',
-    tags: ['casual', 'noturno'],
+    tags: ['casual', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 2,
     tip: 'Docthos preta listrada sem blazer com jeans: o sofisticado inesperado no casual.',
     pieces: [
@@ -1871,7 +1871,7 @@ export const looks: Look[] = [
   {
     id: 'L128',
     title: 'Listrada Preta e Creme',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Listrado preto com creme e linho: contraste marcante que equilibra o formal com o levado.',
     pieces: [
@@ -1886,7 +1886,7 @@ export const looks: Look[] = [
   {
     id: 'L129',
     title: 'Listrada Preta e Vinho',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Listrado preto com blazer vinho: o look de jantar mais dramático e elegante.',
     pieces: [
@@ -1901,7 +1901,7 @@ export const looks: Look[] = [
   {
     id: 'L130',
     title: 'Fideli Vermelha e Cinza',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Fideli vermelha com cinza: o vermelho brilha, o cinza equilibra.',
     pieces: [
@@ -1916,7 +1916,7 @@ export const looks: Look[] = [
   {
     id: 'L131',
     title: 'Fideli Vermelha e Preto',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Fideli vermelha com Cliffield preto: contraste absoluto com elegância.',
     pieces: [
@@ -1931,7 +1931,7 @@ export const looks: Look[] = [
   {
     id: 'L132',
     title: 'Fideli Vermelha Casual',
-    tags: ['casual', 'noturno'],
+    tags: ['casual', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 2,
     tip: 'Vermelha Fideli com jeans sem blazer: o look de happy hour mais energético.',
     pieces: [
@@ -1945,7 +1945,7 @@ export const looks: Look[] = [
   {
     id: 'L133',
     title: 'Fideli Vermelha e Creme',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Vermelha com creme e linho: o vermelho no calor — quente e elegante.',
     pieces: [
@@ -1960,7 +1960,7 @@ export const looks: Look[] = [
   {
     id: 'L134',
     title: 'Fideli Vermelha e Azul Royal',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Vermelha com azul royal: contraste de complementares — atrevido e bem executado.',
     pieces: [
@@ -1975,7 +1975,7 @@ export const looks: Look[] = [
   {
     id: 'L135',
     title: 'Preston Field e Zegna Gravata',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Preston Field com Zegna e xadrez cinza marinho: o look de reunião de diretoria.',
     pieces: [
@@ -1991,7 +1991,7 @@ export const looks: Look[] = [
   {
     id: 'L136',
     title: 'Preston Field e Cinza Gravata',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Preston Field com cinza médio e gravata xadrez: equilíbrio de tons frios.',
     pieces: [
@@ -2007,7 +2007,7 @@ export const looks: Look[] = [
   {
     id: 'L137',
     title: 'Preston Field Casual',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 2,
     tip: 'Azul escura da Preston Field sem blazer e com linho natural: o casual mais refinado.',
     pieces: [
@@ -2037,7 +2037,7 @@ export const looks: Look[] = [
   {
     id: 'L139',
     title: 'Preston Field e Maquineta',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Preston Field azul com maquineta chumbo e Raffer: tonalidade fria coesa.',
     pieces: [
@@ -2067,7 +2067,7 @@ export const looks: Look[] = [
   {
     id: 'L141',
     title: 'Rosa Linho e Vinho',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Rosa com vinho: tons quentes juntos criam um look de jantar memorável.',
     pieces: [
@@ -2096,7 +2096,7 @@ export const looks: Look[] = [
   {
     id: 'L143',
     title: 'Rosa Linho e Chumbo',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Rosa linho com maquineta chumbo: delicado e robusto — contraste surpreendente.',
     pieces: [
@@ -2110,7 +2110,7 @@ export const looks: Look[] = [
   {
     id: 'L144',
     title: 'Preta e Cinza Formal',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Consolatio preta com cinza médio: o contraste mais direto e elegante.',
     pieces: [
@@ -2125,7 +2125,7 @@ export const looks: Look[] = [
   {
     id: 'L145',
     title: 'Preta e Caramelo Contraste',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Preta com caramelo: o maior contraste quente-frio do guarda-roupa.',
     pieces: [
@@ -2140,7 +2140,7 @@ export const looks: Look[] = [
   {
     id: 'L146',
     title: 'Preta e Azul Tropical',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Preta com azul tropical: o azul ilumina o look que a preta tornaria monótono.',
     pieces: [
@@ -2155,7 +2155,7 @@ export const looks: Look[] = [
   {
     id: 'L147',
     title: 'Preta Casual Noturna',
-    tags: ['casual', 'noturno'],
+    tags: ['casual', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 2,
     tip: 'Consolatio preta com jeans e coturno: máxima atitude no casual noturno.',
     pieces: [
@@ -2169,7 +2169,7 @@ export const looks: Look[] = [
   {
     id: 'L148',
     title: 'Tevah Formal Gravata',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Tevah com gravata azul poá e Oxford preto: o mais formal e clássico possível.',
     pieces: [
@@ -2185,7 +2185,7 @@ export const looks: Look[] = [
   {
     id: 'L149',
     title: 'Tevah e Linho Natural',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Tevah com branca clássica e linho natural: o formal descontraído para verão.',
     pieces: [
@@ -2200,7 +2200,7 @@ export const looks: Look[] = [
   {
     id: 'L150',
     title: 'Tevah Azul e Chumbo',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Tevah preto com azul escura da Docthos e Raffer chumbo: trio escuro impactante.',
     pieces: [
@@ -2259,7 +2259,7 @@ export const looks: Look[] = [
   {
     id: 'L154',
     title: 'Veludo Gala',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Veludo com punho francês e Raffer chumbo: o look de gala mais ousado do armário.',
     pieces: [
@@ -2289,7 +2289,7 @@ export const looks: Look[] = [
   {
     id: 'L156',
     title: 'Azul Royal e Preto Formal',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Blazer azul royal com gravata vermelha e calça preta: o look da confiança máxima.',
     pieces: [
@@ -2305,7 +2305,7 @@ export const looks: Look[] = [
   {
     id: 'L157',
     title: 'Azul Royal Casual',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Azul royal com branca e malha areia: o blazer royal como peça de destaque.',
     pieces: [
@@ -2319,7 +2319,7 @@ export const looks: Look[] = [
   {
     id: 'L158',
     title: 'Caramelo e Azul Royal',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Consolatio azul royal com blazer caramelo: azul frio e laranja quente — harmonia total.',
     pieces: [
@@ -2334,7 +2334,7 @@ export const looks: Look[] = [
   {
     id: 'L159',
     title: 'Caramelo com Gravata Vinho',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Blazer caramelo com gravata bordô: dois tons quentes que criam look de impacto.',
     pieces: [
@@ -2365,7 +2365,7 @@ export const looks: Look[] = [
   {
     id: 'L161',
     title: 'Azul Tropical e Cinza',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Four Teen cinza com azul tropical: o cinza torna a camisa discreta no conjunto azul.',
     pieces: [
@@ -2379,7 +2379,7 @@ export const looks: Look[] = [
   {
     id: 'L162',
     title: 'Maquineta e Clifield Azul',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Clifield azul com maquineta chumbo e cinza: look frio e profissional.',
     pieces: [
@@ -2394,7 +2394,7 @@ export const looks: Look[] = [
   {
     id: 'L163',
     title: 'Maquineta e Rosa Listrada',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Rosa listrada Homem SA com chumbo maquineta: delicado contra robusto.',
     pieces: [
@@ -2408,7 +2408,7 @@ export const looks: Look[] = [
   {
     id: 'L164',
     title: 'Decinel e Azul Bebê Gravata',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 4,
     tip: 'Brooksfield azul bebê com Decinel marrom e gravata Mocha: sofisticação discreta.',
     pieces: [
@@ -2424,7 +2424,7 @@ export const looks: Look[] = [
   {
     id: 'L165',
     title: 'Decinel Terno com Gravata',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Terno marrom completo com gravata verde oliva: o look mais terra e sofisticado.',
     pieces: [
@@ -2440,7 +2440,7 @@ export const looks: Look[] = [
   {
     id: 'L166',
     title: 'Decinel e Creme',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Brooksfield azul bebê com Decinel marrom e sarja creme: descontraído sem perder classe.',
     pieces: [
@@ -2455,7 +2455,7 @@ export const looks: Look[] = [
   {
     id: 'L167',
     title: 'Clifield Azul e Veludo',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Clifield azul com veludo preto: o azul ilumina o veludo de dentro.',
     pieces: [
@@ -2486,7 +2486,7 @@ export const looks: Look[] = [
   {
     id: 'L169',
     title: 'Consolatio Azul Bebê e Cinza',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Azul bebê Consolatio com cinza médio: combinação suave e profissional.',
     pieces: [
@@ -2501,7 +2501,7 @@ export const looks: Look[] = [
   {
     id: 'L170',
     title: 'Consolatio Azul Bebê Gravata',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Azul bebê com Zegna chumbo e gravata azul seda: o trio mais formal do guarda-roupa.',
     pieces: [
@@ -2517,7 +2517,7 @@ export const looks: Look[] = [
   {
     id: 'L171',
     title: 'Consolatio Azul Bebê Casual',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 2,
     tip: 'Azul bebê sem blazer com sarja creme e loafer terra: légère e refinado.',
     pieces: [
@@ -2531,7 +2531,7 @@ export const looks: Look[] = [
   {
     id: 'L172',
     title: 'Azul Escura Veludo',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Azul escura Docthos com veludo preto e Double Monk: look de jantar de alto nível.',
     pieces: [
@@ -2546,7 +2546,7 @@ export const looks: Look[] = [
   {
     id: 'L173',
     title: 'Listrada Azul e Caramelo',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Listrado azul Docthos com caramelo Homem SA: dois padrões distintos em harmonia.',
     pieces: [
@@ -2561,7 +2561,7 @@ export const looks: Look[] = [
   {
     id: 'L174',
     title: 'Listrada Azul e Azul Royal',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Listrado com Azul Royal: dois azuis diferentes — contraste sutil e elegante.',
     pieces: [
@@ -2608,7 +2608,7 @@ export const looks: Look[] = [
   {
     id: 'L177',
     title: 'Azul Royal Consolatio e Areia',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 4,
     tip: 'Azul royal com areia Homem SA e gravata azul seda: a gravata une as duas peças.',
     pieces: [
@@ -2624,7 +2624,7 @@ export const looks: Look[] = [
   {
     id: 'L178',
     title: 'Clifield Azul e Marrom',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Clifield azul com Decinel marrom e linho 2: azul fresco com terra quente.',
     pieces: [
@@ -2655,7 +2655,7 @@ export const looks: Look[] = [
   {
     id: 'L180',
     title: 'Rosa Choque e Vinho',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'K&F rosa choque com Raffer vinho: rosa e vinho — tons quentes que vibram.',
     pieces: [
@@ -2686,7 +2686,7 @@ export const looks: Look[] = [
   {
     id: 'L182',
     title: 'Vinho e Azul Royal',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 4,
     tip: 'Docthos vinho com azul royal e gravata verde oliva: três cores que contam uma história.',
     pieces: [
@@ -2702,7 +2702,7 @@ export const looks: Look[] = [
   {
     id: 'L183',
     title: 'Vinho e Chumbo Elegante',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 3,
     tip: 'Docthos vinho com Zegna chumbo e calça Raffer: três escuros que brilham à noite.',
     pieces: [
@@ -2716,7 +2716,7 @@ export const looks: Look[] = [
   {
     id: 'L184',
     title: 'Verde e Marinho Gravata',
-    tags: ['formal', 'diurno'],
+    tags: ['formal', 'diurno', 'verao', 'primavera'],
     formality: 3,
     tip: 'Docthos verde com blazer areia e gravata Marinho: botânico com dignidade.',
     pieces: [
@@ -2732,7 +2732,7 @@ export const looks: Look[] = [
   {
     id: 'L185',
     title: 'Colete Preto Formal Máximo',
-    tags: ['formal', 'noturno'],
+    tags: ['formal', 'noturno', 'verao', 'primavera', 'outono', 'inverno'],
     formality: 5,
     tip: 'Colete JCanedo com suspensório e gravata preta Dudalina: alfaiataria clássica impecável.',
     pieces: [
@@ -2749,7 +2749,7 @@ export const looks: Look[] = [
   {
     id: 'L186',
     title: 'Polo Vermelho e Areia',
-    tags: ['casual', 'diurno'],
+    tags: ['casual', 'diurno', 'verao', 'primavera'],
     formality: 2,
     tip: 'Polo vermelha com calça areia malha: vermelho vibrante com fundo neutro calmo.',
     pieces: [
