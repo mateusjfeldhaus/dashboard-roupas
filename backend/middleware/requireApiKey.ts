@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
 export function requireApiKey(req: Request, res: Response, next: NextFunction) {
-  const secret = process.env.JWT_SECRET ?? process.env.API_KEY
+  const secret = process.env.JWT_SECRET
   if (!secret) {
-    res.status(500).json({ error: 'Servidor mal configurado: API_KEY ausente' })
+    res.status(500).json({ error: 'Servidor mal configurado: JWT_SECRET ausente' })
     return
   }
 
@@ -15,7 +15,7 @@ export function requireApiKey(req: Request, res: Response, next: NextFunction) {
   }
 
   try {
-    jwt.verify(token, secret)
+    jwt.verify(token, secret, { algorithms: ['HS256'] })
     next()
   } catch {
     res.status(401).json({ error: 'Token inválido' })

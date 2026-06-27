@@ -43,6 +43,14 @@ router.post('/:lookId', upload.single('photo'), async (req, res) => {
       return
     }
 
+    // Valida por magic bytes (conteúdo real), não pelo Content-Type do cliente
+    const { fileTypeFromBuffer } = await import('file-type')
+    const detected = await fileTypeFromBuffer(req.file.buffer)
+    if (!detected || !detected.mime.startsWith('image/')) {
+      res.status(400).json({ error: 'Arquivo não é uma imagem válida' })
+      return
+    }
+
     const [look] = await db.select().from(looks).where(eq(looks.id, req.params.lookId))
     if (!look) {
       res.status(404).json({ error: 'Look não encontrado' })

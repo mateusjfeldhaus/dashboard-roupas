@@ -77,25 +77,28 @@ const writeLimiter = rateLimit({
 app.post('/api/auth', authLimiter, (req, res) => {
   const { pin }   = req.body as { pin?: string }
   const apiKey    = process.env.API_KEY
-  const jwtSecret = process.env.JWT_SECRET ?? apiKey
+  const jwtSecret = process.env.JWT_SECRET
 
-  if (!apiKey || pin !== apiKey) {
-    res.status(401).json({ error: 'PIN incorreto' })
-    return
-  }
   if (!jwtSecret) {
     res.status(500).json({ error: 'JWT_SECRET não configurado' })
+    return
+  }
+  if (!apiKey || pin !== apiKey) {
+    res.status(401).json({ error: 'PIN incorreto' })
     return
   }
   const token = jwt.sign({}, jwtSecret, { expiresIn: '24h' })
   res.json({ token })
 })
 
-// ── Auth: bloqueia POST/PUT/DELETE sem token JWT válido ───────────────────────
+// ── Auth: todas as rotas requerem JWT válido ──────────────────────────────────
+// /img aceita token via query param ?t= (browser <img> não envia headers)
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') return next()
   if (req.path === '/api/auth') return next()
-  if (req.path.startsWith('/img')) return next()
+  if (req.path.startsWith('/img') && typeof req.query.t === 'string') {
+    req.headers['x-api-key'] = req.query.t
+  }
   requireApiKey(req, res, next)
 })
 

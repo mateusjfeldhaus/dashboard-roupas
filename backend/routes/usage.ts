@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { eq, desc } from 'drizzle-orm'
+import { eq, desc, and } from 'drizzle-orm'
 import { db } from '../db/client'
 import { usageRecords } from '../db/schema'
 import { apiError } from '../middleware/errorHandler'
@@ -48,13 +48,24 @@ router.get('/:lookId', async (req, res) => {
   } catch (e) { apiError(res, e) }
 })
 
-// POST /api/usage/:lookId  → mark today
+// POST /api/usage/:lookId  → mark today (idempotente: ignora se já existir)
 router.post('/:lookId', async (req, res) => {
   try {
-    await db.insert(usageRecords).values({
-      lookId: req.params.lookId,
-      date:   today(),
-    })
+    const dateStr = today()
+    const [existing] = await db.select({ id: usageRecords.id })
+      .from(usageRecords)
+      .where(and(
+        eq(usageRecords.lookId, req.params.lookId),
+        eq(usageRecords.date, dateStr),
+      ))
+      .limit(1)
+
+    if (!existing) {
+      await db.insert(usageRecords).values({
+        lookId: req.params.lookId,
+        date:   dateStr,
+      })
+    }
 
     const records = await db.select({
       lookId: usageRecords.lookId,
