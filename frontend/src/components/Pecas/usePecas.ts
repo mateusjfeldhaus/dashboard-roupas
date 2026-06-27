@@ -4,7 +4,7 @@ import { usePieces } from '../../hooks/usePieces'
 import type { PieceCategory } from '@data/types'
 
 export const categories: PieceCategory[] = [
-  'Camisa', 'Calça', 'Blazer', 'Costume', 'Terno',
+  'Camisa', 'Calça', 'Blazer', 'Colete', 'Costume', 'Terno',
   'Sapato', 'Relógio', 'Gravata', 'Cinto', 'Suéter',
   'Polo', 'Camiseta', 'Jaqueta', 'Acessório',
 ]
