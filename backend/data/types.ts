@@ -4,6 +4,7 @@ export type PieceCategory =
   | 'Blazer'
   | 'Costume'
   | 'Terno'
+  | 'Colete'
   | 'Sapato'
   | 'Cinto'
   | 'Gravata'
