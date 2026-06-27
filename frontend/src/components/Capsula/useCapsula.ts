@@ -30,8 +30,8 @@ export interface CapsuleResult {
  * recém-iniciados (ex: 1/6), guiando o algoritmo a completar looks em vez de acumular
  * peças populares isoladamente.
  */
-function greedyCapsule(looks: Look[], pieces: Piece[], n: number): CapsuleResult {
-  const selected  = new Set<string>()  // piece IDs in suitcase
+function greedyCapsule(looks: Look[], pieces: Piece[], n: number, alwaysIds = new Set<string>()): CapsuleResult {
+  const selected  = new Set<string>(alwaysIds)  // start with always-packed pieces
   const covered   = new Set<string>()  // look IDs fully covered
   const steps: CapsuleStep[] = []
 
@@ -98,12 +98,16 @@ export function useCapsula() {
   if (looksRef.current.map(l => l.id).join(',') !== looksKey) {
     looksRef.current = looks.filter(l => !l.hidden)
   }
+  // Cintos e Relógios vão na mala automaticamente — não ocupam slots.
+  const ALWAYS_PACKED = ['Cinto', 'Relógio']
   if (piecesRef.current.map(p => p.id).join(',') !== piecesKey) {
-    piecesRef.current = pieces.filter(p => !p.hidden)
+    piecesRef.current = pieces.filter(p => !p.hidden && !ALWAYS_PACKED.includes(p.category))
   }
+  // IDs das peças sempre disponíveis (pré-selecionadas no algoritmo)
+  const alwaysIds = new Set(pieces.filter(p => ALWAYS_PACKED.includes(p.category)).map(p => p.id))
 
   const result = useMemo(
-    () => greedyCapsule(looksRef.current, piecesRef.current, n),
+    () => greedyCapsule(looksRef.current, piecesRef.current, n, alwaysIds),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [looksKey, piecesKey, n]
   )
