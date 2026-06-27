@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { eq, inArray } from 'drizzle-orm'
 import { db } from '../db/client'
 import { looks, lookPieces, lookPhotos } from '../db/schema'
-import { LookCreateSchema, LookUpdateSchema, NotesSchema } from '../lib/schemas'
+import { LookCreateSchema, LookUpdateSchema, NotesSchema, HiddenSchema } from '../lib/schemas'
 import { apiError } from '../middleware/errorHandler'
 
 const router = Router()
@@ -113,11 +113,7 @@ router.delete('/:id', async (req, res) => {
 // PATCH /api/looks/:id/hidden  body: { hidden: boolean }
 router.patch('/:id/hidden', async (req, res) => {
   try {
-    const { hidden } = req.body as { hidden: boolean }
-    if (typeof hidden !== 'boolean') {
-      res.status(400).json({ error: 'hidden deve ser boolean' })
-      return
-    }
+    const { hidden } = HiddenSchema.parse(req.body)
     const [updated] = await db.update(looks)
       .set({ hidden })
       .where(eq(looks.id, req.params.id))

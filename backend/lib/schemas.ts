@@ -66,6 +66,12 @@ export const WishlistUpdateSchema = WishlistCreateSchema.partial().extend({
   purchasedAt: z.coerce.date().optional().nullable(),
 })
 
+// ── Hidden ────────────────────────────────────────────────────────────────────
+
+export const HiddenSchema = z.object({
+  hidden: z.boolean(),
+})
+
 // ── Rating ────────────────────────────────────────────────────────────────────
 
 export const RatingSchema = z.object({

@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { eq } from 'drizzle-orm'
 import { db } from '../db/client'
 import { pieces } from '../db/schema'
-import { PieceCreateSchema, PieceUpdateSchema, NotesSchema } from '../lib/schemas'
+import { PieceCreateSchema, PieceUpdateSchema, NotesSchema, HiddenSchema } from '../lib/schemas'
 import { apiError } from '../middleware/errorHandler'
 
 const router = Router()
@@ -71,11 +71,7 @@ router.patch('/:id/notes', async (req, res) => {
 // PATCH /api/pieces/:id/hidden
 router.patch('/:id/hidden', async (req, res) => {
   try {
-    const { hidden } = req.body as { hidden: boolean }
-    if (typeof hidden !== 'boolean') {
-      res.status(400).json({ error: 'hidden deve ser boolean' })
-      return
-    }
+    const { hidden } = HiddenSchema.parse(req.body)
     const [updated] = await db.update(pieces)
       .set({ hidden })
       .where(eq(pieces.id, req.params.id))
