@@ -125,6 +125,7 @@ export function useViagem() {
     return allPieceIds
       .map(id => pieces.find(p => p.id === id))
       .filter(Boolean)
+      .filter(p => p!.category !== 'Acessório')
       .sort((a, b) => {
         const ai = (CAT_LIST as readonly string[]).indexOf(a!.category as string)
         const bi = (CAT_LIST as readonly string[]).indexOf(b!.category as string)
