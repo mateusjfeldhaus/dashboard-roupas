@@ -124,6 +124,8 @@ export function useWishlist() {
   }
 
   async function handleDelete(id: string) {
+    const item = items.find(i => i.id === id)
+    if (!window.confirm(`Remover "${item?.name ?? 'item'}" da wishlist?`)) return
     try {
       await apiDelete(id)
       setItems(prev => prev.filter(i => i.id !== id))

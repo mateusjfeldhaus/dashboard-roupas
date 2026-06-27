@@ -72,12 +72,10 @@ export function usePlanejador() {
       if (occasion && !l.tags.includes(occasion as import('@data/types').LookTag)) return false
       return true
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, season, occasion, looks])
 
   const suggestions = useMemo(() => {
     return getRotatedSuggestions(filtered, usage, cooldown, seed).slice(0, 3)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtered, usage, cooldown, seed])
 
   function toggle<T>(current: T | null, value: T, set: (v: T | null) => void) {
