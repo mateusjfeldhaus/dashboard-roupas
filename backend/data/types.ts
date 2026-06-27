@@ -2,8 +2,6 @@ export type PieceCategory =
   | 'Camisa'
   | 'Calça'
   | 'Blazer'
-  | 'Costume'
-  | 'Terno'
   | 'Colete'
   | 'Sapato'
   | 'Cinto'
