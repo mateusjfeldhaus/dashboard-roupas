@@ -1,29 +1,18 @@
 import { useState, useEffect, useMemo } from 'react'
 import api from '../../api/client'
 import { CAT_LIST } from '../../utils/lookHelpers'
+import type { WishlistItem } from '@data/types'
 
 export { CAT_LIST }
+export type { WishlistItem }
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-export interface WishlistItem {
-  id: string
-  name: string
-  category: string
-  brand: string
-  price: number | null
-  priority: 1 | 2 | 3
-  notes: string
-  addedAt: string
-  purchased: boolean
-  purchasedAt: string | null
-}
-
-export type FormData = Omit<WishlistItem, 'id' | 'addedAt' | 'purchased' | 'purchasedAt'>
+export type FormData = Omit<WishlistItem, 'id' | 'createdAt' | 'purchased' | 'purchasedAt'>
 
 export const EMPTY_FORM: FormData = {
   name: '', category: 'Camisa', brand: '',
-  price: null, priority: 2, notes: '',
+  price: null, priority: 2, notes: '', link: '',
 }
 
 
@@ -101,7 +90,7 @@ export function useWishlist() {
     setEditItem(item)
     setForm({
       name: item.name, category: item.category, brand: item.brand,
-      price: item.price, priority: item.priority, notes: item.notes,
+      price: item.price, priority: item.priority, notes: item.notes, link: item.link,
     })
     setFormOpen(true)
   }
@@ -126,13 +115,21 @@ export function useWishlist() {
     const patch = item.purchased
       ? { purchased: false, purchasedAt: null }
       : { purchased: true,  purchasedAt: new Date().toISOString().split('T')[0] }
-    const updated = await apiPut(item.id, patch)
-    setItems(prev => prev.map(i => i.id === item.id ? updated : i))
+    try {
+      const updated = await apiPut(item.id, patch)
+      setItems(prev => prev.map(i => i.id === item.id ? updated : i))
+    } catch {
+      setError('Erro ao atualizar item')
+    }
   }
 
   async function handleDelete(id: string) {
-    await apiDelete(id)
-    setItems(prev => prev.filter(i => i.id !== id))
+    try {
+      await apiDelete(id)
+      setItems(prev => prev.filter(i => i.id !== id))
+    } catch {
+      setError('Erro ao excluir item')
+    }
   }
 
   useEffect(() => {

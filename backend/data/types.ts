@@ -54,6 +54,20 @@ export interface Look {
   pieces: LookPiece[]
 }
 
+export interface WishlistItem {
+  id: string
+  name: string
+  category: string
+  brand: string
+  price: number | null
+  priority: 1 | 2 | 3
+  notes: string
+  link: string
+  purchased: boolean
+  purchasedAt: string | null
+  createdAt: string
+}
+
 export interface ShirtLookSet {
   shirtId: string
   formalComGravata: LookPiece[]
