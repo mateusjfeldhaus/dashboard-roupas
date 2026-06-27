@@ -4,7 +4,7 @@
  * Valores com acentos — batem com piece.category do banco.
  */
 export const CAT_LIST = [
-  'Terno','Costume','Blazer','Suéter','Jaqueta',
+  'Blazer','Colete','Suéter','Jaqueta',
   'Camisa','Polo','Camiseta',
   'Calça','Cinto','Sapato',
   'Gravata','Relógio','Acessório',
@@ -12,11 +12,16 @@ export const CAT_LIST = [
 
 export type PieceCat = typeof CAT_LIST[number]
 
+// Categorias que NÃO entram na checklist da cápsula de viagem
+export const TRAVEL_EXCLUDED_CATS = new Set([
+  'Relógio', 'Cinto', 'Gravata', 'Acessório',
+])
+
 /**
  * Plurais para exibição em UIs de filtro (ex.: Montar).
  */
 export const CAT_LABELS: Record<string, string> = {
-  'Camisa':'Camisas','Terno':'Ternos','Costume':'Costumes','Blazer':'Blazers',
+  'Camisa':'Camisas','Blazer':'Blazers','Colete':'Coletes',
   'Calça':'Calças','Sapato':'Sapatos','Gravata':'Gravatas','Polo':'Polos',
   'Camiseta':'Camisetas','Jaqueta':'Jaquetas','Suéter':'Suéteres',
   'Relógio':'Relógios','Cinto':'Cintos','Acessório':'Acessórios',

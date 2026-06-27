@@ -4,7 +4,7 @@ import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
 import type { Look, LookTag } from '@data/types'
 import { SEASONS, OCCASIONS } from '../../styles/tags'
-import { CAT_LIST } from '../../utils/lookHelpers'
+import { CAT_LIST, TRAVEL_EXCLUDED_CATS } from '../../utils/lookHelpers'
 import { seededShuffle } from '../../utils/wardrobeUtils'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -125,7 +125,7 @@ export function useViagem() {
     return allPieceIds
       .map(id => pieces.find(p => p.id === id))
       .filter(Boolean)
-      .filter(p => p!.category !== 'Acessório')
+      .filter(p => !TRAVEL_EXCLUDED_CATS.has(p!.category as string))
       .sort((a, b) => {
         const ai = (CAT_LIST as readonly string[]).indexOf(a!.category as string)
         const bi = (CAT_LIST as readonly string[]).indexOf(b!.category as string)
