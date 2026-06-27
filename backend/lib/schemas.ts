@@ -3,7 +3,7 @@ import { z } from 'zod'
 // ── Piece ─────────────────────────────────────────────────────────────────────
 
 const PIECE_CATEGORIES = [
-  'Camisa', 'Calça', 'Blazer', 'Costume', 'Terno', 'Sapato',
+  'Camisa', 'Calça', 'Blazer', 'Colete', 'Sapato',
   'Cinto', 'Gravata', 'Relógio', 'Suéter', 'Polo', 'Camiseta',
   'Jaqueta', 'Acessório',
 ] as const
