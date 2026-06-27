@@ -9,6 +9,17 @@ import { apiError } from '../middleware/errorHandler'
 
 const router = Router()
 
+// Magic bytes das imagens suportadas (JPEG, PNG, GIF, WebP)
+function isImageBuffer(buf: Buffer): boolean {
+  if (buf.length < 12) return false
+  if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF) return true                          // JPEG
+  if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47) return true       // PNG
+  if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x38) return true       // GIF
+  if (buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46 &&                 // WebP
+      buf[8] === 0x57 && buf[9] === 0x45 && buf[10] === 0x42 && buf[11] === 0x50) return true
+  return false
+}
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 8 * 1024 * 1024 },
@@ -44,9 +55,7 @@ router.post('/:lookId', upload.single('photo'), async (req, res) => {
     }
 
     // Valida por magic bytes (conteúdo real), não pelo Content-Type do cliente
-    const { fileTypeFromBuffer } = await import('file-type')
-    const detected = await fileTypeFromBuffer(req.file.buffer)
-    if (!detected || !detected.mime.startsWith('image/')) {
+    if (!isImageBuffer(req.file.buffer)) {
       res.status(400).json({ error: 'Arquivo não é uma imagem válida' })
       return
     }
