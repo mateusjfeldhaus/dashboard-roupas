@@ -5,9 +5,9 @@ import { SEASONS } from '../../styles/tags'
 
 export const SEASON_DETAILS: Record<string, { strategy: string; tips: string[] }> = {
   verao: {
-    strategy: 'Tecidos leves são o segredo. Priorize lã tropical, linho e algodão fino. A camisa branca leve e o costume azul Homem SA são seus aliados principais.',
+    strategy: 'Tecidos leves são o segredo. Priorize lã tropical, linho e algodão fino. A camisa branca leve e o blazer azul Homem SA são seus aliados principais.',
     tips: [
-      'Lã tropical do costume azul Homem SA — não esquenta',
+      'Lã tropical do blazer azul Homem SA — não esquenta',
       'Camisa branca leve + calça areia = casual perfeito',
       'Sapato loafer sem meia em looks smart casual',
       'Evite veludo e flanela',
@@ -17,8 +17,8 @@ export const SEASON_DETAILS: Record<string, { strategy: string; tips: string[] }
   outono: {
     strategy: 'A estação mais elegante para alfaiataria. Tons terrosos (caramelo, vinho, verde musgo) estão no auge. Os suéteres entram. É quando sua coleção brilha mais.',
     tips: [
-      'Costume caramelo — cores sazonais no auge',
-      'Terno vinho Raffer: tons outonais perfeitos',
+      'Blazer caramelo Homem SA — cores sazonais no auge',
+      'Blazer vinho Raffer: tons outonais perfeitos',
       'Suéter por baixo de blazer para layering elegante',
       'Tons de marrom, ferrugem e bordô em evidência',
       'Oxford burgundy + look outono = combinação dos sonhos',
@@ -31,11 +31,11 @@ export const SEASON_DETAILS: Record<string, { strategy: string; tips: string[] }
       'Suéter + blazer + calça de alfaiataria = smart casual de inverno',
       'Gravatas de seda e lã ficam mais à vontade',
       'Meia grossa de lã com o Oxford',
-      'Sobretudo sobre costume = nível máximo de elegância',
+      'Sobretudo sobre blazer e calça = nível máximo de elegância',
     ],
   },
   primavera: {
-    strategy: 'Transição para cores mais vivas. Camisas com padrões (listradas, xadrez) ganham espaço. Costumes em tons médios são ideais.',
+    strategy: 'Transição para cores mais vivas. Camisas com padrões (listradas, xadrez) ganham espaço. Blazers em tons médios são ideais.',
     tips: [
       'Camisa rosa listrada Homem SA se destaca na primavera',
       'Blazer creme com calça colorida — a estação permite',

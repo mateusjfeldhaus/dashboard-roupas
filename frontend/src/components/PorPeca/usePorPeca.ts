@@ -21,11 +21,6 @@ export const subcatConfig: Partial<Record<string, SubcatDef[]>> = {
     { id: 'frias',    label: 'Tons Frios', pieceIds: ['cs-ab-brk','cs-ab-con','cs-ar-con','cs-ae-doc','cs-ali-doc','cs-az-fid','cs-az-cli','cs-ae-pf','cs-ve-doc'] },
     { id: 'quentes',  label: 'Tons Quentes', pieceIds: ['cs-ma-ash','cs-rli-hsa','cs-vi-doc','cs-vm-fid','cs-vm-caw','cs-ro-chi','cs-rch-kf'] },
   ],
-  Costume: [
-    { id: 'escuros', label: 'Escuros',    pieceIds: ['co-pr-cli','co-ch-zeg','co-vi-raf'] },
-    { id: 'frios',   label: 'Tons Frios', pieceIds: ['co-ci-raf','co-az-hsa'] },
-    { id: 'quentes', label: 'Tons Quentes', pieceIds: ['co-ca-hsa','co-ma-dec','co-lv-zar'] },
-  ],
   Blazer: [
     { id: 'escuros', label: 'Escuros',    pieceIds: ['bl-pr-doc','bl-vpr-doc','bl-pr-tev'] },
     { id: 'frios',   label: 'Tons Frios', pieceIds: ['bl-ch-doc','bl-azr-doc'] },
