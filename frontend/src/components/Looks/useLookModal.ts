@@ -1,28 +1,12 @@
-import { useRef, useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { Look, Piece } from '@data/types'
-import { exportLookAsImage } from '../../utils/exportLook'
-import { usePieces } from '../../hooks/usePieces'
-import { useUsage, formatDate } from '../../hooks/useUsage'
-import { useRating } from '../../hooks/useRating'
-import { useNotes } from '../../hooks/useNotes'
-import { useLookPhoto } from '../../hooks/useLookPhoto'
-import { CAT_ORDER, catKey } from '../../utils/wardrobeUtils'
+import type { Look } from '@data/types'
+import { useLookDetails, formatDate } from '../../hooks/useLookDetails'
 
 export function useLookModal(look: Look, onClose: () => void) {
-  const { pieces } = usePieces()
-  const { count, lastDate, loading, markUsed, undoLast } = useUsage(look.id)
-  const { rating, loading: rLoading, setRating } = useRating(look.id)
-  const { notes, status: notesStatus, setNotes } = useNotes('look', look.id, look.notes)
-  const { photoId, uploading: photoUploading, upload: uploadPhoto, remove: removePhoto } = useLookPhoto(look.id, look.photoId)
   const navigate = useNavigate()
-
-  const [hovered,      setHovered]      = useState<number>(0)
-  const [exporting,    setExporting]    = useState(false)
-  const [lightboxOpen, setLightboxOpen] = useState(false)
-
-  const uploadRef  = useRef<HTMLInputElement>(null)
-  const replaceRef = useRef<HTMLInputElement>(null)
+  const d = useLookDetails(look)
+  const { lightboxOpen, setLightboxOpen } = d
 
   // Escape: fecha lightbox primeiro, depois o modal
   useEffect(() => {
@@ -33,40 +17,7 @@ export function useLookModal(look: Look, onClose: () => void) {
     }
     window.addEventListener('keydown', h)
     return () => window.removeEventListener('keydown', h)
-  }, [onClose, lightboxOpen])
-
-  const piecesInLook = look.pieces
-    .map(lp => {
-      const piece = pieces.find(p => p.id === lp.pieceId)
-      return piece ? { cat: lp.cat, piece } : null
-    })
-    .filter(Boolean)
-    .sort((a, b) => (CAT_ORDER[catKey(a!.cat)] ?? 99) - (CAT_ORDER[catKey(b!.cat)] ?? 99)) as { cat: string; piece: Piece }[]
-
-  const displayRating = hovered > 0 ? hovered : rating
-
-  async function handleExport() {
-    if (exporting) return
-    setExporting(true)
-    try { await exportLookAsImage(look, piecesInLook) }
-    finally { setExporting(false) }
-  }
-
-  async function handleStarClick(n: number) {
-    if (rLoading) return
-    await setRating(rating === n ? 0 : n)
-  }
-
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (file) uploadPhoto(file)
-    e.target.value = ''
-  }
-
-  async function handleRemove() {
-    await removePhoto()
-    setLightboxOpen(false)
-  }
+  }, [onClose, lightboxOpen, setLightboxOpen])
 
   function navigateToPiece(pieceId: string) {
     navigate(`/pecas/${pieceId}`)
@@ -74,25 +25,26 @@ export function useLookModal(look: Look, onClose: () => void) {
   }
 
   return {
-    // data
-    count, lastDate, loading,
-    rating, rLoading, displayRating,
-    notes, notesStatus,
-    photoId, photoUploading,
-    piecesInLook,
-    // state
-    hovered, setHovered,
-    exporting,
+    // usage (flat — backward compat com LookModal.tsx)
+    count: d.usage.count, lastDate: d.usage.lastDate, loading: d.usage.loading,
+    markUsed: d.usage.markUsed, undoLast: d.usage.undoLast,
+    // rating (flat)
+    rating: d.ratingH.rating, rLoading: d.ratingH.loading,
+    displayRating: d.displayRating,
+    // notes (flat)
+    notes: d.notes.notes, notesStatus: d.notes.status, setNotes: d.notes.setNotes,
+    // photo (flat)
+    photoId: d.photo.photoId, photoUploading: d.photo.uploading,
+    // shared
+    piecesInLook: d.piecesInLook,
+    hovered: d.hovered, setHovered: d.setHovered,
+    exporting: d.exporting,
     lightboxOpen, setLightboxOpen,
-    // refs
-    uploadRef, replaceRef,
-    // handlers
-    markUsed, undoLast,
-    setNotes,
-    handleExport,
-    handleStarClick,
-    handleFileChange,
-    handleRemove,
+    uploadRef: d.uploadRef, replaceRef: d.replaceRef,
+    handleExport: d.handleExport,
+    handleStarClick: d.handleStarClick,
+    handleFileChange: d.handleFileChange,
+    handleRemove: d.handleRemove,
     navigateToPiece,
     formatDate,
   }
