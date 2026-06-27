@@ -1,5 +1,4 @@
 import { imgUrl } from '../../utils/imgUrl'
-import { CamisaLooks } from '../CamisaLooks'
 import {
   StickyGroup,
   CategoryNav, NavLabel, CategoryChip,
@@ -45,48 +44,44 @@ export function PorPeca() {
         )}
       </StickyGroup>
 
-      {activeCat === 'Camisa' ? (
-        <CamisaLooks filterIds={filterIds ?? undefined} />
-      ) : (
-        <PieceList>
-          {piecesInCat.map(piece => {
-            const pieceLooks = looksForPiece(looks, piece.id)
-            return (
-              <PieceCard key={piece.id}>
-                <PieceHeader>
-                  <PieceThumb $color={piece.color}>
-                    <PieceThumbImg src={imgUrl(piece.img)} alt={piece.name}
-                      onError={e => {
-                        const el = e.target as HTMLImageElement
-                        el.style.display = 'none'
-                        el.parentElement!.style.background = piece.color + '33'
-                      }} />
-                  </PieceThumb>
-                  <PieceInfo>
-                    <PieceName>{piece.name}</PieceName>
-                    <PieceBrand>{piece.brand}</PieceBrand>
-                    <LookBadge>{pieceLooks.length === 0 ? 'Nenhum look' : `${pieceLooks.length} look${pieceLooks.length > 1 ? 's' : ''}`}</LookBadge>
-                  </PieceInfo>
-                </PieceHeader>
-                {pieceLooks.length > 0 ? (
-                  <LookRows>
-                    {pieceLooks.map(look => (
-                      <LookRow key={look.id} onClick={() => navigate(`/looks/${look.id}`)}>
-                        <LookTitle>{look.title}</LookTitle>
-                        <LookTagRow>{look.tags.map(t => <LookTag key={t} $tag={t}>{t}</LookTag>)}</LookTagRow>
-                        <FormalityDots>{[1,2,3,4,5].map(i => <Dot key={i} $filled={i <= look.formality} />)}</FormalityDots>
-                        <ClickHint>ver</ClickHint>
-                      </LookRow>
-                    ))}
-                  </LookRows>
-                ) : (
-                  <EmptyNote>Nenhum look cadastrado para esta peça ainda.</EmptyNote>
-                )}
-              </PieceCard>
-            )
-          })}
-        </PieceList>
-      )}
+      <PieceList>
+        {piecesInCat.map(piece => {
+          const pieceLooks = looksForPiece(looks, piece.id)
+          return (
+            <PieceCard key={piece.id}>
+              <PieceHeader>
+                <PieceThumb $color={piece.color}>
+                  <PieceThumbImg src={imgUrl(piece.img)} alt={piece.name}
+                    onError={e => {
+                      const el = e.target as HTMLImageElement
+                      el.style.display = 'none'
+                      el.parentElement!.style.background = piece.color + '33'
+                    }} />
+                </PieceThumb>
+                <PieceInfo>
+                  <PieceName>{piece.name}</PieceName>
+                  <PieceBrand>{piece.brand}</PieceBrand>
+                  <LookBadge>{pieceLooks.length === 0 ? 'Nenhum look' : `${pieceLooks.length} look${pieceLooks.length > 1 ? 's' : ''}`}</LookBadge>
+                </PieceInfo>
+              </PieceHeader>
+              {pieceLooks.length > 0 ? (
+                <LookRows>
+                  {pieceLooks.map(look => (
+                    <LookRow key={look.id} onClick={() => navigate(`/looks/${look.id}`)}>
+                      <LookTitle>{look.title}</LookTitle>
+                      <LookTagRow>{look.tags.map(t => <LookTag key={t} $tag={t}>{t}</LookTag>)}</LookTagRow>
+                      <FormalityDots>{[1,2,3,4,5].map(i => <Dot key={i} $filled={i <= look.formality} />)}</FormalityDots>
+                      <ClickHint>ver</ClickHint>
+                    </LookRow>
+                  ))}
+                </LookRows>
+              ) : (
+                <EmptyNote>Nenhum look cadastrado para esta peça ainda.</EmptyNote>
+              )}
+            </PieceCard>
+          )
+        })}
+      </PieceList>
     </>
   )
 }
