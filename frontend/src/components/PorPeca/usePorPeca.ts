@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
+import { CAT_LABELS } from '../../utils/lookHelpers'
 import type { Look } from '@data/types'
 
 export type SubcatDef = { id: string; label: string; pieceIds: string[] }
@@ -49,13 +50,7 @@ export const subcatConfig: Partial<Record<string, SubcatDef[]>> = {
   ],
 }
 
-const labelMap: Record<string, string> = {
-  'Camisa':'Camisas','Terno':'Ternos','Costume':'Costumes','Blazer':'Blazers',
-  'Calça':'Calças','Sapato':'Sapatos','Gravata':'Gravatas','Polo':'Polos',
-  'Camiseta':'Camisetas','Jaqueta':'Jaquetas e Casacos','Suéter':'Suéteres',
-  'Relógio':'Relógios','Cinto':'Cintos','Acessório':'Acessórios',
-}
-const CATEGORY_ORDER = Object.keys(labelMap)
+const CATEGORY_ORDER = Object.keys(CAT_LABELS)
 
 export function looksForPiece(looks: Look[], pieceId: string): Look[] {
   return looks.filter(l => l.pieces.some(lp => lp.pieceId === pieceId))
@@ -70,7 +65,7 @@ export function usePorPeca() {
   const categories = [
     ...CATEGORY_ORDER.filter(c => allPieceCats.includes(c)),
     ...allPieceCats.filter(c => !CATEGORY_ORDER.includes(c)),
-  ].map(id => ({ id, label: labelMap[id] ?? id }))
+  ].map(id => ({ id, label: CAT_LABELS[id] ?? id }))
 
   const [activeCat,    setActiveCat]    = useState('Camisa')
   const [activeSubcat, setActiveSubcat] = useState<string | null>(null)

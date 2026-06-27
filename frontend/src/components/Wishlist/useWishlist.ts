@@ -1,5 +1,8 @@
 import { useState, useEffect, useMemo } from 'react'
 import api from '../../api/client'
+import { CAT_LIST } from '../../utils/lookHelpers'
+
+export { CAT_LIST }
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -23,10 +26,6 @@ export const EMPTY_FORM: FormData = {
   price: null, priority: 2, notes: '',
 }
 
-export const CAT_LIST = [
-  'Camisa','Polo','Camiseta','Costume','Blazer','Terno',
-  'Calça','Sapato','Cinto','Gravata','Relógio','Suéter','Jaqueta','Acessório',
-]
 
 export const PRIORITY_LABELS: Record<number, string> = { 1: '🔴 Alta', 2: '🟡 Média', 3: '🟢 Baixa' }
 export const PRIORITY_COLORS: Record<number, string> = { 1: '#ef4444',  2: '#f59e0b',  3: '#22c55e' }
