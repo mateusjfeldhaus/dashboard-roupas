@@ -1050,14 +1050,14 @@ export const pieces: Piece[] = [
   {
     id: 'ac-ab', name: 'Abotoadura Clássica', brand: '',
     category: 'Acessório',
-    img: '',
+    img: 'Acessorios/Abotoadura.jpeg',
     color: '#c0c0c0',
     tips: ['Obrigatória com camisas de punho francês', 'Prata combina com qualquer relógio prateado', 'Detalhe pequeno, impacto enorme em looks formais'],
   },
   {
     id: 'cl-vi-raf', name: 'Raffer Calça Vinho', brand: 'Raffer',
     category: 'Calça',
-    img: '',
+    img: 'Calcas/Raffer - Calca - Vinho.jpeg',
     color: '#7f1d1d',
     tips: ['Vinho substitui o preto com mais personalidade', 'Com blazer chumbo ou preto: look noturno impecável', 'Tonal com blazer vinho cria conjunto marcante para eventos'],
   },
