@@ -1045,4 +1045,20 @@ export const pieces: Piece[] = [
     color: '#111827',
     tips: ['Gola alta dispensa gravata e lenço — é sofisticação por si só', 'Com blazer chumbo ou Zegna forma look de inverno impecável', 'Inspiração Steve Jobs — minimalista e impactante'],
   },
+
+  // ── Novos ─────────────────────────────────────────────────────────────────────
+  {
+    id: 'ac-ab', name: 'Abotoadura Clássica', brand: '',
+    category: 'Acessório',
+    img: '',
+    color: '#c0c0c0',
+    tips: ['Obrigatória com camisas de punho francês', 'Prata combina com qualquer relógio prateado', 'Detalhe pequeno, impacto enorme em looks formais'],
+  },
+  {
+    id: 'cl-vi-raf', name: 'Raffer Calça Vinho', brand: 'Raffer',
+    category: 'Calça',
+    img: '',
+    color: '#7f1d1d',
+    tips: ['Vinho substitui o preto com mais personalidade', 'Com blazer chumbo ou preto: look noturno impecável', 'Tonal com blazer vinho cria conjunto marcante para eventos'],
+  },
 ]
