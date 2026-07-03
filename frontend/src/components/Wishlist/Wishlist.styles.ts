@@ -5,7 +5,7 @@ import styled from 'styled-components'
 export const Header = styled.div`
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
   margin-bottom: 20px;
-  @media (max-width: 480px) { row-gap: 10px; }
+  @media (max-width: 768px) { row-gap: 10px; }
 `
 
 export const Title = styled.h1`
@@ -28,7 +28,7 @@ export const AddBtn = styled.button`
   font-size: 13px; font-weight: 700;
   cursor: pointer; transition: opacity 0.15s;
   &:hover { opacity: 0.85; }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 100%; margin-left: 0;
     padding: 13px; font-size: 14px; border-radius: 12px;
   }
@@ -37,21 +37,19 @@ export const AddBtn = styled.button`
 // ── Stats bar ─────────────────────────────────────────────────────────────────
 
 export const StatsBar = styled.div`
-  display: flex; gap: 10px; flex-wrap: wrap;
-  margin-bottom: 20px;
-  @media (max-width: 480px) {
-    flex-wrap: nowrap; overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; &::-webkit-scrollbar { display: none; }
-    padding-bottom: 4px;
-  }
+  display: flex; gap: 10px;
+  flex-wrap: nowrap; overflow-x: auto;
+  width: 100%; margin-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; &::-webkit-scrollbar { display: none; }
+  padding-bottom: 4px;
 `
 
 export const StatCard = styled.div`
   background: ${p => p.theme.colors.surface};
   border: 1px solid ${p => p.theme.colors.border};
-  border-radius: 12px; padding: 12px 16px; min-width: 120px;
-  @media (max-width: 480px) { flex-shrink: 0; min-width: 110px; }
+  border-radius: 12px; padding: 12px 16px;
+  flex-shrink: 0; min-width: 110px;
 `
 
 export const StatNum = styled.div`
@@ -67,41 +65,39 @@ export const StatLbl = styled.div`
 // ── Filters ───────────────────────────────────────────────────────────────────
 
 export const FiltersRow = styled.div`
-  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-  margin-bottom: 16px;
-  @media (max-width: 480px) {
-    flex-wrap: nowrap; overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; &::-webkit-scrollbar { display: none; }
-    padding-bottom: 4px;
-  }
+  display: flex; gap: 8px; align-items: center;
+  flex-wrap: nowrap; overflow-x: auto;
+  width: 100%; margin-bottom: 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; &::-webkit-scrollbar { display: none; }
+  padding-bottom: 4px;
 `
 
 export const FilterChip = styled.button<{ $active: boolean; $color?: string }>`
-  font-size: 11px; font-weight: 600;
-  padding: 5px 11px; border-radius: 20px;
+  flex-shrink: 0;
+  font-size: 12px; font-weight: 600;
+  padding: 8px 14px; border-radius: 20px;
   white-space: nowrap; cursor: pointer; transition: all 0.15s;
   border: 1px solid ${p => p.$active ? (p.$color ?? p.theme.colors.accent) : p.theme.colors.border};
   background: ${p => p.$active ? (p.$color ?? p.theme.colors.accent) + '22' : 'transparent'};
   color: ${p => p.$active ? (p.$color ?? p.theme.colors.accent) : p.theme.colors.textMuted};
   &:hover { border-color: ${p => p.$color ?? p.theme.colors.accent}88; }
-  @media (max-width: 480px) { flex-shrink: 0; padding: 8px 14px; font-size: 12px; }
 `
 
 export const FilterDivider = styled.div`
   width: 1px; height: 20px;
   background: ${p => p.theme.colors.border}; margin: 0 4px; flex-shrink: 0;
-  @media (max-width: 480px) { display: none; }
+  @media (max-width: 768px) { display: none; }
 `
 
 export const ShowPurchasedBtn = styled.button<{ $active: boolean }>`
-  font-size: 11px; font-weight: 600;
-  padding: 5px 11px; border-radius: 20px;
-  white-space: nowrap; flex-shrink: 0; cursor: pointer; transition: all 0.15s;
+  flex-shrink: 0;
+  font-size: 12px; font-weight: 600;
+  padding: 8px 14px; border-radius: 20px;
+  white-space: nowrap; cursor: pointer; transition: all 0.15s;
   border: 1px solid ${p => p.$active ? p.theme.colors.accent : p.theme.colors.border};
   background: ${p => p.$active ? p.theme.colors.accent + '22' : 'transparent'};
   color: ${p => p.$active ? p.theme.colors.accent : p.theme.colors.textMuted};
-  @media (max-width: 480px) { padding: 8px 14px; font-size: 12px; }
 `
 
 // ── Item list ─────────────────────────────────────────────────────────────────
@@ -110,7 +106,7 @@ export const ItemGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 12px;
-  @media (max-width: 480px) { grid-template-columns: 1fr; gap: 10px; }
+  @media (max-width: 768px) { grid-template-columns: 1fr; gap: 10px; }
 `
 
 export const ItemCard = styled.div<{ $purchased: boolean }>`
@@ -130,7 +126,7 @@ export const PriorityDot = styled.span<{ $priority: 1 | 2 | 3 }>`
   width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 5px;
   background: ${p => p.$priority === 1 ? '#ef4444' : p.$priority === 2 ? '#f59e0b' : '#22c55e'};
   box-shadow: 0 0 6px ${p => p.$priority === 1 ? '#ef444466' : p.$priority === 2 ? '#f59e0b66' : '#22c55e66'};
-  @media (max-width: 480px) { width: 12px; height: 12px; margin-top: 4px; }
+  @media (max-width: 768px) { width: 12px; height: 12px; margin-top: 4px; }
 `
 
 export const ItemMeta = styled.div`
@@ -142,7 +138,7 @@ export const ItemName = styled.div<{ $purchased: boolean }>`
   color: ${p => p.theme.colors.text};
   text-decoration: ${p => p.$purchased ? 'line-through' : 'none'};
   margin-bottom: 2px;
-  @media (max-width: 480px) { font-size: 15px; }
+  @media (max-width: 768px) { font-size: 15px; }
 `
 
 export const ItemSub = styled.div`
@@ -158,7 +154,7 @@ export const ItemCatChip = styled.span`
 export const ItemPrice = styled.div<{ $purchased: boolean }>`
   font-size: 16px; font-weight: 800; flex-shrink: 0;
   color: ${p => p.$purchased ? p.theme.colors.textMuted : p.theme.colors.accent};
-  @media (max-width: 480px) { font-size: 17px; }
+  @media (max-width: 768px) { font-size: 17px; }
 `
 
 export const ItemNotes = styled.div`
@@ -166,12 +162,12 @@ export const ItemNotes = styled.div`
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   overflow: hidden;
   a { color: ${p => p.theme.colors.accent}; text-decoration: underline; word-break: break-all; }
-  @media (max-width: 480px) { font-size: 13px; }
+  @media (max-width: 768px) { font-size: 13px; }
 `
 
 export const ItemActions = styled.div`
   display: flex; gap: 6px; align-items: center; margin-top: 4px;
-  @media (max-width: 480px) { gap: 8px; }
+  @media (max-width: 768px) { gap: 8px; }
 `
 
 export const ActionBtn = styled.button<{ $variant?: 'check' | 'edit' | 'delete' | 'uncheck' }>`
@@ -190,7 +186,7 @@ export const ActionBtn = styled.button<{ $variant?: 'check' | 'edit' | 'delete' 
     p.$variant === 'uncheck' ? p.theme.colors.textMuted :
     p.$variant === 'delete'  ? '#f87171' : p.theme.colors.textMuted};
   &:hover { opacity: 0.85; }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     padding: 10px 8px; font-size: 12px;
     border-radius: 10px; min-height: 44px;
   }
@@ -221,7 +217,7 @@ export const Dialog = styled.div`
   background: ${p => p.theme.colors.surface};
   border: 1px solid ${p => p.theme.colors.border};
   border-radius: 16px;
-  max-width: 480px; width: 100%;
+  max-width: 768px; width: 100%;
   max-height: 90vh; overflow-y: auto;
   padding: 24px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
@@ -239,7 +235,7 @@ export const DialogTitle = styled.h2`
 
 export const FormGrid = styled.div`
   display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
-  @media (max-width: 480px) { grid-template-columns: 1fr; gap: 12px; }
+  @media (max-width: 768px) { grid-template-columns: 1fr; gap: 12px; }
 `
 
 export const FormField = styled.div<{ $full?: boolean }>`
@@ -260,7 +256,7 @@ export const FormInput = styled.input`
   border-radius: 8px; padding: 8px 12px;
   font-size: 14px; color: ${p => p.theme.colors.text};
   &:focus { outline: none; border-color: ${p => p.theme.colors.accent}; }
-  @media (max-width: 480px) { padding: 12px; font-size: 16px; border-radius: 10px; }
+  @media (max-width: 768px) { padding: 12px; font-size: 16px; border-radius: 10px; }
 `
 
 export const FormSelect = styled.select`
@@ -270,7 +266,7 @@ export const FormSelect = styled.select`
   border-radius: 8px; padding: 8px 12px;
   font-size: 14px; color: ${p => p.theme.colors.text}; cursor: pointer;
   &:focus { outline: none; border-color: ${p => p.theme.colors.accent}; }
-  @media (max-width: 480px) { padding: 12px; font-size: 16px; border-radius: 10px; }
+  @media (max-width: 768px) { padding: 12px; font-size: 16px; border-radius: 10px; }
 `
 
 export const FormTextarea = styled.textarea`
@@ -280,7 +276,7 @@ export const FormTextarea = styled.textarea`
   border-radius: 8px; padding: 8px 12px;
   font-size: 14px; color: ${p => p.theme.colors.text}; font-family: inherit;
   &:focus { outline: none; border-color: ${p => p.theme.colors.accent}; }
-  @media (max-width: 480px) { padding: 12px; font-size: 16px; border-radius: 10px; }
+  @media (max-width: 768px) { padding: 12px; font-size: 16px; border-radius: 10px; }
 `
 
 export const PriorityRow = styled.div`
@@ -293,7 +289,7 @@ export const PriorityChip = styled.button<{ $active: boolean; $color: string }>`
   border: 1px solid ${p => p.$active ? p.$color : p.theme.colors.border};
   background: ${p => p.$active ? p.$color + '22' : 'transparent'};
   color: ${p => p.$active ? p.$color : p.theme.colors.textMuted};
-  @media (max-width: 480px) { padding: 11px 8px; font-size: 13px; min-height: 44px; }
+  @media (max-width: 768px) { padding: 11px 8px; font-size: 13px; min-height: 44px; }
 `
 
 export const DialogActions = styled.div`
@@ -306,7 +302,7 @@ export const CancelBtn = styled.button`
   color: ${p => p.theme.colors.textMuted};
   font-size: 13px; font-weight: 600; cursor: pointer;
   &:hover { border-color: ${p => p.theme.colors.accent}88; }
-  @media (max-width: 480px) { padding: 14px; font-size: 14px; min-height: 48px; }
+  @media (max-width: 768px) { padding: 14px; font-size: 14px; min-height: 48px; }
 `
 
 export const SaveBtn = styled.button`
@@ -315,5 +311,5 @@ export const SaveBtn = styled.button`
   font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity 0.15s;
   &:hover { opacity: 0.85; }
   &:disabled { opacity: 0.4; cursor: not-allowed; }
-  @media (max-width: 480px) { padding: 14px; font-size: 14px; min-height: 48px; }
+  @media (max-width: 768px) { padding: 14px; font-size: 14px; min-height: 48px; }
 `
