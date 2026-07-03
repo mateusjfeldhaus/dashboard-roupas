@@ -1,3 +1,4 @@
+import React from 'react'
 import { useLookPage } from './useLookPage'
 import { photoUrl } from '../../utils/lookHelpers'
 import { imgUrl } from '../../utils/imgUrl'
@@ -251,9 +252,9 @@ export function LookPage() {
             src={photoUrl(look.id)}
             alt={look.title}
             key={photo.photoId}
-            onClick={e => e.stopPropagation()}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
           />
-          <LightboxActions onClick={e => e.stopPropagation()}>
+          <LightboxActions onClick={(e: React.MouseEvent) => e.stopPropagation()}>
             <LightboxBtn htmlFor={`replace-photo-${look.id}`}>
               🔄 Trocar foto
               <PhotoUploadInput
@@ -274,7 +275,7 @@ export function LookPage() {
       {/* Dialog de confirmação */}
       {confirmOpen && (
         <DialogOverlay onClick={() => setConfirmOpen(false)}>
-          <DialogBox onClick={e => e.stopPropagation()}>
+          <DialogBox onClick={(e: React.MouseEvent) => e.stopPropagation()}>
             <DialogTitle>Salvar alterações?</DialogTitle>
             <DialogText>
               As peças do look <strong>{look.title}</strong> serão atualizadas.

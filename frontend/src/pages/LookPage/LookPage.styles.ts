@@ -52,7 +52,7 @@ export const EditBtn = styled.button`
   border: 1px solid ${p => p.theme.colors.border};
   border-radius: 8px;
   transition: all 0.15s;
-  &:hover { color: ${p => p.theme.colors.gold}; border-color: ${p => p.theme.colors.gold}; }
+  &:hover { color: ${p => p.theme.colors.accent}; border-color: ${p => p.theme.colors.accent}; }
 `
 
 export const EditBar = styled.div`
@@ -64,7 +64,7 @@ export const EditBar = styled.div`
 
 export const SaveBtn = styled.button`
   padding: 7px 16px; border-radius: 8px; font-size: 13px; font-weight: 700;
-  background: ${p => p.theme.colors.gold}; color: #000;
+  background: ${p => p.theme.colors.accent}; color: #000;
   transition: opacity 0.15s;
   &:hover { opacity: 0.85; }
 `
@@ -109,11 +109,11 @@ export const PieceGrid = styled.div`
 export const PieceChip = styled.button<{ $active?: boolean }>`
   display: flex; align-items: center; gap: 6px;
   padding: 5px 10px; border-radius: 20px; font-size: 12px;
-  border: 1px solid ${p => p.$active ? p.theme.colors.gold : p.theme.colors.border};
-  color: ${p => p.$active ? p.theme.colors.gold : p.theme.colors.text};
-  background: ${p => p.$active ? p.theme.colors.gold + '18' : 'transparent'};
+  border: 1px solid ${p => p.$active ? p.theme.colors.accent : p.theme.colors.border};
+  color: ${p => p.$active ? p.theme.colors.accent : p.theme.colors.text};
+  background: ${p => p.$active ? p.theme.colors.accent + '18' : 'transparent'};
   transition: all 0.15s;
-  &:hover { border-color: ${p => p.theme.colors.gold}; color: ${p => p.theme.colors.gold}; }
+  &:hover { border-color: ${p => p.theme.colors.accent}; color: ${p => p.theme.colors.accent}; }
 `
 
 // ── Dialog de confirmação ──────────────────────────────────────────────────────
