@@ -13,17 +13,24 @@ import {
   LightboxOverlay, LightboxImg, LightboxClose, LightboxActions, LightboxBtn, LightboxDelBtn,
 } from '../../components/Looks/LookModal.styles'
 import { SkCard, SkStack, SkLine } from '../../components/Skeleton'
-import { PageWrap, BackBtn, HideBtn, Card, NotFound } from './LookPage.styles'
+import {
+  PageWrap, BackBtn, HideBtn, Card, NotFound,
+  EditBtn, EditBar, SaveBtn, CancelBtn,
+  EditSlot, RemoveBadge, AddSection, AddLabel, PieceGrid, PieceChip,
+  DialogOverlay, DialogBox, DialogTitle, DialogText, DialogActions,
+} from './LookPage.styles'
 
 export function LookPage() {
   const {
-    navigate, look, piecesInLook, looksLoading,
+    navigate, look, pieces, piecesInLook, looksLoading,
     usage, rating, notes, photo,
     hovered, setHovered,
     exporting, lightboxOpen, setLightboxOpen,
     uploadRef, replaceRef,
     handleExport, handleStarClick, handleFileChange, handleRemove,
     toggleHidden,
+    editMode, pendingPieces, confirmOpen, setConfirmOpen, saving,
+    startEdit, cancelEdit, togglePiece, confirmSave,
   } = useLookPage()
 
   if (looksLoading) return (
@@ -43,6 +50,8 @@ export function LookPage() {
     </PageWrap>
   )
 
+  const pendingIds = new Set(pendingPieces.map(lp => lp.pieceId))
+
   return (
     <>
       <PageWrap>
@@ -53,8 +62,20 @@ export function LookPage() {
         >
           {look.hidden ? '👁 Tornar visível' : '🙈 Ocultar look'}
         </HideBtn>
+        {!editMode && (
+          <EditBtn onClick={startEdit} title="Adicionar ou remover peças deste look">
+            ✏️ Editar peças
+          </EditBtn>
+        )}
 
         <Card>
+          {editMode && (
+            <EditBar>
+              <SaveBtn onClick={() => setConfirmOpen(true)}>Salvar alterações</SaveBtn>
+              <CancelBtn onClick={cancelEdit}>Cancelar</CancelBtn>
+            </EditBar>
+          )}
+
           <Header>
             <div>
               <Title>{look.title}</Title>
@@ -119,59 +140,110 @@ export function LookPage() {
           </Header>
 
           <Body>
-            <FlatLayTitle>Flat-Lay do Look</FlatLayTitle>
+            <FlatLayTitle>
+              {editMode ? 'Peças no look (clique para remover)' : 'Flat-Lay do Look'}
+            </FlatLayTitle>
             <FlatLay>
-              {piecesInLook.map(({ cat, piece }) => (
-                <PieceSlot key={piece.id} onClick={() => navigate(`/pecas/${piece.id}`)} title={`Ver ${piece.name}`}>
-                  <PieceImg $color={piece.color}>
-                    <Img
-                      src={imgUrl(piece.img)}
-                      alt={piece.name}
-                      onError={e => {
-                        const el = e.target as HTMLImageElement
-                        el.style.display = 'none'
-                        el.parentElement!.style.background = piece.color + '22'
-                      }}
-                    />
-                  </PieceImg>
-                  <PieceCat>{cat}</PieceCat>
-                  <PieceName>{piece.name}</PieceName>
-                </PieceSlot>
-              ))}
+              {editMode
+                ? pendingPieces.map(lp => {
+                    const piece = pieces.find(p => p.id === lp.pieceId)
+                    if (!piece) return null
+                    return (
+                      <EditSlot key={piece.id} onClick={() => togglePiece(piece)} title="Clique para remover">
+                        <PieceImg $color={piece.color}>
+                          <Img
+                            src={imgUrl(piece.img)}
+                            alt={piece.name}
+                            onError={e => {
+                              const el = e.target as HTMLImageElement
+                              el.style.display = 'none'
+                              el.parentElement!.style.background = piece.color + '22'
+                            }}
+                          />
+                        </PieceImg>
+                        <PieceCat>{lp.cat}</PieceCat>
+                        <PieceName>{piece.name}</PieceName>
+                        <RemoveBadge>✕</RemoveBadge>
+                      </EditSlot>
+                    )
+                  })
+                : piecesInLook.map(({ cat, piece }) => (
+                    <PieceSlot key={piece.id} onClick={() => navigate(`/pecas/${piece.id}`)} title={`Ver ${piece.name}`}>
+                      <PieceImg $color={piece.color}>
+                        <Img
+                          src={imgUrl(piece.img)}
+                          alt={piece.name}
+                          onError={e => {
+                            const el = e.target as HTMLImageElement
+                            el.style.display = 'none'
+                            el.parentElement!.style.background = piece.color + '22'
+                          }}
+                        />
+                      </PieceImg>
+                      <PieceCat>{cat}</PieceCat>
+                      <PieceName>{piece.name}</PieceName>
+                    </PieceSlot>
+                  ))
+              }
             </FlatLay>
 
-            <FlatLayTitle>Dica do Stylist</FlatLayTitle>
-            <Tip>{look.tip}</Tip>
+            {/* Adicionar peças (modo edição) */}
+            {editMode && (
+              <AddSection>
+                <AddLabel>Adicionar peça</AddLabel>
+                <PieceGrid>
+                  {pieces.filter(p => !p.hidden).map(p => (
+                    <PieceChip
+                      key={p.id}
+                      $active={pendingIds.has(p.id)}
+                      onClick={() => togglePiece(p)}
+                      title={p.name}
+                    >
+                      <span style={{ fontSize: 10, opacity: 0.6 }}>{p.category}</span>
+                      {p.name}
+                    </PieceChip>
+                  ))}
+                </PieceGrid>
+              </AddSection>
+            )}
 
-            <NotesSection>
-              <NotesLabel>
-                <NotesTitle>Observações</NotesTitle>
-                <NotesStatus $status={notes.status}>
-                  {notes.status === 'saving' ? 'salvando…' :
-                   notes.status === 'saved'  ? '✓ salvo'   :
-                   notes.status === 'error'  ? 'erro ao salvar' : ''}
-                </NotesStatus>
-              </NotesLabel>
-              <NotesTextarea
-                value={notes.notes}
-                onChange={e => notes.setNotes(e.target.value)}
-                placeholder="Adicione observações sobre este look…"
-              />
-            </NotesSection>
+            {!editMode && (
+              <>
+                <FlatLayTitle>Dica do Stylist</FlatLayTitle>
+                <Tip>{look.tip}</Tip>
 
-            <ExportBtn
-              onClick={handleExport}
-              $loading={exporting}
-              disabled={exporting}
-              title="Exportar como imagem PNG 1080×1350"
-              style={{ marginTop: 20, width: '100%', justifyContent: 'center' }}
-            >
-              {exporting ? '⏳ Gerando imagem…' : '📥 Exportar look como imagem'}
-            </ExportBtn>
+                <NotesSection>
+                  <NotesLabel>
+                    <NotesTitle>Observações</NotesTitle>
+                    <NotesStatus $status={notes.status}>
+                      {notes.status === 'saving' ? 'salvando…' :
+                       notes.status === 'saved'  ? '✓ salvo'   :
+                       notes.status === 'error'  ? 'erro ao salvar' : ''}
+                    </NotesStatus>
+                  </NotesLabel>
+                  <NotesTextarea
+                    value={notes.notes}
+                    onChange={e => notes.setNotes(e.target.value)}
+                    placeholder="Adicione observações sobre este look…"
+                  />
+                </NotesSection>
+
+                <ExportBtn
+                  onClick={handleExport}
+                  $loading={exporting}
+                  disabled={exporting}
+                  title="Exportar como imagem PNG 1080×1350"
+                  style={{ marginTop: 20, width: '100%', justifyContent: 'center' }}
+                >
+                  {exporting ? '⏳ Gerando imagem…' : '📥 Exportar look como imagem'}
+                </ExportBtn>
+              </>
+            )}
           </Body>
         </Card>
       </PageWrap>
 
+      {/* Lightbox de foto */}
       {lightboxOpen && photo.photoId && (
         <LightboxOverlay onClick={() => setLightboxOpen(false)}>
           <LightboxClose onClick={() => setLightboxOpen(false)}>✕</LightboxClose>
@@ -197,6 +269,25 @@ export function LookPage() {
             </LightboxDelBtn>
           </LightboxActions>
         </LightboxOverlay>
+      )}
+
+      {/* Dialog de confirmação */}
+      {confirmOpen && (
+        <DialogOverlay onClick={() => setConfirmOpen(false)}>
+          <DialogBox onClick={e => e.stopPropagation()}>
+            <DialogTitle>Salvar alterações?</DialogTitle>
+            <DialogText>
+              As peças do look <strong>{look.title}</strong> serão atualizadas.
+              Título, tags e demais dados não serão alterados.
+            </DialogText>
+            <DialogActions>
+              <CancelBtn onClick={() => setConfirmOpen(false)}>Cancelar</CancelBtn>
+              <SaveBtn onClick={confirmSave} disabled={saving}>
+                {saving ? 'Salvando…' : 'OK, salvar'}
+              </SaveBtn>
+            </DialogActions>
+          </DialogBox>
+        </DialogOverlay>
       )}
     </>
   )

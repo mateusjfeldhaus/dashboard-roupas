@@ -77,28 +77,28 @@ export const LookUpdateSchema = LookCreateSchema.partial().omit({ id: true })
 // ── Wishlist ──────────────────────────────────────────────────────────────────
 
 export const WishlistCreateSchema = z.object({
-  name:      z.string().min(1),
-  category:  z.string().default(''),
-  brand:     z.string().default(''),
-  price:     z.number().positive().nullable().optional(),
-  priority:  z.number().int().min(1).max(3).default(2),
-  notes:     z.string().default(''),
-  link:      z.string().default(''),
-  purchased: z.boolean().default(false),
+  name:     z.string().min(1),
+  category: z.string().default(''),
+  brand:    z.string().default(''),
+  price:    z.number().positive().optional(),
+  priority: z.number().int().min(1).max(3).default(2),
+  notes:    z.string().default(''),
+  link:     z.string().default(''),
 })
 
 export const WishlistUpdateSchema = WishlistCreateSchema.partial().extend({
-  purchasedAt: z.coerce.date().optional().nullable(),
-})
-
-// ── Hidden ────────────────────────────────────────────────────────────────────
-
-export const HiddenSchema = z.object({
-  hidden: z.boolean(),
+  purchased:   z.boolean().optional(),
+  purchasedAt: z.coerce.date().optional(),
 })
 
 // ── Rating ────────────────────────────────────────────────────────────────────
 
 export const RatingSchema = z.object({
   rating: z.number().int().min(0).max(10),
+})
+
+// ── Hidden ────────────────────────────────────────────────────────────────────
+
+export const HiddenSchema = z.object({
+  hidden: z.boolean(),
 })
