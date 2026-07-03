@@ -14,6 +14,9 @@ import ratingRouter   from './routes/rating'
 import wishlistRouter from './routes/wishlist'
 import photosRouter   from './routes/photos'
 import { requireApiKey } from './middleware/requireApiKey'
+import { supabase } from './lib/supabase'
+import { db } from './db/client'
+import { sql } from 'drizzle-orm'
 
 export const app = express()
 
@@ -71,6 +74,24 @@ const writeLimiter = rateLimit({
   legacyHeaders: false,
   skip: (req) => req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS',
   message: { error: 'Muitas requisições. Tente novamente em instantes.' },
+})
+
+// ── GET /health — público, mantém Supabase e Neon ativos ─────────────────────
+app.get('/health', async (_req, res) => {
+  const status: Record<string, string> = { ok: 'true' }
+  try {
+    await db.execute(sql`SELECT 1`)
+    status.neon = 'alive'
+  } catch {
+    status.neon = 'error'
+  }
+  try {
+    await supabase.storage.listBuckets()
+    status.supabase = 'alive'
+  } catch {
+    status.supabase = 'error'
+  }
+  res.json(status)
 })
 
 // ── POST /api/auth — valida PIN e emite JWT 24h ──────────────────────────────
