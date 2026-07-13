@@ -104,6 +104,9 @@ export const AddLabel = styled.p`
 
 export const PieceGrid = styled.div`
   display: flex; flex-wrap: wrap; gap: 8px;
+  @media (max-width: 768px) {
+    flex-direction: column; gap: 6px;
+  }
 `
 
 export const PieceChip = styled.button<{ $active?: boolean }>`
@@ -113,7 +116,12 @@ export const PieceChip = styled.button<{ $active?: boolean }>`
   color: ${p => p.$active ? p.theme.colors.accent : p.theme.colors.text};
   background: ${p => p.$active ? p.theme.colors.accent + '18' : 'transparent'};
   transition: all 0.15s;
+  text-align: left;
   &:hover { border-color: ${p => p.theme.colors.accent}; color: ${p => p.theme.colors.accent}; }
+  @media (max-width: 768px) {
+    width: 100%; padding: 10px 14px; font-size: 13px; border-radius: 12px;
+    min-height: 44px;
+  }
 `
 
 // ── Dialog de confirmação ──────────────────────────────────────────────────────
