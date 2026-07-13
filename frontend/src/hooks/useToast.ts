@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
 
-// ── Tipos ─────────────────────────────────────────────────────────────────────
-
 export type ToastType = 'success' | 'error'
 
 export interface Toast {
@@ -10,32 +8,29 @@ export interface Toast {
   type: ToastType
 }
 
-// ── Singleton — compartilhado entre todos os componentes ──────────────────────
-
-let listeners: Array<(toasts: Toast[]) => void> = []
-let toasts: Toast[] = []
-let nextId = 0
 const DURATION = 3000
+let nextId = 0
 
-// Função global — importe e chame de qualquer hook ou componente
+// Despacha um CustomEvent no window — funciona independente de render cycle
 export function toast(msg: string, type: ToastType = 'success') {
   const id = nextId++
-  toasts = [...toasts, { id, msg, type }]
-  listeners.forEach(fn => fn(toasts))
-
-  setTimeout(() => {
-    toasts = toasts.filter(t => t.id !== id)
-    listeners.forEach(fn => fn(toasts))
-  }, DURATION)
+  window.dispatchEvent(new CustomEvent<Toast>('app:toast', { detail: { id, msg, type } }))
 }
 
-// Hook para o componente visual se inscrever nas mudanças
+// Hook que escuta o evento e gerencia a lista localmente
 export function useToasts(): Toast[] {
-  const [list, setList] = useState<Toast[]>(toasts)
+  const [list, setList] = useState<Toast[]>([])
 
   useEffect(() => {
-    listeners.push(setList)
-    return () => { listeners = listeners.filter(l => l !== setList) }
+    const handler = (e: Event) => {
+      const t = (e as CustomEvent<Toast>).detail
+      setList(prev => [...prev, t])
+      setTimeout(() => {
+        setList(prev => prev.filter(x => x.id !== t.id))
+      }, DURATION)
+    }
+    window.addEventListener('app:toast', handler)
+    return () => window.removeEventListener('app:toast', handler)
   }, [])
 
   return list
