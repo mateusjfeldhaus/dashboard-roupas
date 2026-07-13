@@ -4,6 +4,7 @@ import { useLooks } from '../../hooks/useLooks'
 import { usePieces } from '../../hooks/usePieces'
 import { useLookDetails, formatDate } from '../../hooks/useLookDetails'
 import api from '../../api/client'
+import { toast } from '../../hooks/useToast'
 import type { Piece } from '@data/types'
 
 export function useLookPage() {
@@ -59,6 +60,9 @@ export function useLookPage() {
       invalidate()
       setEditMode(false)
       setConfirmOpen(false)
+      toast('Look atualizado!')
+    } catch {
+      toast('Erro ao salvar look', 'error')
     } finally {
       setSaving(false)
     }

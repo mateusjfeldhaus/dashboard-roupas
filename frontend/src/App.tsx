@@ -21,6 +21,7 @@ import { LookPage } from './pages/LookPage'
 import { NovoLookPage } from './pages/NovoLookPage'
 import { LooksDescartados } from './pages/LooksDescartados'
 import { PecasDescartadas } from './pages/PecasDescartadas'
+import { ToastContainer } from './components/Toast'
 
 const Main = styled.main`
   max-width: 1400px;
@@ -35,6 +36,7 @@ export default function App() {
   return (
     <>
       <Nav />
+      <ToastContainer />
       <Main>
         <Routes>
           <Route path="/"                  element={<Overview />} />

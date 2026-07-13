@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import api from '../api/client'
+import { toast } from './useToast'
 
 type EntityType = 'look' | 'piece'
 
@@ -54,7 +55,10 @@ export function useNotes(
           }, 2000)
         }
       } catch {
-        if (mountedRef.current) setStatus('error')
+        if (mountedRef.current) {
+          setStatus('error')
+          toast('Erro ao salvar nota', 'error')
+        }
       }
     }, DEBOUNCE_MS)
   }

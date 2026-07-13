@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import api from '../api/client'
+import { toast } from './useToast'
 
 interface RatingState {
   rating: number
@@ -41,9 +42,11 @@ export function useRating(lookId: string): RatingState {
       const v = r.data.rating ?? 0
       cache.set(lookId, v)
       setRatingState(v)
+      toast(`Avaliação salva: ${v}/10`)
     } catch {
       cache.set(lookId, previous)
       setRatingState(previous)
+      toast('Erro ao salvar avaliação', 'error')
     } finally {
       setLoading(false)
     }

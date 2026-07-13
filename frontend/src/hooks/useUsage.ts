@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import api from '../api/client'
+import { toast } from './useToast'
 
 export interface UsageStats {
   count: number
@@ -50,7 +51,11 @@ export function useUsage(lookId: string): UsageStats & {
     try {
       const r = await api.post<ApiStats>(`/api/usage/${encodeURIComponent(lookId)}`)
       apply(r.data)
-    } catch { setStats(s => ({ ...s, loading: false })) }
+      toast('Look registrado!')
+    } catch {
+      setStats(s => ({ ...s, loading: false }))
+      toast('Erro ao registrar uso', 'error')
+    }
   }, [lookId])
 
   const undoLast = useCallback(async () => {
@@ -59,7 +64,11 @@ export function useUsage(lookId: string): UsageStats & {
     try {
       const r = await api.delete<ApiStats>(`/api/usage/${encodeURIComponent(lookId)}/last`)
       apply(r.data)
-    } catch { setStats(s => ({ ...s, loading: false })) }
+      toast('Uso desfeito')
+    } catch {
+      setStats(s => ({ ...s, loading: false }))
+      toast('Erro ao desfazer uso', 'error')
+    }
   }, [lookId, stats.count])
 
   return { ...stats, markUsed, undoLast }

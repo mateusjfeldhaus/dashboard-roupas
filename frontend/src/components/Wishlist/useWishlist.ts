@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import api from '../../api/client'
+import { toast } from '../../hooks/useToast'
 import { CAT_LIST } from '../../utils/lookHelpers'
 import type { WishlistItem } from '@data/types'
 
@@ -57,9 +58,8 @@ export function useWishlist() {
   const [editItem,      setEditItem]      = useState<WishlistItem | null>(null)
   const [form,          setForm]          = useState<FormData>(EMPTY_FORM)
   const [saving,        setSaving]        = useState(false)
-  const [error,         setError]         = useState<string | null>(null)
 
-  useEffect(() => { apiGet().then(setItems).catch(() => setError('Erro ao carregar wishlist')) }, [])
+  useEffect(() => { apiGet().then(setItems).catch(() => toast('Erro ao carregar wishlist', 'error')) }, [])
 
   const visible = useMemo(() => {
     return items.filter(i => {
@@ -108,8 +108,9 @@ export function useWishlist() {
         setItems(prev => [...prev, created])
       }
       closeForm()
+      toast(editItem ? 'Item atualizado!' : 'Item adicionado!')
     } catch {
-      setError('Erro ao salvar item. Tente novamente.')
+      toast('Erro ao salvar item', 'error')
     } finally { setSaving(false) }
   }
 
@@ -120,8 +121,9 @@ export function useWishlist() {
     try {
       const updated = await apiPut(item.id, patch)
       setItems(prev => prev.map(i => i.id === item.id ? updated : i))
+      toast(item.purchased ? 'Desmarcado como comprado' : 'Marcado como comprado!')
     } catch {
-      setError('Erro ao atualizar item')
+      toast('Erro ao atualizar item', 'error')
     }
   }
 
@@ -131,8 +133,9 @@ export function useWishlist() {
     try {
       await apiDelete(id)
       setItems(prev => prev.filter(i => i.id !== id))
+      toast('Item removido')
     } catch {
-      setError('Erro ao excluir item')
+      toast('Erro ao excluir item', 'error')
     }
   }
 
@@ -153,6 +156,5 @@ export function useWishlist() {
     presentCats,
     openAdd, openEdit, closeForm,
     handleSave, togglePurchased, handleDelete,
-    error,
   }
 }
