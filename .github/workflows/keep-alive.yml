@@ -1,0 +1,32 @@
+name: Keep Alive — Supabase + Neon
+
+on:
+  schedule:
+    - cron: '0 9 */3 * *'   # a cada 3 dias às 9h UTC (Supabase pausa após 7 dias)
+  workflow_dispatch:          # permite rodar manualmente pelo GitHub
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping /health
+        run: |
+          echo "Pingando backend..."
+          RESPONSE=$(curl -s -w "\n%{http_code}" https://dashboard-roupas-production.up.railway.app/health)
+          BODY=$(echo "$RESPONSE" | head -1)
+          STATUS=$(echo "$RESPONSE" | tail -1)
+          echo "HTTP $STATUS"
+          echo "$BODY"
+          if [ "$STATUS" != "200" ]; then
+            echo "ERRO: backend retornou HTTP $STATUS"
+            exit 1
+          fi
+          if echo "$BODY" | grep -q '"supabase":"error"'; then
+            echo "AVISO: Supabase retornou erro"
+            exit 1
+          fi
+          if echo "$BODY" | grep -q '"neon":"error"'; then
+            echo "AVISO: Neon retornou erro"
+            exit 1
+          fi
+          echo "Tudo OK!"
