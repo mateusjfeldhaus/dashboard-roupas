@@ -80,7 +80,7 @@ export const WishlistCreateSchema = z.object({
   name:     z.string().min(1),
   category: z.string().default(''),
   brand:    z.string().default(''),
-  price:    z.number().positive().optional(),
+  price:    z.number().positive().nullable().optional(),
   priority: z.number().int().min(1).max(3).default(2),
   notes:    z.string().default(''),
   link:     z.string().default(''),

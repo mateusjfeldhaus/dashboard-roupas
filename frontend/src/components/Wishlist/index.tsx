@@ -21,7 +21,7 @@ export function Wishlist() {
     catFilter, setCatFilter,
     prioFilter, setPrioFilter,
     showPurchased, setShowPurchased,
-    formOpen, editItem, form, setForm, saving,
+    formOpen, editItem, form, setForm, saving, error,
     pending, purchased, totalEst, spentEst,
     presentCats,
     openAdd, openEdit, closeForm,
@@ -202,6 +202,11 @@ export function Wishlist() {
               </FormField>
             </FormGrid>
 
+            {error && (
+              <p style={{ color: '#ef4444', fontSize: '13px', margin: '0 0 8px', textAlign: 'center' }}>
+                {error}
+              </p>
+            )}
             <DialogActions>
               <CancelBtn onClick={closeForm}>Cancelar</CancelBtn>
               <SaveBtn onClick={handleSave} disabled={saving || !form.name.trim()}>

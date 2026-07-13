@@ -108,6 +108,8 @@ export function useWishlist() {
         setItems(prev => [...prev, created])
       }
       closeForm()
+    } catch {
+      setError('Erro ao salvar item. Tente novamente.')
     } finally { setSaving(false) }
   }
 
