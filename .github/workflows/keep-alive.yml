@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '0 9 */3 * *'   # a cada 3 dias às 9h UTC (Supabase pausa após 7 dias)
   workflow_dispatch:          # permite rodar manualmente pelo GitHub
+  push:
+    branches: [main]          # garante que o workflow não seja desabilitado por inatividade
 
 jobs:
   ping:
