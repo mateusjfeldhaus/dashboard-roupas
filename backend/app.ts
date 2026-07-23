@@ -86,13 +86,7 @@ app.get('/health', async (_req, res) => {
     status.neon = 'error'
   }
   try {
-    // Query direta via PostgREST — conta como atividade de banco para o Supabase
-    const url = process.env.SUPABASE_URL!
-    const key = process.env.SUPABASE_SERVICE_KEY!
-    const r   = await fetch(`${url}/rest/v1/buckets?limit=1`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` },
-    })
-    if (!r.ok) throw new Error(`HTTP ${r.status}`)
+    await supabase.storage.listBuckets()
     status.supabase = 'alive'
   } catch {
     status.supabase = 'error'

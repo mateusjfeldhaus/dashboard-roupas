@@ -19,28 +19,12 @@ async function pingDatabases() {
     console.error(`[keep-alive] ${ts} — Neon: ERRO`, err)
   }
 
-  // Supabase — listBuckets() não conta como atividade de DB.
-  // Chamamos o PostgREST diretamente para forçar uma query SQL real.
+  // Supabase — chamada à Storage API mantém o projeto ativo
   try {
-    const url  = process.env.SUPABASE_URL!
-    const key  = process.env.SUPABASE_SERVICE_KEY!
-    // GET /rest/v1/buckets?limit=1 — consulta storage.buckets via PostgREST
-    const res  = await fetch(`${url}/rest/v1/buckets?limit=1`, {
-      headers: {
-        apikey: key,
-        Authorization: `Bearer ${key}`,
-      },
-    })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    await supabase.storage.listBuckets()
     console.log(`[keep-alive] ${ts} — Supabase: OK`)
   } catch (err) {
-    // Fallback: tenta listBuckets() mesmo assim
-    try {
-      await supabase.storage.listBuckets()
-      console.log(`[keep-alive] ${ts} — Supabase (fallback): OK`)
-    } catch (err2) {
-      console.error(`[keep-alive] ${ts} — Supabase: ERRO`, err2)
-    }
+    console.error(`[keep-alive] ${ts} — Supabase: ERRO`, err)
   }
 }
 
