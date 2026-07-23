@@ -24,11 +24,10 @@ jobs:
             exit 1
           fi
           if echo "$BODY" | grep -q '"supabase":"error"'; then
-            echo "AVISO: Supabase retornou erro"
-            exit 1
+            echo "AVISO: Supabase pausado — acesse app.supabase.com para reativar manualmente"
           fi
           if echo "$BODY" | grep -q '"neon":"error"'; then
-            echo "AVISO: Neon retornou erro"
+            echo "ERRO: Neon retornou erro"
             exit 1
           fi
-          echo "Tudo OK!"
+          echo "Ping concluído."
