@@ -1061,4 +1061,27 @@ export const pieces: Piece[] = [
     color: '#7f1d1d',
     tips: ['Vinho substitui o preto com mais personalidade', 'Com blazer chumbo ou preto: look noturno impecável', 'Tonal com blazer vinho cria conjunto marcante para eventos'],
   },
+
+  // ── Bespoke Príncipe de Gales ─────────────────────────────────────────────────
+  {
+    id: 'bl-pg-bsp', name: 'Bespoke Blazer Príncipe de Gales', brand: 'Bespoke',
+    category: 'Blazer',
+    img: 'Blazers/Bespoke - Blazer - Principe de Gales.jpeg',
+    color: '#6b7280',
+    tips: ['Xadrez Príncipe de Gales é o padrão mais britânico que existe — use com orgulho', 'Com calça lisa cinza ou chumbo, o padrão respira e não compete', 'Evite camisa listrada — prefira lisa branca, azul claro ou azul escura'],
+  },
+  {
+    id: 'cl-pg-bsp', name: 'Bespoke Calça Príncipe de Gales', brand: 'Bespoke',
+    category: 'Calça',
+    img: 'Calcas/Bespoke - Calca - Principe de Gales.jpeg',
+    color: '#6b7280',
+    tips: ['Calça de padrão pede blazer liso — deixe o conjunto equilibrado', 'Com blazer azul ou chumbo liso cria contraste elegante e clássico', 'Pode usar sem blazer com camisa branca e loafer — look de alfaiate descontraído'],
+  },
+  {
+    id: 'co-pg-bsp', name: 'Bespoke Colete Príncipe de Gales', brand: 'Bespoke',
+    category: 'Colete',
+    img: 'Coletes/Bespoke - Colete - Principe de Gales.jpeg',
+    color: '#6b7280',
+    tips: ['Com blazer e calça do mesmo tecido: o terno bespoke de 3 peças mais elegante do guarda-roupa', 'Sem blazer e com camisa branca: o waistcoat look inglês por excelência', 'Suspensório sob o colete é o detalhe secreto que ninguém vê mas faz toda a diferença'],
+  },
 ]
