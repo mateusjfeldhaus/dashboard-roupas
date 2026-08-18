@@ -117,6 +117,8 @@ app.post('/api/auth', authLimiter, (req, res) => {
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') return next()
   if (req.path === '/api/auth') return next()
+  // GET /api/photos/:id é público — só redireciona para URL pública do Supabase
+  if (req.method === 'GET' && req.path.startsWith('/api/photos/')) return next()
   if (req.path.startsWith('/img') && typeof req.query.t === 'string') {
     req.headers['x-api-key'] = req.query.t
   }

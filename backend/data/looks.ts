@@ -2876,7 +2876,7 @@ export const looks: Look[] = [
   {
     id: 'L194',
     title: 'Príncipe de Gales Formal',
-    tags: ['formal', 'diurno', 'outono', 'inverno'],
+    tags: ['formal', 'diurno', 'outono'],
     formality: 5,
     tip: 'Blazer xadrez com calça lisa chumbo e camisa branca: a fórmula britânica que nunca erra.',
     pieces: [
@@ -2908,7 +2908,7 @@ export const looks: Look[] = [
   {
     id: 'L196',
     title: 'Príncipe de Gales Smart Casual',
-    tags: ['casual', 'diurno', 'primavera', 'verao'],
+    tags: ['casual', 'diurno', 'primavera'],
     formality: 3,
     tip: 'Blazer xadrez sem gravata com linho areia — sprezzatura italiana com sotaque inglês.',
     pieces: [
@@ -2951,7 +2951,7 @@ export const looks: Look[] = [
   {
     id: 'L199',
     title: 'Terno Bespoke de 3 Peças',
-    tags: ['formal', 'diurno', 'outono', 'inverno'],
+    tags: ['formal', 'diurno', 'outono'],
     formality: 5,
     tip: 'Blazer, colete e calça Príncipe de Gales juntos: o look mais poderoso do guarda-roupa.',
     pieces: [
@@ -3029,7 +3029,7 @@ export const looks: Look[] = [
   {
     id: 'L204',
     title: 'Calça Xadrez com Zegna',
-    tags: ['formal', 'diurno', 'outono', 'inverno'],
+    tags: ['formal', 'diurno', 'outono'],
     formality: 5,
     tip: 'A calça de padrão pede o melhor blazer liso da coleção — Zegna entrega.',
     pieces: [
@@ -3092,7 +3092,7 @@ export const looks: Look[] = [
   {
     id: 'L208',
     title: 'Calça Xadrez com Preto',
-    tags: ['formal', 'noturno', 'outono', 'inverno'],
+    tags: ['formal', 'noturno', 'inverno'],
     formality: 4,
     tip: 'Blazer preto com calça xadrez cinza — o contraste drama que funciona para eventos noturnos.',
     pieces: [
@@ -3186,7 +3186,7 @@ export const looks: Look[] = [
   {
     id: 'L214',
     title: 'Três Peças Bespoke Completo',
-    tags: ['formal', 'diurno', 'outono', 'inverno'],
+    tags: ['formal', 'diurno', 'outono'],
     formality: 5,
     tip: 'O terno bespoke de 3 peças Príncipe de Gales é o pico do guarda-roupa. Reserve para as grandes ocasiões.',
     pieces: [
@@ -3287,7 +3287,7 @@ export const looks: Look[] = [
   {
     id: 'L220',
     title: 'Colete e Suspensório',
-    tags: ['formal', 'diurno', 'outono', 'inverno'],
+    tags: ['formal', 'diurno', 'outono'],
     formality: 4,
     tip: 'Suspensório sob o colete xadrez: o segredo do alfaiate que ninguém vê, mas que define a postura.',
     pieces: [
