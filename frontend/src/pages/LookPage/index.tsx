@@ -1,6 +1,5 @@
 import React from 'react'
 import { useLookPage } from './useLookPage'
-import { photoUrl } from '../../utils/lookHelpers'
 import { imgUrl } from '../../utils/imgUrl'
 import { formatDate } from '../../hooks/useUsage'
 import {
@@ -249,7 +248,7 @@ export function LookPage() {
         <LightboxOverlay onClick={() => setLightboxOpen(false)}>
           <LightboxClose onClick={() => setLightboxOpen(false)}>✕</LightboxClose>
           <LightboxImg
-            src={photoUrl(look.id)}
+            src={photo.photoUrl ?? ''}
             alt={look.title}
             key={photo.photoId}
             onClick={(e: React.MouseEvent) => e.stopPropagation()}

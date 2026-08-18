@@ -34,7 +34,7 @@ export function useLookModal(look: Look, onClose: () => void) {
     // notes (flat)
     notes: d.notes.notes, notesStatus: d.notes.status, setNotes: d.notes.setNotes,
     // photo (flat)
-    photoId: d.photo.photoId, photoUploading: d.photo.uploading,
+    photoId: d.photo.photoId, photoUrl: d.photo.photoUrl, photoUploading: d.photo.uploading,
     // shared
     piecesInLook: d.piecesInLook,
     hovered: d.hovered, setHovered: d.setHovered,

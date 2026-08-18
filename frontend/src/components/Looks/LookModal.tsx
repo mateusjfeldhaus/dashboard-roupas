@@ -1,6 +1,5 @@
 import type { Look } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
-import { photoUrl } from '../../utils/lookHelpers'
 import { useLookModal } from './useLookModal'
 import {
   Overlay, Dialog, Header, Title, TagRow, Tag, CloseBtn,
@@ -20,7 +19,7 @@ export function LookModal({ look, onClose }: Props) {
     count, lastDate, loading,
     rating, rLoading, displayRating,
     notes, notesStatus,
-    photoId, photoUploading,
+    photoId, photoUrl, photoUploading,
     piecesInLook,
     hovered, setHovered,
     exporting,
@@ -165,7 +164,7 @@ export function LookModal({ look, onClose }: Props) {
       <LightboxOverlay onClick={() => setLightboxOpen(false)}>
         <LightboxClose onClick={() => setLightboxOpen(false)}>✕</LightboxClose>
         <LightboxImg
-          src={photoUrl(look.id)}
+          src={photoUrl ?? ''}
           alt={look.title}
           key={photoId}
           onClick={e => e.stopPropagation()}

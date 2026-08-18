@@ -29,7 +29,7 @@ const upload = multer({
   },
 })
 
-// ── GET /api/photos/:lookId  — redireciona para URL pública do Supabase ───────
+// ── GET /api/photos/:lookId  — retorna URL pública do Supabase ───────────────
 router.get('/:lookId', async (req, res) => {
   try {
     const [photo] = await db
@@ -42,7 +42,7 @@ router.get('/:lookId', async (req, res) => {
       return
     }
 
-    res.redirect(302, photo.url)
+    res.json({ id: photo.id, url: photo.url })
   } catch (e) { apiError(res, e) }
 })
 
