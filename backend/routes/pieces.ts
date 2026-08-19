@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { eq } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 import { db } from '../db/client'
-import { pieces } from '../db/schema'
+import { pieces, looks, lookPieces } from '../db/schema'
 import { PieceCreateSchema, PieceUpdateSchema, NotesSchema, HiddenSchema } from '../lib/schemas'
 import { apiError } from '../middleware/errorHandler'
 
@@ -68,7 +68,8 @@ router.patch('/:id/notes', async (req, res) => {
   } catch (e) { apiError(res, e) }
 })
 
-// PATCH /api/pieces/:id/hidden
+// PATCH /api/pieces/:id/hidden — oculta/restaura peça
+// Quando hidden=true, também oculta todos os looks que contêm essa peça
 router.patch('/:id/hidden', async (req, res) => {
   try {
     const { hidden } = HiddenSchema.parse(req.body)
@@ -77,7 +78,21 @@ router.patch('/:id/hidden', async (req, res) => {
       .where(eq(pieces.id, req.params.id))
       .returning()
     if (!updated) { res.status(404).json({ error: 'Peça não encontrada' }); return }
-    res.json({ hidden: updated.hidden })
+
+    let looksHidden = 0
+    if (hidden) {
+      // Busca todos os looks que contêm essa peça
+      const rows = await db.select({ lookId: lookPieces.lookId })
+        .from(lookPieces)
+        .where(eq(lookPieces.pieceId, req.params.id))
+      const lookIds = rows.map(r => r.lookId)
+      if (lookIds.length > 0) {
+        await db.update(looks).set({ hidden: true }).where(inArray(looks.id, lookIds))
+        looksHidden = lookIds.length
+      }
+    }
+
+    res.json({ hidden: updated.hidden, looksHidden })
   } catch (e) { apiError(res, e) }
 })
 

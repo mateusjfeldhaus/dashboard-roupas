@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
 import { useNotes } from '../../hooks/useNotes'
+import { toast } from '../../hooks/useToast'
+import api from '../../api/client'
 
 export function usePecaPage() {
   const { id } = useParams<{ id: string }>()
@@ -14,8 +16,8 @@ export function usePecaPage() {
     return () => window.removeEventListener('keydown', onKey)
   }, [navigate])
 
-  const { allPieces, toggleHidden, loading: loadingPieces } = usePieces()
-  const { looks, loading: loadingLooks } = useLooks()
+  const { allPieces, invalidate, loading: loadingPieces } = usePieces()
+  const { invalidate: invalidateLooks, looks, loading: loadingLooks } = useLooks()
 
   const piece = allPieces.find(p => p.id === id)
   const notes = useNotes('piece', piece?.id ?? '', piece?.notes)
@@ -23,6 +25,25 @@ export function usePecaPage() {
   const pieceLooks = piece
     ? looks.filter(l => l.pieces.some(lp => lp.pieceId === piece.id))
     : []
+
+  async function toggleHidden(pieceId: string, hidden: boolean) {
+    try {
+      const res = await api.patch<{ hidden: boolean; looksHidden: number }>(
+        `/api/pieces/${encodeURIComponent(pieceId)}/hidden`,
+        { hidden },
+      )
+      invalidate()
+      invalidateLooks()
+      if (hidden) {
+        const n = res.data.looksHidden
+        toast(n > 0 ? `Peça ocultada · ${n} look${n !== 1 ? 's' : ''} ocultado${n !== 1 ? 's' : ''}` : 'Peça ocultada')
+      } else {
+        toast('Peça restaurada')
+      }
+    } catch {
+      toast('Erro ao atualizar peça', 'error')
+    }
+  }
 
   return {
     navigate,
