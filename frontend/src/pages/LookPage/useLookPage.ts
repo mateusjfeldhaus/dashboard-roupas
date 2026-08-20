@@ -16,15 +16,16 @@ export function useLookPage() {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [saving, setSaving]           = useState(false)
   const [swapTarget, setSwapTarget]   = useState<{ cat: string; pieceId: string } | null>(null)
-
-  // Fechar com Esc (só fora do modo de edição)
+  
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !editMode) navigate(-1)
+      if (e.key !== 'Escape') return
+      if (swapTarget) { setSwapTarget(null); return }
+      if (!editMode) navigate(-1)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [navigate, editMode])
+  }, [navigate, editMode, swapTarget])
 
   const { allLooks, toggleHidden, invalidate, loading: looksLoading } = useLooks()
   const { pieces } = usePieces()
@@ -32,9 +33,7 @@ export function useLookPage() {
 
   const d = useLookDetails(look)
 
-  // ── Editar peças ────────────────────────────────────────────────────────────
-
-  function startEdit() {
+    function startEdit() {
     setPending(look?.pieces.map(lp => ({ cat: lp.cat, pieceId: lp.pieceId })) ?? [])
     setEditMode(true)
   }
@@ -53,9 +52,7 @@ export function useLookPage() {
     }
   }
 
-  // ── Trocar / remover peça em modo visualização ─────────────────────────────
-
-  async function applySwap(newPieces: { cat: string; pieceId: string }[]) {
+    async function applySwap(newPieces: { cat: string; pieceId: string }[]) {
     if (!look) return
     setSaving(true)
     try {
@@ -109,29 +106,24 @@ export function useLookPage() {
     look,
     pieces,
     piecesInLook: d.piecesInLook,
-    looksLoading,
-    // sub-hooks agrupados
+    looksLoading,    
     usage:  { ...d.usage,   formatDate },
     rating: { ...d.ratingH, displayRating: d.displayRating },
     notes:  d.notes,
-    photo:  d.photo,
-    // UI state
+    photo:  d.photo,    
     hovered: d.hovered, setHovered: d.setHovered,
     exporting: d.exporting,
     lightboxOpen: d.lightboxOpen, setLightboxOpen: d.setLightboxOpen,
-    uploadRef: d.uploadRef, replaceRef: d.replaceRef,
-    // handlers
+    uploadRef: d.uploadRef, replaceRef: d.replaceRef,    
     handleExport: d.handleExport,
     handleStarClick: d.handleStarClick,
     handleFileChange: d.handleFileChange,
     handleRemove: d.handleRemove,
-    toggleHidden,
-    // edição de peças
+    toggleHidden,    
     editMode, pendingPieces,
     confirmOpen, setConfirmOpen,
     saving,
-    startEdit, cancelEdit, togglePiece, confirmSave,
-    // swap de peça em modo visualização
+    startEdit, cancelEdit, togglePiece, confirmSave,    
     swapTarget, setSwapTarget, swapPiece, removePiece,
   }
 }

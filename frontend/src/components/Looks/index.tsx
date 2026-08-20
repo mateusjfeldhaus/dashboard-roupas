@@ -11,10 +11,16 @@ import type { OcasTag, EstaTag } from './useLooks'
 export function Looks() {
   const {
     navigate, looks, loading,
-    ocasiao, periodo, estacao,
-    toggleOcasiao, togglePeriodo, toggleEstacao,
+    ocasiao, periodo, estacao, formalMin,
+    toggleOcasiao, togglePeriodo, toggleEstacao, toggleFormal,
     hasFilter, filtered, clearAll,
   } = useLooks()
+
+  const FORMAL_RANGES = [
+    { label: '● Casual',    min: 1, max: 2 },
+    { label: '●● Smart',    min: 3, max: 3 },
+    { label: '●●● Formal',  min: 4, max: 5 },
+  ]
 
   if (loading) return (
     <>
@@ -62,6 +68,16 @@ export function Looks() {
               <FilterChip key={s.tag} $active={estacao === s.tag} $tag={s.tag}
                 onClick={() => toggleEstacao(s.tag as EstaTag)}>
                 {s.emoji} {s.label}
+              </FilterChip>
+            ))}
+          </FilterRow>
+          <Divider />
+          <FilterRow>
+            <GroupLabel>Formalidade</GroupLabel>
+            {FORMAL_RANGES.map(r => (
+              <FilterChip key={r.min} $active={formalMin === r.min} $tag="formal"
+                onClick={() => toggleFormal(r.min, r.max)}>
+                {r.label}
               </FilterChip>
             ))}
           </FilterRow>
