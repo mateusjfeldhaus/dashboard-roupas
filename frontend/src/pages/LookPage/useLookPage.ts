@@ -15,6 +15,7 @@ export function useLookPage() {
   const [pendingPieces, setPending]   = useState<{ cat: string; pieceId: string }[]>([])
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [saving, setSaving]           = useState(false)
+  const [swapTarget, setSwapTarget]   = useState<{ cat: string; pieceId: string } | null>(null)
 
   // Fechar com Esc (só fora do modo de edição)
   useEffect(() => {
@@ -50,6 +51,41 @@ export function useLookPage() {
     } else {
       setPending(prev => [...prev, { cat: piece.category, pieceId: piece.id }])
     }
+  }
+
+  // ── Trocar / remover peça em modo visualização ─────────────────────────────
+
+  async function applySwap(newPieces: { cat: string; pieceId: string }[]) {
+    if (!look) return
+    setSaving(true)
+    try {
+      await api.put(`/api/looks/${look.id}`, { pieces: newPieces })
+      invalidate()
+      setSwapTarget(null)
+      toast('Look atualizado!')
+    } catch {
+      toast('Erro ao salvar look', 'error')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  function swapPiece(newPieceId: string) {
+    if (!look || !swapTarget) return
+    const newPieces = look.pieces.map(lp =>
+      lp.pieceId === swapTarget.pieceId
+        ? { cat: swapTarget.cat, pieceId: newPieceId }
+        : { cat: lp.cat, pieceId: lp.pieceId }
+    )
+    applySwap(newPieces)
+  }
+
+  function removePiece() {
+    if (!look || !swapTarget) return
+    const newPieces = look.pieces
+      .filter(lp => lp.pieceId !== swapTarget.pieceId)
+      .map(lp => ({ cat: lp.cat, pieceId: lp.pieceId }))
+    applySwap(newPieces)
   }
 
   async function confirmSave() {
@@ -95,5 +131,7 @@ export function useLookPage() {
     confirmOpen, setConfirmOpen,
     saving,
     startEdit, cancelEdit, togglePiece, confirmSave,
+    // swap de peça em modo visualização
+    swapTarget, setSwapTarget, swapPiece, removePiece,
   }
 }

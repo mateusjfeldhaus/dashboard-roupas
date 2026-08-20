@@ -18,6 +18,7 @@ import {
   EditBtn, EditBar, SaveBtn, CancelBtn,
   EditSlot, RemoveBadge, AddSection, AddLabel, PieceGrid, PieceChip,
   DialogOverlay, DialogBox, DialogTitle, DialogText, DialogActions,
+  SwapOverlay, SwapPanel, SwapTitle, SwapList, SwapItem, SwapItemImg, SwapRemoveBtn,
 } from './LookPage.styles'
 
 export function LookPage() {
@@ -31,6 +32,7 @@ export function LookPage() {
     toggleHidden,
     editMode, pendingPieces, confirmOpen, setConfirmOpen, saving,
     startEdit, cancelEdit, togglePiece, confirmSave,
+    swapTarget, setSwapTarget, swapPiece, removePiece,
   } = useLookPage()
 
   if (looksLoading) return (
@@ -168,7 +170,7 @@ export function LookPage() {
                     )
                   })
                 : piecesInLook.map(({ cat, piece }) => (
-                    <PieceSlot key={piece.id} onClick={() => navigate(`/pecas/${piece.id}`)} title={`Ver ${piece.name}`}>
+                    <PieceSlot key={piece.id} onClick={() => setSwapTarget({ cat, pieceId: piece.id })} title={`Trocar ou remover ${piece.name}`}>
                       <PieceImg $color={piece.color}>
                         <Img
                           src={imgUrl(piece.img)}
@@ -270,6 +272,37 @@ export function LookPage() {
           </LightboxActions>
         </LightboxOverlay>
       )}
+
+      {/* Painel de troca / remoção de peça */}
+      {swapTarget && (() => {
+        const sameCat = pieces.filter(p => !p.hidden && p.category === swapTarget.cat)
+        return (
+          <SwapOverlay onClick={() => setSwapTarget(null)}>
+            <SwapPanel onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+              <SwapTitle>Trocar · {swapTarget.cat}</SwapTitle>
+              <SwapList>
+                {sameCat.map(p => (
+                  <SwapItem
+                    key={p.id}
+                    $active={p.id === swapTarget.pieceId}
+                    onClick={() => p.id !== swapTarget.pieceId && swapPiece(p.id)}
+                    disabled={saving}
+                  >
+                    <SwapItemImg $color={p.color}>
+                      <img src={imgUrl(p.img)} alt="" />
+                    </SwapItemImg>
+                    {p.name}
+                    {p.id === swapTarget.pieceId && <span style={{ marginLeft: 'auto', fontSize: 11, opacity: 0.5 }}>atual</span>}
+                  </SwapItem>
+                ))}
+              </SwapList>
+              <SwapRemoveBtn onClick={removePiece} disabled={saving}>
+                🗑 Remover {swapTarget.cat} do look
+              </SwapRemoveBtn>
+            </SwapPanel>
+          </SwapOverlay>
+        )
+      })()}
 
       {/* Dialog de confirmação */}
       {confirmOpen && (

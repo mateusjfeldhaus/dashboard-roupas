@@ -155,3 +155,58 @@ export const DialogText = styled.p`
 export const DialogActions = styled.div`
   display: flex; gap: 10px; justify-content: center;
 `
+
+// ── Painel de troca de peça ────────────────────────────────────────────────────
+
+export const SwapOverlay = styled.div`
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.6);
+  display: flex; align-items: flex-end; justify-content: center;
+  @media (min-width: 600px) { align-items: center; }
+`
+
+export const SwapPanel = styled.div`
+  background: ${p => p.theme.colors.surface};
+  border: 1px solid ${p => p.theme.colors.border};
+  border-radius: 20px 20px 0 0;
+  padding: 20px 20px 32px;
+  width: 100%; max-width: 480px;
+  max-height: 80vh; overflow-y: auto;
+  @media (min-width: 600px) { border-radius: 16px; }
+`
+
+export const SwapTitle = styled.p`
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: ${p => p.theme.colors.textMuted};
+  margin-bottom: 12px;
+`
+
+export const SwapList = styled.div`
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 12px;
+`
+
+export const SwapItem = styled.button<{ $active?: boolean }>`
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px; text-align: left;
+  border: 1px solid ${p => p.$active ? p.theme.colors.accent : p.theme.colors.border};
+  background: ${p => p.$active ? p.theme.colors.accent + '18' : 'transparent'};
+  color: ${p => p.$active ? p.theme.colors.accent : p.theme.colors.text};
+  font-size: 13px; font-weight: 500;
+  transition: all 0.15s;
+  &:hover { border-color: ${p => p.theme.colors.accent}; color: ${p => p.theme.colors.accent}; }
+`
+
+export const SwapItemImg = styled.div<{ $color: string }>`
+  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+  background: ${p => p.$color}22;
+  img { width: 100%; height: 100%; object-fit: contain; }
+`
+
+export const SwapRemoveBtn = styled.button`
+  width: 100%; padding: 10px; border-radius: 10px;
+  font-size: 13px; font-weight: 600;
+  border: 1px solid #dc2626; color: #dc2626;
+  transition: all 0.15s;
+  &:hover { background: #dc262618; }
+`

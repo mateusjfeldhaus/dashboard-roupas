@@ -27,6 +27,18 @@ export const HideBtn = styled.button`
   &:hover { color: ${p => p.theme.colors.text}; border-color: currentColor; }
 `
 
+export const EditBtn = styled.button`
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600;
+  color: ${p => p.theme.colors.textMuted};
+  margin-bottom: 20px; margin-left: 16px;
+  padding: 6px 10px;
+  border: 1px solid ${p => p.theme.colors.border};
+  border-radius: 8px;
+  transition: all 0.15s;
+  &:hover { color: ${p => p.theme.colors.accent}; border-color: ${p => p.theme.colors.accent}; }
+`
+
 export const Card = styled.div`
   background: ${p => p.theme.colors.surface};
   border: 1px solid ${p => p.theme.colors.border};

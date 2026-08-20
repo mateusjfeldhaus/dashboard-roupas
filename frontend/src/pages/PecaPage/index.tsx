@@ -1,3 +1,4 @@
+import React from 'react'
 import { usePecaPage } from './usePecaPage'
 import { imgUrl } from '../../utils/imgUrl'
 import { getTagColor } from '../../styles/tagColors'
@@ -9,10 +10,16 @@ import {
   NotesSection, NotesLabel, NotesTitle, NotesStatus, NotesTextarea,
 } from '../../components/Pecas/PecaModal.styles'
 import { SkCard, SkStack, SkLine } from '../../components/Skeleton'
-import { PageWrap, BackBtn, HideBtn, Card, NotFound } from './PecaPage.styles'
+import { PageWrap, BackBtn, HideBtn, EditBtn, Card, NotFound } from './PecaPage.styles'
+import { DialogOverlay, DialogBox, DialogTitle, DialogActions, SaveBtn, CancelBtn } from '../LookPage/LookPage.styles'
 
 export function PecaPage() {
-  const { navigate, piece, pieceLooks, loading, notes, toggleHidden } = usePecaPage()
+  const {
+    navigate, piece, pieceLooks, loading, notes, toggleHidden,
+    editOpen, openEdit, setEditOpen,
+    editName, setEditName, editBrand, setEditBrand, editTips, setEditTips,
+    editSaving, saveEdit,
+  } = usePecaPage()
 
   if (loading) return (
     <PageWrap>
@@ -40,6 +47,9 @@ export function PecaPage() {
       >
         {piece.hidden ? '👁 Tornar visível' : '🙈 Ocultar peça'}
       </HideBtn>
+      <EditBtn onClick={openEdit} title="Editar nome, marca e dicas">
+        ✏️ Editar item
+      </EditBtn>
 
       <Card>
         <ImgWrap>
@@ -115,6 +125,46 @@ export function PecaPage() {
           </NotesSection>
         </Body>
       </Card>
+      {editOpen && (
+        <DialogOverlay onClick={() => setEditOpen(false)}>
+          <DialogBox onClick={(e: React.MouseEvent) => e.stopPropagation()} style={{ textAlign: 'left', maxWidth: 420 }}>
+            <DialogTitle style={{ marginBottom: 16 }}>Editar peça</DialogTitle>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <label style={{ fontSize: 12, color: 'var(--text-muted, #888)', fontWeight: 600 }}>
+                Nome
+                <input
+                  value={editName}
+                  onChange={e => setEditName(e.target.value)}
+                  style={{ display: 'block', width: '100%', marginTop: 4, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border, #333)', background: 'var(--bg, #111)', color: 'inherit', fontSize: 13 }}
+                />
+              </label>
+              <label style={{ fontSize: 12, color: 'var(--text-muted, #888)', fontWeight: 600 }}>
+                Marca
+                <input
+                  value={editBrand}
+                  onChange={e => setEditBrand(e.target.value)}
+                  style={{ display: 'block', width: '100%', marginTop: 4, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border, #333)', background: 'var(--bg, #111)', color: 'inherit', fontSize: 13 }}
+                />
+              </label>
+              <label style={{ fontSize: 12, color: 'var(--text-muted, #888)', fontWeight: 600 }}>
+                Dicas de uso <span style={{ fontWeight: 400 }}>(uma por linha)</span>
+                <textarea
+                  value={editTips}
+                  onChange={e => setEditTips(e.target.value)}
+                  rows={4}
+                  style={{ display: 'block', width: '100%', marginTop: 4, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border, #333)', background: 'var(--bg, #111)', color: 'inherit', fontSize: 13, resize: 'vertical' }}
+                />
+              </label>
+            </div>
+            <DialogActions style={{ marginTop: 20 }}>
+              <CancelBtn onClick={() => setEditOpen(false)}>Cancelar</CancelBtn>
+              <SaveBtn onClick={saveEdit} disabled={editSaving}>
+                {editSaving ? 'Salvando…' : 'Salvar'}
+              </SaveBtn>
+            </DialogActions>
+          </DialogBox>
+        </DialogOverlay>
+      )}
     </PageWrap>
   )
 }
