@@ -2,6 +2,8 @@ import React from 'react'
 import { useLookPage } from './useLookPage'
 import { imgUrl } from '../../utils/imgUrl'
 import { formatDate } from '../../hooks/useUsage'
+import { SEASONS, OCCASIONS } from '../../styles/tags'
+import { getTagColor } from '../../styles/tagColors'
 import {
   Header, Title, TagRow, Tag,
   Body, FlatLayTitle, FlatLay, PieceSlot, PieceImg, Img,
@@ -25,7 +27,7 @@ export function LookPage() {
   const {
     navigate, look, pieces, piecesInLook, looksLoading,
     usage, rating, notes, photo,
-    hovered, setHovered,
+    setHovered,
     exporting, lightboxOpen, setLightboxOpen,
     uploadRef, replaceRef,
     handleExport, handleStarClick, handleFileChange, handleRemove,
@@ -33,6 +35,7 @@ export function LookPage() {
     editMode, pendingPieces, confirmOpen, setConfirmOpen, saving,
     startEdit, cancelEdit, togglePiece, confirmSave,
     swapTarget, setSwapTarget, swapPiece, removePiece,
+    tagEditOpen, setTagEditOpen, pendingTags, toggleTag, saveTagEdit, tagSaving, openTagEdit,
   } = useLookPage()
 
   if (looksLoading) return (
@@ -69,6 +72,11 @@ export function LookPage() {
             ✏️ Editar peças
           </EditBtn>
         )}
+        {!editMode && (
+          <EditBtn onClick={openTagEdit} title="Editar tags deste look">
+            🏷 Tags
+          </EditBtn>
+        )}
 
         <Card>
           {editMode && (
@@ -85,7 +93,7 @@ export function LookPage() {
                 {look.tags.map(t => <Tag key={t} $tag={t}>{t}</Tag>)}
               </TagRow>
               <Formalidade>
-                {[1,2,3,4,5].map(i => <Dot key={i} $filled={i <= look.formality} />)}
+                {[1, 2, 3, 4, 5].map(i => <Dot key={i} $filled={i <= look.formality} />)}
               </Formalidade>
 
               {photo.photoId ? (
@@ -108,7 +116,7 @@ export function LookPage() {
               <RatingRow>
                 <RatingLabel>Avaliação:</RatingLabel>
                 <StarRow onMouseLeave={() => setHovered(0)}>
-                  {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
                     <Star
                       key={n}
                       $filled={n <= rating.displayRating}
@@ -121,7 +129,7 @@ export function LookPage() {
                     </Star>
                   ))}
                 </StarRow>
-                {!rating.loading && rating.rating > 0  && <RatingLabel style={{ fontWeight: 700, fontSize: 13 }}>{rating.rating}/10</RatingLabel>}
+                {!rating.loading && rating.rating > 0 && <RatingLabel style={{ fontWeight: 700, fontSize: 13 }}>{rating.rating}/10</RatingLabel>}
                 {!rating.loading && rating.rating === 0 && <RatingLabel>sem avaliação</RatingLabel>}
               </RatingRow>
 
@@ -148,29 +156,10 @@ export function LookPage() {
             <FlatLay>
               {editMode
                 ? pendingPieces.map(lp => {
-                    const piece = pieces.find(p => p.id === lp.pieceId)
-                    if (!piece) return null
-                    return (
-                      <EditSlot key={piece.id} onClick={() => togglePiece(piece)} title="Clique para remover">
-                        <PieceImg $color={piece.color}>
-                          <Img
-                            src={imgUrl(piece.img)}
-                            alt={piece.name}
-                            onError={e => {
-                              const el = e.target as HTMLImageElement
-                              el.style.display = 'none'
-                              el.parentElement!.style.background = piece.color + '22'
-                            }}
-                          />
-                        </PieceImg>
-                        <PieceCat>{lp.cat}</PieceCat>
-                        <PieceName>{piece.name}</PieceName>
-                        <RemoveBadge>✕</RemoveBadge>
-                      </EditSlot>
-                    )
-                  })
-                : piecesInLook.map(({ cat, piece }) => (
-                    <PieceSlot key={piece.id} onClick={() => setSwapTarget({ cat, pieceId: piece.id })} title={`Trocar ou remover ${piece.name}`}>
+                  const piece = pieces.find(p => p.id === lp.pieceId)
+                  if (!piece) return null
+                  return (
+                    <EditSlot key={piece.id} onClick={() => togglePiece(piece)} title="Clique para remover">
                       <PieceImg $color={piece.color}>
                         <Img
                           src={imgUrl(piece.img)}
@@ -182,10 +171,29 @@ export function LookPage() {
                           }}
                         />
                       </PieceImg>
-                      <PieceCat>{cat}</PieceCat>
+                      <PieceCat>{lp.cat}</PieceCat>
                       <PieceName>{piece.name}</PieceName>
-                    </PieceSlot>
-                  ))
+                      <RemoveBadge>✕</RemoveBadge>
+                    </EditSlot>
+                  )
+                })
+                : piecesInLook.map(({ cat, piece }) => (
+                  <PieceSlot key={piece.id} onClick={() => setSwapTarget({ cat, pieceId: piece.id })} title={`Trocar ou remover ${piece.name}`}>
+                    <PieceImg $color={piece.color}>
+                      <Img
+                        src={imgUrl(piece.img)}
+                        alt={piece.name}
+                        onError={e => {
+                          const el = e.target as HTMLImageElement
+                          el.style.display = 'none'
+                          el.parentElement!.style.background = piece.color + '22'
+                        }}
+                      />
+                    </PieceImg>
+                    <PieceCat>{cat}</PieceCat>
+                    <PieceName>{piece.name}</PieceName>
+                  </PieceSlot>
+                ))
               }
             </FlatLay>
 
@@ -219,8 +227,8 @@ export function LookPage() {
                     <NotesTitle>Observações</NotesTitle>
                     <NotesStatus $status={notes.status}>
                       {notes.status === 'saving' ? 'salvando…' :
-                       notes.status === 'saved'  ? '✓ salvo'   :
-                       notes.status === 'error'  ? 'erro ao salvar' : ''}
+                        notes.status === 'saved' ? '✓ salvo' :
+                          notes.status === 'error' ? 'erro ao salvar' : ''}
                     </NotesStatus>
                   </NotesLabel>
                   <NotesTextarea
@@ -303,6 +311,71 @@ export function LookPage() {
           </SwapOverlay>
         )
       })()}
+
+      {/* Dialog de edição de tags */}
+      {tagEditOpen && (
+        <DialogOverlay onClick={() => setTagEditOpen(false)}>
+          <DialogBox onClick={(e: React.MouseEvent) => e.stopPropagation()} style={{ maxWidth: 420, textAlign: 'left' }}>
+            <DialogTitle style={{ marginBottom: 16 }}>Editar tags</DialogTitle>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted, #888)', marginBottom: 8 }}>ESTAÇÃO</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {SEASONS.map(s => {
+                    const active = pendingTags.includes(s.tag)
+                    const c = getTagColor(s.tag)
+                    return (
+                      <button
+                        key={s.tag}
+                        onClick={() => toggleTag(s.tag)}
+                        style={{
+                          padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                          background: active ? c.bg : 'transparent',
+                          color: active ? c.text : 'var(--text-muted, #888)',
+                          border: `1px solid ${active ? c.border : 'var(--border, #333)'}`,
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {s.emoji} {s.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted, #888)', marginBottom: 8 }}>OCASIÃO</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {OCCASIONS.map(o => {
+                    const active = pendingTags.includes(o.tag)
+                    const c = getTagColor(o.tag)
+                    return (
+                      <button
+                        key={o.tag}
+                        onClick={() => toggleTag(o.tag)}
+                        style={{
+                          padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                          background: active ? c.bg : 'transparent',
+                          color: active ? c.text : 'var(--text-muted, #888)',
+                          border: `1px solid ${active ? c.border : 'var(--border, #333)'}`,
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {o.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+            <DialogActions style={{ marginTop: 20 }}>
+              <CancelBtn onClick={() => setTagEditOpen(false)}>Cancelar</CancelBtn>
+              <SaveBtn onClick={saveTagEdit} disabled={tagSaving}>
+                {tagSaving ? 'Salvando…' : 'Salvar'}
+              </SaveBtn>
+            </DialogActions>
+          </DialogBox>
+        </DialogOverlay>
+      )}
 
       {/* Dialog de confirmação */}
       {confirmOpen && (

@@ -16,6 +16,9 @@ export function useLookPage() {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [saving, setSaving]           = useState(false)
   const [swapTarget, setSwapTarget]   = useState<{ cat: string; pieceId: string } | null>(null)
+  const [tagEditOpen,  setTagEditOpen] = useState(false)
+  const [pendingTags,  setPendingTags] = useState<string[]>([])
+  const [tagSaving,    setTagSaving]   = useState(false)
 
   const swapTargetRef = useRef(swapTarget)
   swapTargetRef.current = swapTarget
@@ -82,6 +85,32 @@ export function useLookPage() {
     applySwap(newPieces)
   }
 
+  function openTagEdit() {
+    setPendingTags(look?.tags ?? [])
+    setTagEditOpen(true)
+  }
+
+  function toggleTag(tag: string) {
+    setPendingTags(prev =>
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+    )
+  }
+
+  async function saveTagEdit() {
+    if (!look) return
+    setTagSaving(true)
+    try {
+      await api.put(`/api/looks/${look.id}`, { tags: pendingTags })
+      invalidate()
+      setTagEditOpen(false)
+      toast('Tags atualizadas!')
+    } catch {
+      toast('Erro ao salvar tags', 'error')
+    } finally {
+      setTagSaving(false)
+    }
+  }
+
   function removePiece() {
     if (!look || !swapTarget) return
     const newPieces = look.pieces
@@ -130,5 +159,6 @@ export function useLookPage() {
     saving,
     startEdit, cancelEdit, togglePiece, confirmSave,    
     swapTarget, setSwapTarget, swapPiece, removePiece,
+    tagEditOpen, setTagEditOpen, pendingTags, toggleTag, saveTagEdit, tagSaving, openTagEdit,
   }
 }
