@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useLooks } from '../../hooks/useLooks'
 import { usePieces } from '../../hooks/usePieces'
@@ -16,16 +16,21 @@ export function useLookPage() {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [saving, setSaving]           = useState(false)
   const [swapTarget, setSwapTarget]   = useState<{ cat: string; pieceId: string } | null>(null)
-  
+
+  const swapTargetRef = useRef(swapTarget)
+  swapTargetRef.current = swapTarget
+  const editModeRef = useRef(editMode)
+  editModeRef.current = editMode
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
-      if (swapTarget) { setSwapTarget(null); return }
-      if (!editMode) navigate(-1)
+      if (swapTargetRef.current) { setSwapTarget(null); return }
+      if (!editModeRef.current) navigate(-1)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [navigate, editMode, swapTarget])
+  }, [navigate])
 
   const { allLooks, toggleHidden, invalidate, loading: looksLoading } = useLooks()
   const { pieces } = usePieces()
