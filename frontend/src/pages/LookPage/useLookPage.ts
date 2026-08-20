@@ -16,9 +16,10 @@ export function useLookPage() {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [saving, setSaving]           = useState(false)
   const [swapTarget, setSwapTarget]   = useState<{ cat: string; pieceId: string } | null>(null)
-  const [tagEditOpen,  setTagEditOpen] = useState(false)
-  const [pendingTags,  setPendingTags] = useState<string[]>([])
-  const [tagSaving,    setTagSaving]   = useState(false)
+  const [tagEditOpen,       setTagEditOpen]       = useState(false)
+  const [pendingTags,       setPendingTags]       = useState<string[]>([])
+  const [pendingFormality,  setPendingFormality]  = useState<number>(1)
+  const [tagSaving,         setTagSaving]         = useState(false)
 
   const swapTargetRef = useRef(swapTarget)
   swapTargetRef.current = swapTarget
@@ -87,6 +88,7 @@ export function useLookPage() {
 
   function openTagEdit() {
     setPendingTags(look?.tags ?? [])
+    setPendingFormality(look?.formality ?? 1)
     setTagEditOpen(true)
   }
 
@@ -100,7 +102,7 @@ export function useLookPage() {
     if (!look) return
     setTagSaving(true)
     try {
-      await api.put(`/api/looks/${look.id}`, { tags: pendingTags })
+      await api.put(`/api/looks/${look.id}`, { tags: pendingTags, formality: pendingFormality })
       invalidate()
       setTagEditOpen(false)
       toast('Tags atualizadas!')
@@ -159,6 +161,7 @@ export function useLookPage() {
     saving,
     startEdit, cancelEdit, togglePiece, confirmSave,    
     swapTarget, setSwapTarget, swapPiece, removePiece,
-    tagEditOpen, setTagEditOpen, pendingTags, toggleTag, saveTagEdit, tagSaving, openTagEdit,
+    tagEditOpen, setTagEditOpen, pendingTags, toggleTag, pendingFormality, setPendingFormality,
+    saveTagEdit, tagSaving, openTagEdit,
   }
 }

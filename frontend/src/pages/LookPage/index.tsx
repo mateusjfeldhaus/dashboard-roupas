@@ -35,7 +35,8 @@ export function LookPage() {
     editMode, pendingPieces, confirmOpen, setConfirmOpen, saving,
     startEdit, cancelEdit, togglePiece, confirmSave,
     swapTarget, setSwapTarget, swapPiece, removePiece,
-    tagEditOpen, setTagEditOpen, pendingTags, toggleTag, saveTagEdit, tagSaving, openTagEdit,
+    tagEditOpen, setTagEditOpen, pendingTags, toggleTag, pendingFormality, setPendingFormality,
+    saveTagEdit, tagSaving, openTagEdit,
   } = useLookPage()
 
   if (looksLoading) return (
@@ -364,6 +365,38 @@ export function LookPage() {
                       </button>
                     )
                   })}
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-muted, #888)', marginBottom: 8 }}>FORMALIDADE</div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  {[
+                    { value: 1, label: '● Casual' },
+                    { value: 2, label: '●● Smart-casual' },
+                    { value: 3, label: '●●● Smart' },
+                    { value: 4, label: '●●●● Semi-formal' },
+                    { value: 5, label: '●●●●● Formal' },
+                  ].map(f => (
+                    <button
+                      key={f.value}
+                      onClick={() => setPendingFormality(f.value)}
+                      style={{
+                        padding: '6px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                        background: pendingFormality === f.value ? 'var(--accent, #c8a96e)22' : 'transparent',
+                        color: pendingFormality === f.value ? 'var(--accent, #c8a96e)' : 'var(--text-muted, #888)',
+                        border: `1px solid ${pendingFormality === f.value ? 'var(--accent, #c8a96e)88' : 'var(--border, #333)'}`,
+                        transition: 'all 0.15s',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {f.value}
+                    </button>
+                  ))}
+                </div>
+                <div style={{ marginTop: 6, fontSize: 11, color: 'var(--text-muted, #888)' }}>
+                  {[
+                    '', 'Casual', 'Smart-casual', 'Smart', 'Semi-formal', 'Formal'
+                  ][pendingFormality]}
                 </div>
               </div>
             </div>
