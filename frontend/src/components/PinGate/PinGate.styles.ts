@@ -41,9 +41,29 @@ export const Subtitle = styled.p`
   margin: 0;
 `
 
+export const InputWrap = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`
+
+export const EyeBtn = styled.button`
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-muted, #8a8070);
+  font-size: 18px;
+  line-height: 1;
+  transition: color 0.15s;
+  &:hover { color: var(--accent, #c8a96e); }
+`
+
 export const Input = styled.input`
   width: 100%;
-  padding: 14px 16px;
+  padding: 14px 44px 14px 16px;
   background: var(--bg, #0f0f0f);
   border: 1px solid var(--border, #2a2520);
   border-radius: 10px;

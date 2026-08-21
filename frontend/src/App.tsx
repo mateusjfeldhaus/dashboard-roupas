@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { isGuest } from './api/client'
 import { Nav } from './components/Nav'
 import { Overview } from './components/Overview'
 import { Pecas } from './components/Pecas'
@@ -41,11 +42,11 @@ export default function App() {
         <Routes>
           <Route path="/"                  element={<Overview />} />
           <Route path="/pecas"             element={<Pecas />} />
-          <Route path="/pecas/descartadas" element={<PecasDescartadas />} />
+          <Route path="/pecas/descartadas" element={isGuest() ? <Navigate to="/pecas" replace /> : <PecasDescartadas />} />
           <Route path="/pecas/:id"         element={<PecaPage />} />
           <Route path="/looks"             element={<Looks />} />
-          <Route path="/looks/novo"        element={<NovoLookPage />} />
-          <Route path="/looks/descartados" element={<LooksDescartados />} />
+          <Route path="/looks/novo"        element={isGuest() ? <Navigate to="/looks" replace /> : <NovoLookPage />} />
+          <Route path="/looks/descartados" element={isGuest() ? <Navigate to="/looks" replace /> : <LooksDescartados />} />
           <Route path="/looks/:id"         element={<LookPage />} />
           <Route path="/lacunas"           element={<Lacunas />} />
           <Route path="/estacoes"          element={<Estacoes />} />

@@ -15,8 +15,12 @@ export function getRole(): 'admin' | 'guest' {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return 'admin'
-    const { token } = JSON.parse(raw) as { token: string }
-    const payload = JSON.parse(atob(token.split('.')[1]))
+    const stored = JSON.parse(raw) as { token: string; role?: string }
+    // Role salvo explicitamente no novo formato
+    if (stored.role === 'guest') return 'guest'
+    if (stored.role === 'admin') return 'admin'
+    // Fallback: decodifica do JWT (tokens antigos sem role no localStorage)
+    const payload = JSON.parse(atob(stored.token.split('.')[1]))
     return payload.role === 'guest' ? 'guest' : 'admin'
   } catch {
     return 'admin'

@@ -1,9 +1,8 @@
 import { useState, useEffect, FormEvent } from 'react'
 import api, { setApiKey, STORAGE_KEY } from '../../api/client'
 
-interface StoredAuth { token: string; expiresAt: number }
+interface StoredAuth { token: string; expiresAt: number; role: 'admin' | 'guest' }
 
-/** Lê o campo `exp` (Unix s) do payload JWT sem verificar assinatura */
 function jwtExp(token: string): number | null {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]))
@@ -29,10 +28,11 @@ function loadStoredAuth(): StoredAuth | null {
 export type Status = 'checking' | 'locked' | 'unlocked'
 
 export function usePinGate() {
-  const [status,  setStatus]  = useState<Status>('checking')
-  const [pin,     setPin]     = useState('')
-  const [error,   setError]   = useState('')
-  const [loading, setLoading] = useState(false)
+  const [status,   setStatus]  = useState<Status>('checking')
+  const [pin,      setPin]     = useState('')
+  const [error,    setError]   = useState('')
+  const [loading,  setLoading] = useState(false)
+  const [showPin,  setShowPin] = useState(false)
 
   useEffect(() => {
     const auth = loadStoredAuth()
@@ -45,10 +45,10 @@ export function usePinGate() {
     if (!pin.trim()) return
     setLoading(true); setError('')
     try {
-      const res = await api.post<{ token: string }>('/api/auth', { pin })
-      const { token } = res.data
+      const res = await api.post<{ token: string; role?: 'admin' | 'guest' }>('/api/auth', { pin })
+      const { token, role } = res.data
       const expiresAt = jwtExp(token) ?? (Date.now() + 24 * 60 * 60 * 1000)
-      const auth: StoredAuth = { token, expiresAt }
+      const auth: StoredAuth = { token, expiresAt, role: role ?? 'admin' }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(auth))
       setApiKey(token)
       setStatus('unlocked')
@@ -59,5 +59,5 @@ export function usePinGate() {
     }
   }
 
-  return { status, pin, setPin, error, loading, handleSubmit }
+  return { status, pin, setPin, error, loading, handleSubmit, showPin, setShowPin }
 }
