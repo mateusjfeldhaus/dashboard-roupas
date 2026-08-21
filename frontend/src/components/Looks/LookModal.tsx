@@ -1,6 +1,7 @@
 import type { Look } from '@data/types'
 import { imgUrl } from '../../utils/imgUrl'
 import { useLookModal } from './useLookModal'
+import { isGuest } from '../../api/client'
 import {
   Overlay, Dialog, Header, Title, TagRow, Tag, CloseBtn,
   Body, FlatLayTitle, FlatLay, PieceSlot, PieceImg, Img,
@@ -35,6 +36,8 @@ export function LookModal({ look, onClose }: Props) {
     formatDate,
   } = useLookModal(look, onClose)
 
+  const guest = isGuest()
+
   return (
   <>
     <Overlay onClick={onClose}>
@@ -54,7 +57,7 @@ export function LookModal({ look, onClose }: Props) {
               <PhotoViewBtn onClick={() => setLightboxOpen(true)}>
                 📸 Ver look completo
               </PhotoViewBtn>
-            ) : (
+            ) : guest ? null : (
               <PhotoInlineBtn htmlFor={`upload-photo-${look.id}`}>
                 {photoUploading ? '⏳ Enviando…' : '📸 Adicionar foto'}
                 <PhotoUploadInput
@@ -70,15 +73,16 @@ export function LookModal({ look, onClose }: Props) {
             {/* ── Star Rating ── */}
             <RatingRow>
               <RatingLabel>Avaliação:</RatingLabel>
-              <StarRow onMouseLeave={() => setHovered(0)}>
+              <StarRow onMouseLeave={() => !guest && setHovered(0)}>
                 {[1,2,3,4,5,6,7,8,9,10].map(n => (
                   <Star
                     key={n}
                     $filled={n <= displayRating}
                     $loading={rLoading}
-                    onMouseEnter={() => setHovered(n)}
-                    onClick={() => handleStarClick(n)}
+                    onMouseEnter={() => !guest && setHovered(n)}
+                    onClick={() => !guest && handleStarClick(n)}
                     title={`${n}/10`}
+                    style={guest ? { cursor: 'default' } : undefined}
                   >
                     {n <= displayRating ? '★' : '☆'}
                   </Star>
@@ -90,15 +94,17 @@ export function LookModal({ look, onClose }: Props) {
 
             {/* ── Usage ── */}
             <UsageRow>
-              <MarkBtn $loading={loading} disabled={loading} onClick={markUsed} title="Marcar como usado hoje">
-                +
-              </MarkBtn>
+              {!guest && (
+                <MarkBtn $loading={loading} disabled={loading} onClick={markUsed} title="Marcar como usado hoje">
+                  +
+                </MarkBtn>
+              )}
               {!loading && count === 0 && <UsageStat>Nunca usado</UsageStat>}
               {!loading && count > 0 && (
                 <>
                   <UsageStat><UsageBadge>{count}×</UsageBadge>usado{count !== 1 ? 's' : ''}</UsageStat>
                   <UsageStat>· último: <strong>{formatDate(lastDate!)}</strong></UsageStat>
-                  <UndoBtn onClick={undoLast}>desfazer</UndoBtn>
+                  {!guest && <UndoBtn onClick={undoLast}>desfazer</UndoBtn>}
                 </>
               )}
             </UsageRow>
@@ -141,8 +147,9 @@ export function LookModal({ look, onClose }: Props) {
             </NotesLabel>
             <NotesTextarea
               value={notes}
-              onChange={e => setNotes(e.target.value)}
-              placeholder="Adicione observações sobre este look…"
+              onChange={e => !guest && setNotes(e.target.value)}
+              readOnly={guest}
+              placeholder={guest ? 'Sem observações' : 'Adicione observações sobre este look…'}
             />
           </NotesSection>
 
@@ -169,7 +176,7 @@ export function LookModal({ look, onClose }: Props) {
           key={photoId}
           onClick={e => e.stopPropagation()}
         />
-        <LightboxActions onClick={e => e.stopPropagation()}>
+        {!guest && <LightboxActions onClick={e => e.stopPropagation()}>
           <LightboxBtn htmlFor={`replace-photo-${look.id}`}>
             🔄 Trocar foto
             <PhotoUploadInput
@@ -183,7 +190,7 @@ export function LookModal({ look, onClose }: Props) {
           <LightboxDelBtn onClick={handleRemove} disabled={photoUploading}>
             🗑 Remover
           </LightboxDelBtn>
-        </LightboxActions>
+        </LightboxActions>}
       </LightboxOverlay>
     )}
   </>

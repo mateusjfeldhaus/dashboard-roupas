@@ -14,6 +14,7 @@ import {
   CAT_LIST, PRIORITY_LABELS, PRIORITY_COLORS,
   fmtBRL, isUrl,
 } from './useWishlist'
+import { isGuest } from '../../api/client'
 
 export function Wishlist() {
   const {
@@ -33,7 +34,7 @@ export function Wishlist() {
       <Header>
         <Title>Wishlist</Title>
         <CountBadge>{pending.length} item{pending.length !== 1 ? 's' : ''}</CountBadge>
-        <AddBtn onClick={openAdd}>+ Adicionar</AddBtn>
+        {!isGuest() && <AddBtn onClick={openAdd}>+ Adicionar</AddBtn>}
       </Header>
 
       {items.length > 0 && (
@@ -117,18 +118,20 @@ export function Wishlist() {
                 </ItemNotes>
               )}
 
-              <ItemActions>
-                <ActionBtn
-                  $variant={item.purchased ? 'uncheck' : 'check'}
-                  onClick={() => togglePurchased(item)}
-                >
-                  {item.purchased ? '↩ Desfazer' : '✓ Comprado'}
-                </ActionBtn>
-                {!item.purchased && (
-                  <ActionBtn $variant="edit" onClick={() => openEdit(item)}>✏ Editar</ActionBtn>
-                )}
-                <ActionBtn $variant="delete" onClick={() => handleDelete(item.id)}>✕</ActionBtn>
-              </ItemActions>
+              {!isGuest() && (
+                <ItemActions>
+                  <ActionBtn
+                    $variant={item.purchased ? 'uncheck' : 'check'}
+                    onClick={() => togglePurchased(item)}
+                  >
+                    {item.purchased ? '↩ Desfazer' : '✓ Comprado'}
+                  </ActionBtn>
+                  {!item.purchased && (
+                    <ActionBtn $variant="edit" onClick={() => openEdit(item)}>✏ Editar</ActionBtn>
+                  )}
+                  <ActionBtn $variant="delete" onClick={() => handleDelete(item.id)}>✕</ActionBtn>
+                </ItemActions>
+              )}
             </ItemCard>
           ))}
         </ItemGrid>

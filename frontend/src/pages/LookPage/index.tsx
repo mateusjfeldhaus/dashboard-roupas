@@ -4,6 +4,7 @@ import { imgUrl } from '../../utils/imgUrl'
 import { formatDate } from '../../hooks/useUsage'
 import { SEASONS, OCCASIONS } from '../../styles/tags'
 import { getTagColor } from '../../styles/tagColors'
+import { isGuest } from '../../api/client'
 import {
   Header, Title, TagRow, Tag,
   Body, FlatLayTitle, FlatLay, PieceSlot, PieceImg, Img,
@@ -39,6 +40,8 @@ export function LookPage() {
     saveTagEdit, tagSaving, openTagEdit,
   } = useLookPage()
 
+  const guest = isGuest()
+
   if (looksLoading) return (
     <PageWrap>
       <SkStack $gap="20px">
@@ -62,18 +65,20 @@ export function LookPage() {
     <>
       <PageWrap>
         <BackBtn onClick={() => navigate(-1)}>← Voltar</BackBtn>
-        <HideBtn
-          onClick={() => toggleHidden(look.id, !look.hidden)}
-          title={look.hidden ? 'Tornar visível' : 'Ocultar look'}
-        >
-          {look.hidden ? '👁 Tornar visível' : '🙈 Ocultar look'}
-        </HideBtn>
-        {!editMode && (
+        {!guest && (
+          <HideBtn
+            onClick={() => toggleHidden(look.id, !look.hidden)}
+            title={look.hidden ? 'Tornar visível' : 'Ocultar look'}
+          >
+            {look.hidden ? '👁 Tornar visível' : '🙈 Ocultar look'}
+          </HideBtn>
+        )}
+        {!guest && !editMode && (
           <EditBtn onClick={startEdit} title="Adicionar ou remover peças deste look">
             ✏️ Editar peças
           </EditBtn>
         )}
-        {!editMode && (
+        {!guest && !editMode && (
           <EditBtn onClick={openTagEdit} title="Editar tags deste look">
             🏷 Tags
           </EditBtn>
@@ -101,7 +106,7 @@ export function LookPage() {
                 <PhotoViewBtn onClick={() => setLightboxOpen(true)}>
                   📸 Ver look completo
                 </PhotoViewBtn>
-              ) : (
+              ) : !guest ? (
                 <PhotoInlineBtn htmlFor={`upload-photo-${look.id}`}>
                   {photo.uploading ? '⏳ Enviando…' : '📸 Adicionar foto'}
                   <PhotoUploadInput
@@ -112,19 +117,20 @@ export function LookPage() {
                     onChange={handleFileChange}
                   />
                 </PhotoInlineBtn>
-              )}
+              ) : null}
 
               <RatingRow>
                 <RatingLabel>Avaliação:</RatingLabel>
-                <StarRow onMouseLeave={() => setHovered(0)}>
+                <StarRow onMouseLeave={() => !guest && setHovered(0)}>
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
                     <Star
                       key={n}
                       $filled={n <= rating.displayRating}
                       $loading={rating.loading}
-                      onMouseEnter={() => setHovered(n)}
-                      onClick={() => handleStarClick(n)}
+                      onMouseEnter={() => !guest && setHovered(n)}
+                      onClick={() => !guest && handleStarClick(n)}
                       title={`${n}/10`}
+                      style={guest ? { cursor: 'default' } : undefined}
                     >
                       {n <= rating.displayRating ? '★' : '☆'}
                     </Star>
@@ -135,15 +141,17 @@ export function LookPage() {
               </RatingRow>
 
               <UsageRow>
-                <MarkBtn $loading={usage.loading} disabled={usage.loading} onClick={usage.markUsed} title="Marcar como usado hoje">
-                  +
-                </MarkBtn>
+                {!guest && (
+                  <MarkBtn $loading={usage.loading} disabled={usage.loading} onClick={usage.markUsed} title="Marcar como usado hoje">
+                    +
+                  </MarkBtn>
+                )}
                 {!usage.loading && usage.count === 0 && <UsageStat>Nunca usado</UsageStat>}
                 {!usage.loading && usage.count > 0 && (
                   <>
                     <UsageStat><UsageBadge>{usage.count}×</UsageBadge>usado{usage.count !== 1 ? 's' : ''}</UsageStat>
                     <UsageStat>· último: <strong>{formatDate(usage.lastDate!)}</strong></UsageStat>
-                    <UndoBtn onClick={usage.undoLast}>desfazer</UndoBtn>
+                    {!guest && <UndoBtn onClick={usage.undoLast}>desfazer</UndoBtn>}
                   </>
                 )}
               </UsageRow>
@@ -179,7 +187,7 @@ export function LookPage() {
                   )
                 })
                 : piecesInLook.map(({ cat, piece }) => (
-                  <PieceSlot key={piece.id} onClick={() => setSwapTarget({ cat, pieceId: piece.id })} title={`Trocar ou remover ${piece.name}`}>
+                  <PieceSlot key={piece.id} onClick={() => !guest && setSwapTarget({ cat, pieceId: piece.id })} title={guest ? piece.name : `Trocar ou remover ${piece.name}`} style={guest ? { cursor: 'default' } : undefined}>
                     <PieceImg $color={piece.color}>
                       <Img
                         src={imgUrl(piece.img)}
@@ -234,8 +242,9 @@ export function LookPage() {
                   </NotesLabel>
                   <NotesTextarea
                     value={notes.notes}
-                    onChange={e => notes.setNotes(e.target.value)}
-                    placeholder="Adicione observações sobre este look…"
+                    onChange={e => !guest && notes.setNotes(e.target.value)}
+                    readOnly={guest}
+                    placeholder={guest ? 'Sem observações' : 'Adicione observações sobre este look…'}
                   />
                 </NotesSection>
 
@@ -264,7 +273,7 @@ export function LookPage() {
             key={photo.photoId}
             onClick={(e: React.MouseEvent) => e.stopPropagation()}
           />
-          <LightboxActions onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+          {!guest && <LightboxActions onClick={(e: React.MouseEvent) => e.stopPropagation()}>
             <LightboxBtn htmlFor={`replace-photo-${look.id}`}>
               🔄 Trocar foto
               <PhotoUploadInput
@@ -278,7 +287,7 @@ export function LookPage() {
             <LightboxDelBtn onClick={handleRemove} disabled={photo.uploading}>
               🗑 Remover foto
             </LightboxDelBtn>
-          </LightboxActions>
+          </LightboxActions>}
         </LightboxOverlay>
       )}
 

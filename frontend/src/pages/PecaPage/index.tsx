@@ -12,6 +12,7 @@ import {
 import { SkCard, SkStack, SkLine } from '../../components/Skeleton'
 import { PageWrap, BackBtn, HideBtn, EditBtn, Card, NotFound } from './PecaPage.styles'
 import { DialogOverlay, DialogBox, DialogTitle, DialogActions, SaveBtn, CancelBtn } from '../LookPage/LookPage.styles'
+import { isGuest } from '../../api/client'
 
 export function PecaPage() {
   const {
@@ -41,15 +42,19 @@ export function PecaPage() {
   return (
     <PageWrap>
       <BackBtn onClick={() => navigate(-1)}>← Voltar</BackBtn>
-      <HideBtn
-        onClick={() => toggleHidden(piece.id, !piece.hidden)}
-        title={piece.hidden ? 'Tornar visível' : 'Ocultar peça'}
-      >
-        {piece.hidden ? '👁 Tornar visível' : '🙈 Ocultar peça'}
-      </HideBtn>
-      <EditBtn onClick={openEdit} title="Editar nome, marca e dicas">
-        ✏️ Editar item
-      </EditBtn>
+      {!isGuest() && (
+        <>
+          <HideBtn
+            onClick={() => toggleHidden(piece.id, !piece.hidden)}
+            title={piece.hidden ? 'Tornar visível' : 'Ocultar peça'}
+          >
+            {piece.hidden ? '👁 Tornar visível' : '🙈 Ocultar peça'}
+          </HideBtn>
+          <EditBtn onClick={openEdit} title="Editar nome, marca e dicas">
+            ✏️ Editar item
+          </EditBtn>
+        </>
+      )}
 
       <Card>
         <ImgWrap>
@@ -119,8 +124,9 @@ export function PecaPage() {
             </NotesLabel>
             <NotesTextarea
               value={notes.notes}
-              onChange={e => notes.setNotes(e.target.value)}
-              placeholder="Adicione observações sobre esta peça…"
+              onChange={e => !isGuest() && notes.setNotes(e.target.value)}
+              readOnly={isGuest()}
+              placeholder={isGuest() ? 'Sem observações' : 'Adicione observações sobre esta peça…'}
             />
           </NotesSection>
         </Body>

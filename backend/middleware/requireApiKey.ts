@@ -15,7 +15,13 @@ export function requireApiKey(req: Request, res: Response, next: NextFunction) {
   }
 
   try {
-    jwt.verify(token, secret, { algorithms: ['HS256'] })
+    const payload = jwt.verify(token, secret, { algorithms: ['HS256'] }) as { role?: string }    
+    const isGuest = payload.role === 'guest'
+    const isRead  = req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS'
+    if (isGuest && !isRead) {
+      res.status(403).json({ error: 'Acesso somente leitura' })
+      return
+    }
     next()
   } catch {
     res.status(401).json({ error: 'Token inválido' })

@@ -7,6 +7,7 @@ import {
 import { SkGrid, SkCard, SkStack, SkLine } from '../Skeleton'
 import { useLooks, PERIODO, PERIODO_LABELS, SEASONS, OCCASIONS } from './useLooks'
 import type { OcasTag, EstaTag } from './useLooks'
+import { isGuest } from '../../api/client'
 
 export function Looks() {
   const {
@@ -87,14 +88,18 @@ export function Looks() {
       <MetaRow>
         <Count>{filtered.length} look{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}</Count>
         {hasFilter && <ClearBtn onClick={clearAll}>Limpar filtros</ClearBtn>}
-        <ClearBtn onClick={() => navigate('/looks/descartados')}
-          style={{ marginLeft: 'auto', color: 'var(--accent, #c8a96e)', opacity: 0.6 }}>
-          🗄 Descartados
-        </ClearBtn>
-        <ClearBtn onClick={() => navigate('/looks/novo')}
-          style={{ color: 'var(--accent, #c8a96e)', fontWeight: 700 }}>
-          + Novo look
-        </ClearBtn>
+        {!isGuest() && (
+          <>
+            <ClearBtn onClick={() => navigate('/looks/descartados')}
+              style={{ marginLeft: 'auto', color: 'var(--accent, #c8a96e)', opacity: 0.6 }}>
+              🗄 Descartados
+            </ClearBtn>
+            <ClearBtn onClick={() => navigate('/looks/novo')}
+              style={{ color: 'var(--accent, #c8a96e)', fontWeight: 700 }}>
+              + Novo look
+            </ClearBtn>
+          </>
+        )}
       </MetaRow>
 
       <Grid>

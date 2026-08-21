@@ -20,10 +20,8 @@ import { sql } from 'drizzle-orm'
 
 export const app = express()
 
-// ── Wardrobe root: two levels up from backend/ ────────────────────────────────
 const ROUPAS_DIR = path.resolve(__dirname, '../..')
 
-// ── Middleware ────────────────────────────────────────────────────────────────
 app.use(helmet())
 const isDev = process.env.NODE_ENV === 'development'
 app.use(cors({
@@ -33,7 +31,6 @@ app.use(cors({
 }))
 app.use(express.json({ limit: '1mb' }))
 
-// ── Image server (/img/*) ────────────────────────────────────────────────────
 const MIME: Record<string, string> = {
   '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
   '.png': 'image/png',  '.webp': 'image/webp', '.gif': 'image/gif',
@@ -57,7 +54,6 @@ app.use('/img', (req, res, next) => {
   }
 })
 
-// ── Rate limit: máx 10 tentativas de login por IP a cada 15 min ──────────────
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 10,
@@ -66,7 +62,6 @@ const authLimiter = rateLimit({
   message: { error: 'Muitas tentativas. Tente novamente em 15 minutos.' },
 })
 
-// ── Rate limit: máx 60 writes por IP por minuto (POST/PUT/DELETE) ─────────────
 const writeLimiter = rateLimit({
   windowMs: 60_000,
   limit: 60,
@@ -76,7 +71,6 @@ const writeLimiter = rateLimit({
   message: { error: 'Muitas requisições. Tente novamente em instantes.' },
 })
 
-// ── GET /health — público, mantém Supabase e Neon ativos ─────────────────────
 app.get('/health', async (_req, res) => {
   const status: Record<string, string> = { ok: 'true' }
   try {
@@ -94,30 +88,32 @@ app.get('/health', async (_req, res) => {
   res.json(status)
 })
 
-// ── POST /api/auth — valida PIN e emite JWT 24h ──────────────────────────────
 app.post('/api/auth', authLimiter, (req, res) => {
   const { pin }   = req.body as { pin?: string }
   const apiKey    = process.env.API_KEY
+  const guestKey  = process.env.GUEST_API_KEY
   const jwtSecret = process.env.JWT_SECRET
 
   if (!jwtSecret) {
     res.status(500).json({ error: 'JWT_SECRET não configurado' })
     return
   }
-  if (!apiKey || pin !== apiKey) {
+
+  let role: 'admin' | 'guest' | null = null
+  if (apiKey && pin === apiKey) role = 'admin'
+  else if (guestKey && pin === guestKey) role = 'guest'
+
+  if (!role) {
     res.status(401).json({ error: 'PIN incorreto' })
     return
   }
-  const token = jwt.sign({}, jwtSecret, { expiresIn: '24h' })
-  res.json({ token })
+  const token = jwt.sign({ role }, jwtSecret, { expiresIn: '24h' })
+  res.json({ token, role })
 })
 
-// ── Auth: todas as rotas requerem JWT válido ──────────────────────────────────
-// /img aceita token via query param ?t= (browser <img> não envia headers)
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') return next()
-  if (req.path === '/api/auth') return next()
-  // GET /api/photos/:id é público — só redireciona para URL pública do Supabase
+  if (req.path === '/api/auth') return next()  
   if (req.method === 'GET' && req.path.startsWith('/api/photos/')) return next()
   if (req.path.startsWith('/img') && typeof req.query.t === 'string') {
     req.headers['x-api-key'] = req.query.t
@@ -125,7 +121,6 @@ app.use((req, res, next) => {
   requireApiKey(req, res, next)
 })
 
-// ── API routes ────────────────────────────────────────────────────────────────
 app.use('/api', writeLimiter)
 app.use('/api/pieces',   piecesRouter)
 app.use('/api/looks',    looksRouter)
