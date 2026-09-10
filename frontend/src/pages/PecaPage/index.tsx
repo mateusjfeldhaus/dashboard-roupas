@@ -18,6 +18,7 @@ export function PecaPage() {
   const {
     navigate, piece, pieceLooks, loading, notes, toggleHidden,
     photo, photoInputRef, handlePhotoChange, removePhoto,
+    lightboxOpen, setLightboxOpen,
     editOpen, openEdit, setEditOpen,
     editName, setEditName, editBrand, setEditBrand, editTips, setEditTips,
     editSaving, saveEdit,
@@ -60,8 +61,13 @@ export function PecaPage() {
       <Card>
         <ImgWrap style={{ position: 'relative' }}>
           {piece.img
-            ? <Img src={imgUrl(piece.img)} alt={piece.name}
-                onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
+            ? <Img
+                src={imgUrl(piece.img)}
+                alt={piece.name}
+                style={{ cursor: 'zoom-in' }}
+                onClick={() => setLightboxOpen(true)}
+                onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+              />
             : <ImgPlaceholder>Sem foto ainda</ImgPlaceholder>
           }
           {!isGuest() && (
@@ -172,6 +178,43 @@ export function PecaPage() {
           </NotesSection>
         </Body>
       </Card>
+      {lightboxOpen && piece.img && (
+        <div
+          onClick={() => setLightboxOpen(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 1000,
+            background: 'rgba(0,0,0,0.92)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'zoom-out',
+          }}
+        >
+          <img
+            src={imgUrl(piece.img)}
+            alt={piece.name}
+            onClick={e => e.stopPropagation()}
+            style={{
+              maxWidth: '90vw', maxHeight: '90vh',
+              objectFit: 'contain',
+              borderRadius: 12,
+              boxShadow: '0 8px 48px rgba(0,0,0,0.6)',
+              cursor: 'default',
+            }}
+          />
+          <button
+            onClick={() => setLightboxOpen(false)}
+            style={{
+              position: 'fixed', top: 20, right: 24,
+              background: 'rgba(255,255,255,0.1)', border: 'none',
+              color: '#fff', fontSize: 22, borderRadius: 8,
+              padding: '4px 10px', cursor: 'pointer',
+              backdropFilter: 'blur(4px)',
+            }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {editOpen && (
         <DialogOverlay onClick={() => setEditOpen(false)}>
           <DialogBox onClick={(e: React.MouseEvent) => e.stopPropagation()} style={{ textAlign: 'left', maxWidth: 420 }}>

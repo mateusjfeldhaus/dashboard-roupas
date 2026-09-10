@@ -11,8 +11,16 @@ export function usePecaPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
 
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const lightboxRef = useRef(false)
+  lightboxRef.current = lightboxOpen
+
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') navigate(-1) }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      if (lightboxRef.current) { setLightboxOpen(false); return }
+      navigate(-1)
+    }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [navigate])
@@ -112,6 +120,7 @@ export function usePecaPage() {
     loading: loadingPieces || loadingLooks,
     notes,
     photo, photoInputRef, handlePhotoChange, removePhoto,
+    lightboxOpen, setLightboxOpen,
     toggleHidden,
     editOpen, openEdit, setEditOpen,
     editName, setEditName,
