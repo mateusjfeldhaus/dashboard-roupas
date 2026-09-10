@@ -74,10 +74,15 @@ router.delete('/:id/photo', async (req, res) => {
   } catch (e) { apiError(res, e) }
 })
 
-// PUT /api/pieces/:id
+// PUT /api/pieces/:id — partial update, never overwrites fields not sent
 router.put('/:id', async (req, res) => {
   try {
-    const fields = PieceUpdateSchema.parse(req.body)
+    const parsed = PieceUpdateSchema.parse(req.body)
+    // Strip keys that were not in the request body (avoids Zod defaults wiping existing data)
+    const fields = Object.fromEntries(
+      Object.entries(parsed).filter(([k]) => Object.prototype.hasOwnProperty.call(req.body, k))
+    )
+    if (Object.keys(fields).length === 0) { res.status(400).json({ error: 'Nenhum campo enviado' }); return }
     const [updated] = await db.update(pieces)
       .set(fields)
       .where(eq(pieces.id, req.params.id))

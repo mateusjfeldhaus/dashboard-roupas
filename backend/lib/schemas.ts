@@ -19,7 +19,16 @@ export const PieceCreateSchema = z.object({
   notes:    z.string().default(''),
 })
 
-export const PieceUpdateSchema = PieceCreateSchema.partial().omit({ id: true })
+// Separate schema for updates: no defaults so absent fields stay truly undefined
+export const PieceUpdateSchema = z.object({
+  name:     z.string().min(1),
+  brand:    z.string(),
+  category: z.enum(PIECE_CATEGORIES),
+  img:      z.string(),
+  color:    z.string(),
+  tips:     z.array(z.string()),
+  notes:    z.string(),
+}).partial()
 
 export const NotesSchema = z.object({
   notes: z.string(),
