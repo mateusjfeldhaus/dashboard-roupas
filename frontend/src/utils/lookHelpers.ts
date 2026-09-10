@@ -7,7 +7,7 @@ export const CAT_LIST = [
   'Blazer','Colete','Suéter','Jaqueta',
   'Camisa','Polo','Camiseta',
   'Calça','Cinto','Sapato',
-  'Gravata','Relógio','Acessório',
+  'Gravata','Relógio','Acessório','Perfume',
 ] as const
 
 export type PieceCat = typeof CAT_LIST[number]
@@ -24,7 +24,7 @@ export const CAT_LABELS: Record<string, string> = {
   'Camisa':'Camisas','Blazer':'Blazers','Colete':'Coletes',
   'Calça':'Calças','Sapato':'Sapatos','Gravata':'Gravatas','Polo':'Polos',
   'Camiseta':'Camisetas','Jaqueta':'Jaquetas','Suéter':'Suéteres',
-  'Relógio':'Relógios','Cinto':'Cintos','Acessório':'Acessórios',
+  'Relógio':'Relógios','Cinto':'Cintos','Acessório':'Acessórios','Perfume':'Perfumes',
 }
 
 export function photoUrl(lookId: string) {

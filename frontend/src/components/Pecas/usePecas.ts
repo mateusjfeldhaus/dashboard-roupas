@@ -6,7 +6,7 @@ import type { PieceCategory } from '@data/types'
 export const categories: PieceCategory[] = [
   'Camisa', 'Calça', 'Blazer', 'Colete',
   'Sapato', 'Relógio', 'Gravata', 'Cinto', 'Suéter',
-  'Polo', 'Camiseta', 'Jaqueta', 'Acessório',
+  'Polo', 'Camiseta', 'Jaqueta', 'Acessório', 'Perfume',
 ]
 
 // Persiste a categoria selecionada entre navegações (PecaPage → voltar)

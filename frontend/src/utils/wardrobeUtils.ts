@@ -51,7 +51,7 @@ export const CAT_ORDER: Record<string, number> = {
   'Blazer': 1, 'Colete': 1, 'Sueter': 2, 'Jaqueta': 3,
   'Camisa': 4, 'Polo': 4, 'Camiseta': 4,
   'Calca': 5, 'Cinto': 6, 'Sapato': 7,
-  'Gravata': 8, 'Relogio': 9, 'Acessorio': 10,
+  'Gravata': 8, 'Relogio': 9, 'Acessorio': 10, 'Perfume': 11,
 }
 
 /** Formata data ISO (YYYY-MM-DD) para exibição em pt-BR (DD/MM/YYYY). */

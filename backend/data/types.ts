@@ -12,6 +12,7 @@ export type PieceCategory =
   | 'Camiseta'
   | 'Jaqueta'
   | 'Acessório'
+  | 'Perfume'
 
 export type LookTag =
   | 'formal'

@@ -5,7 +5,7 @@ import { z } from 'zod'
 const PIECE_CATEGORIES = [
   'Camisa', 'Calça', 'Blazer', 'Colete', 'Sapato',
   'Cinto', 'Gravata', 'Relógio', 'Suéter', 'Polo', 'Camiseta',
-  'Jaqueta', 'Acessório',
+  'Jaqueta', 'Acessório', 'Perfume',
 ] as const
 
 export const PieceCreateSchema = z.object({
