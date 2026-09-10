@@ -20,6 +20,7 @@ import { Capsula } from './components/Capsula'
 import { PecaPage } from './pages/PecaPage'
 import { LookPage } from './pages/LookPage'
 import { NovoLookPage } from './pages/NovoLookPage'
+import { NovaPecaPage } from './pages/NovaPecaPage'
 import { LooksDescartados } from './pages/LooksDescartados'
 import { PecasDescartadas } from './pages/PecasDescartadas'
 import { ToastContainer } from './components/Toast'
@@ -42,6 +43,7 @@ export default function App() {
         <Routes>
           <Route path="/"                  element={<Overview />} />
           <Route path="/pecas"             element={<Pecas />} />
+          <Route path="/pecas/nova"         element={isGuest() ? <Navigate to="/pecas" replace /> : <NovaPecaPage />} />
           <Route path="/pecas/descartadas" element={isGuest() ? <Navigate to="/pecas" replace /> : <PecasDescartadas />} />
           <Route path="/pecas/:id"         element={<PecaPage />} />
           <Route path="/looks"             element={<Looks />} />

@@ -12,6 +12,8 @@ function getToken(): string {
 
 export function imgUrl(relativePath: string): string {
   if (!relativePath) return ''
+  // Supabase public URLs já são completas — retorna direto sem autenticação
+  if (relativePath.startsWith('http://') || relativePath.startsWith('https://')) return relativePath
   const path = '/img/' + relativePath.split('/').map(encodeURIComponent).join('/')
   const token = getToken()
   return token ? `${path}?t=${encodeURIComponent(token)}` : path

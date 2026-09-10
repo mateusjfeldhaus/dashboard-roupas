@@ -17,6 +17,7 @@ import { isGuest } from '../../api/client'
 export function PecaPage() {
   const {
     navigate, piece, pieceLooks, loading, notes, toggleHidden,
+    photo, photoInputRef, handlePhotoChange, removePhoto,
     editOpen, openEdit, setEditOpen,
     editName, setEditName, editBrand, setEditBrand, editTips, setEditTips,
     editSaving, saveEdit,
@@ -57,12 +58,52 @@ export function PecaPage() {
       )}
 
       <Card>
-        <ImgWrap>
+        <ImgWrap style={{ position: 'relative' }}>
           {piece.img
             ? <Img src={imgUrl(piece.img)} alt={piece.name}
                 onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
             : <ImgPlaceholder>Sem foto ainda</ImgPlaceholder>
           }
+          {!isGuest() && (
+            <div style={{
+              position: 'absolute', bottom: 8, right: 8,
+              display: 'flex', gap: 6,
+            }}>
+              <label
+                htmlFor={`peca-photo-${piece.id}`}
+                style={{
+                  padding: '5px 10px', borderRadius: 8, cursor: 'pointer',
+                  background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)',
+                  fontSize: 11, fontWeight: 700, color: '#fff',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                }}
+              >
+                {photo.uploading ? '⏳' : piece.img ? '🔄' : '📸'}
+                <input
+                  id={`peca-photo-${piece.id}`}
+                  type="file"
+                  accept="image/*"
+                  ref={photoInputRef}
+                  onChange={handlePhotoChange}
+                  style={{ display: 'none' }}
+                />
+              </label>
+              {piece.img && (
+                <button
+                  onClick={removePhoto}
+                  disabled={photo.uploading}
+                  style={{
+                    padding: '5px 10px', borderRadius: 8, cursor: 'pointer',
+                    background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)',
+                    fontSize: 11, fontWeight: 700, color: '#ef4444',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                  }}
+                >
+                  🗑
+                </button>
+              )}
+            </div>
+          )}
         </ImgWrap>
 
         <Body>

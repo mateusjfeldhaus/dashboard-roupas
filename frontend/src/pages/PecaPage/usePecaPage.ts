@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
 import { useNotes } from '../../hooks/useNotes'
+import { usePiecePhotoFor } from '../../hooks/usePiecePhoto'
 import { toast } from '../../hooks/useToast'
 import api from '../../api/client'
 
@@ -21,6 +22,32 @@ export function usePecaPage() {
 
   const piece = allPieces.find(p => p.id === id)
   const notes = useNotes('piece', piece?.id ?? '', piece?.notes)
+  const photo = usePiecePhotoFor(piece?.id ?? '')
+  const photoInputRef = useRef<HTMLInputElement>(null)
+
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !piece) return
+    e.target.value = ''
+    try {
+      await photo.upload(file)
+      invalidate()
+      toast('Foto atualizada!')
+    } catch {
+      toast('Erro ao enviar foto', 'error')
+    }
+  }
+
+  async function removePhoto() {
+    if (!piece) return
+    try {
+      await photo.remove()
+      invalidate()
+      toast('Foto removida')
+    } catch {
+      toast('Erro ao remover foto', 'error')
+    }
+  }
 
   // ── Editar peça ─────────────────────────────────────────────────────────────
   const [editOpen, setEditOpen] = useState(false)
@@ -84,6 +111,7 @@ export function usePecaPage() {
     pieceLooks,
     loading: loadingPieces || loadingLooks,
     notes,
+    photo, photoInputRef, handlePhotoChange, removePhoto,
     toggleHidden,
     editOpen, openEdit, setEditOpen,
     editName, setEditName,

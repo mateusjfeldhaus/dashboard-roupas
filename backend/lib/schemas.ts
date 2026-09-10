@@ -9,7 +9,7 @@ const PIECE_CATEGORIES = [
 ] as const
 
 export const PieceCreateSchema = z.object({
-  id:       z.string().min(1),
+  id:       z.string().min(1).optional(),   // omit → UUID gerado no backend
   name:     z.string().min(1),
   brand:    z.string().default(''),
   category: z.enum(PIECE_CATEGORIES),

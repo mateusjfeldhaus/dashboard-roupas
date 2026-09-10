@@ -7,9 +7,11 @@ import {
 } from './Pecas.styles'
 import { SkGrid, SkCard } from '../Skeleton'
 import { usePecas, categories } from './usePecas'
+import { isGuest } from '../../api/client'
 
 export function Pecas() {
   const { navigate, pieces, loading, selectedCat, setSelectedCat, visibleCats } = usePecas()
+  const guest = isGuest()
 
   if (loading) return (
     <SkGrid $cols='repeat(auto-fill, minmax(200px, 1fr))'>
@@ -29,7 +31,16 @@ export function Pecas() {
               {cat}
             </FilterBtn>
           ))}
-          <DescartadasLink to="/pecas/descartadas">🗄 Descartadas</DescartadasLink>
+          {!guest && <DescartadasLink to="/pecas/descartadas">🗄 Descartadas</DescartadasLink>}
+          {!guest && (
+            <FilterBtn
+              $active={false}
+              onClick={() => navigate('/pecas/nova')}
+              style={{ marginLeft: 'auto', color: 'var(--accent, #c8a96e)', fontWeight: 700, borderColor: 'var(--accent, #c8a96e)', opacity: 0.9 }}
+            >
+              + Nova peça
+            </FilterBtn>
+          )}
         </FilterBar>
       </FilterStickyWrap>
 

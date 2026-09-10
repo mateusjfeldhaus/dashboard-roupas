@@ -1,9 +1,21 @@
 import { Router } from 'express'
 import { eq, inArray } from 'drizzle-orm'
+import { randomUUID } from 'crypto'
+import multer from 'multer'
 import { db } from '../db/client'
 import { pieces, looks, lookPieces } from '../db/schema'
 import { PieceCreateSchema, PieceUpdateSchema, NotesSchema, HiddenSchema } from '../lib/schemas'
+import { supabase, BUCKET } from '../lib/supabase'
 import { apiError } from '../middleware/errorHandler'
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 8 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) cb(null, true)
+    else cb(new Error('Apenas imagens são aceitas'))
+  },
+})
 
 const router = Router()
 
@@ -28,8 +40,37 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const body = PieceCreateSchema.parse(req.body)
-    const [created] = await db.insert(pieces).values(body).returning()
+    const id   = body.id ?? randomUUID()
+    const [created] = await db.insert(pieces).values({ ...body, id }).returning()
     res.status(201).json(created)
+  } catch (e) { apiError(res, e) }
+})
+
+// POST /api/pieces/:id/photo — upload foto para Supabase, salva URL em pieces.img
+router.post('/:id/photo', upload.single('photo'), async (req, res) => {
+  try {
+    if (!req.file) { res.status(400).json({ error: 'Nenhum arquivo enviado' }); return }
+    const [piece] = await db.select().from(pieces).where(eq(pieces.id, req.params.id))
+    if (!piece) { res.status(404).json({ error: 'Peça não encontrada' }); return }
+
+    const storagePath = `pieces/${req.params.id}`
+    const { error: uploadError } = await supabase.storage
+      .from(BUCKET)
+      .upload(storagePath, req.file.buffer, { contentType: req.file.mimetype, upsert: true })
+    if (uploadError) throw uploadError
+
+    const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(storagePath)
+    const [updated] = await db.update(pieces).set({ img: publicUrl }).where(eq(pieces.id, req.params.id)).returning()
+    res.json({ img: updated.img })
+  } catch (e) { apiError(res, e) }
+})
+
+// DELETE /api/pieces/:id/photo — remove foto do Supabase e limpa pieces.img
+router.delete('/:id/photo', async (req, res) => {
+  try {
+    await supabase.storage.from(BUCKET).remove([`pieces/${req.params.id}`])
+    await db.update(pieces).set({ img: '' }).where(eq(pieces.id, req.params.id))
+    res.json({ ok: true })
   } catch (e) { apiError(res, e) }
 })
 
