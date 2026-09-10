@@ -61,12 +61,16 @@ export function usePecaPage() {
   const [editOpen, setEditOpen] = useState(false)
   const [editName, setEditName] = useState('')
   const [editBrand, setEditBrand] = useState('')
+  const [editCategory, setEditCategory] = useState('')
+  const [editColor, setEditColor] = useState('')
   const [editTips, setEditTips] = useState('')
   const [editSaving, setEditSaving] = useState(false)
 
   function openEdit() {
     setEditName(piece?.name ?? '')
     setEditBrand(piece?.brand ?? '')
+    setEditCategory(piece?.category ?? '')
+    setEditColor(piece?.color ?? '#6b7280')
     setEditTips(piece?.tips.join('\n') ?? '')
     setEditOpen(true)
   }
@@ -76,9 +80,11 @@ export function usePecaPage() {
     setEditSaving(true)
     try {
       await api.put(`/api/pieces/${encodeURIComponent(piece.id)}`, {
-        name: editName.trim(),
-        brand: editBrand.trim(),
-        tips: editTips.split('\n').map(t => t.trim()).filter(Boolean),
+        name:     editName.trim(),
+        brand:    editBrand.trim(),
+        category: editCategory,
+        color:    editColor,
+        tips:     editTips.split('\n').map(t => t.trim()).filter(Boolean),
       })
       invalidate()
       setEditOpen(false)
@@ -125,6 +131,8 @@ export function usePecaPage() {
     editOpen, openEdit, setEditOpen,
     editName, setEditName,
     editBrand, setEditBrand,
+    editCategory, setEditCategory,
+    editColor, setEditColor,
     editTips, setEditTips,
     editSaving, saveEdit,
   }

@@ -13,6 +13,23 @@ import { SkCard, SkStack, SkLine } from '../../components/Skeleton'
 import { PageWrap, BackBtn, HideBtn, EditBtn, Card, NotFound } from './PecaPage.styles'
 import { DialogOverlay, DialogBox, DialogTitle, DialogActions, SaveBtn, CancelBtn } from '../LookPage/LookPage.styles'
 import { isGuest } from '../../api/client'
+import { CAT_LIST } from '../NovaPecaPage/useNovaPecaPage'
+
+const FLabel = ({ children }: { children: React.ReactNode }) => (
+  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-muted, #888)', marginBottom: 6 }}>
+    {children}
+  </div>
+)
+const FField = ({ children }: { children: React.ReactNode }) => (
+  <div style={{ display: 'flex', flexDirection: 'column' as const }}>{children}</div>
+)
+const inputStyle: React.CSSProperties = {
+  padding: '9px 12px', borderRadius: 8,
+  border: '1px solid var(--border, #333)',
+  background: 'var(--bg, #111)',
+  color: 'inherit', fontSize: 13,
+  width: '100%', boxSizing: 'border-box' as const,
+}
 
 export function PecaPage() {
   const {
@@ -20,7 +37,11 @@ export function PecaPage() {
     photo, photoInputRef, handlePhotoChange, removePhoto,
     lightboxOpen, setLightboxOpen,
     editOpen, openEdit, setEditOpen,
-    editName, setEditName, editBrand, setEditBrand, editTips, setEditTips,
+    editName, setEditName,
+    editBrand, setEditBrand,
+    editCategory, setEditCategory,
+    editColor, setEditColor,
+    editTips, setEditTips,
     editSaving, saveEdit,
   } = usePecaPage()
 
@@ -217,38 +238,60 @@ export function PecaPage() {
 
       {editOpen && (
         <DialogOverlay onClick={() => setEditOpen(false)}>
-          <DialogBox onClick={(e: React.MouseEvent) => e.stopPropagation()} style={{ textAlign: 'left', maxWidth: 420 }}>
-            <DialogTitle style={{ marginBottom: 16 }}>Editar peça</DialogTitle>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <label style={{ fontSize: 12, color: 'var(--text-muted, #888)', fontWeight: 600 }}>
-                Nome
-                <input
-                  value={editName}
-                  onChange={e => setEditName(e.target.value)}
-                  style={{ display: 'block', width: '100%', marginTop: 4, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border, #333)', background: 'var(--bg, #111)', color: 'inherit', fontSize: 13 }}
-                />
-              </label>
-              <label style={{ fontSize: 12, color: 'var(--text-muted, #888)', fontWeight: 600 }}>
-                Marca
-                <input
-                  value={editBrand}
-                  onChange={e => setEditBrand(e.target.value)}
-                  style={{ display: 'block', width: '100%', marginTop: 4, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border, #333)', background: 'var(--bg, #111)', color: 'inherit', fontSize: 13 }}
-                />
-              </label>
-              <label style={{ fontSize: 12, color: 'var(--text-muted, #888)', fontWeight: 600 }}>
-                Dicas de uso <span style={{ fontWeight: 400 }}>(uma por linha)</span>
+          <DialogBox onClick={(e: React.MouseEvent) => e.stopPropagation()} style={{ textAlign: 'left', maxWidth: 480, width: '90vw' }}>
+            <DialogTitle style={{ marginBottom: 20 }}>Editar peça</DialogTitle>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+              <FField>
+                <FLabel>Nome</FLabel>
+                <input style={inputStyle} value={editName} onChange={e => setEditName(e.target.value)} />
+              </FField>
+
+              <FField>
+                <FLabel>Marca</FLabel>
+                <input style={inputStyle} value={editBrand} onChange={e => setEditBrand(e.target.value)} />
+              </FField>
+
+              <FField>
+                <FLabel>Categoria</FLabel>
+                <select style={inputStyle} value={editCategory} onChange={e => setEditCategory(e.target.value)}>
+                  {CAT_LIST.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </FField>
+
+              <FField>
+                <FLabel>Cor da peça</FLabel>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <input
+                    type="color"
+                    value={editColor}
+                    onChange={e => setEditColor(e.target.value)}
+                    style={{ width: 44, height: 36, borderRadius: 8, border: '1px solid var(--border, #333)', background: 'none', cursor: 'pointer', padding: 2 }}
+                  />
+                  <input
+                    style={{ ...inputStyle, maxWidth: 120 }}
+                    value={editColor}
+                    onChange={e => setEditColor(e.target.value)}
+                    placeholder="#6b7280"
+                  />
+                  <div style={{ width: 32, height: 32, borderRadius: 8, background: editColor, border: '1px solid var(--border, #333)', flexShrink: 0 }} />
+                </div>
+              </FField>
+
+              <FField>
+                <FLabel>Dicas de uso <span style={{ fontWeight: 400, textTransform: 'none' }}>(uma por linha)</span></FLabel>
                 <textarea
+                  style={{ ...inputStyle, resize: 'vertical' }}
                   value={editTips}
                   onChange={e => setEditTips(e.target.value)}
                   rows={4}
-                  style={{ display: 'block', width: '100%', marginTop: 4, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border, #333)', background: 'var(--bg, #111)', color: 'inherit', fontSize: 13, resize: 'vertical' }}
                 />
-              </label>
+              </FField>
+
             </div>
             <DialogActions style={{ marginTop: 20 }}>
               <CancelBtn onClick={() => setEditOpen(false)}>Cancelar</CancelBtn>
-              <SaveBtn onClick={saveEdit} disabled={editSaving}>
+              <SaveBtn onClick={saveEdit} disabled={editSaving || !editName.trim()}>
                 {editSaving ? 'Salvando…' : 'Salvar'}
               </SaveBtn>
             </DialogActions>
