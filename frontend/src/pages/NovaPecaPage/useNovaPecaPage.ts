@@ -9,8 +9,9 @@ import { toast } from '../../hooks/useToast'
 
 export { CAT_LIST }
 
-function buildName(cat: string, desc: string, br: string) {
-  const base = [cat, desc.trim()].filter(Boolean).join(' ')
+function buildName(_cat: string, desc: string, br: string) {
+  const base = desc.trim()
+  if (!base && !br.trim()) return ''
   return br.trim() ? `${base} - ${br.trim()}` : base
 }
 
@@ -26,7 +27,7 @@ export function useNovaPecaPage() {
   const [saving,   setSaving]   = useState(false)
 
   // Nome: auto-gerado a partir de categoria+descrição+marca, mas editável
-  const [name,        setName]        = useState(() => buildName('Camisa', '', ''))
+  const [name,        setName]        = useState('')
   const [nameEdited,  setNameEdited]  = useState(false)
 
   useEffect(() => {
