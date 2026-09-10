@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../api/client'
 import { usePieces } from '../../hooks/usePieces'
@@ -9,16 +9,39 @@ import { toast } from '../../hooks/useToast'
 
 export { CAT_LIST }
 
+function buildName(cat: string, desc: string, br: string) {
+  const base = [cat, desc.trim()].filter(Boolean).join(' ')
+  return br.trim() ? `${base} - ${br.trim()}` : base
+}
+
 export function useNovaPecaPage() {
   const navigate   = useNavigate()
   const { invalidate } = usePieces()
 
-  const [name,     setName]     = useState('')
+  const [description, setDescription] = useState('')
   const [brand,    setBrand]    = useState('')
   const [category, setCategory] = useState<PieceCategory>('Camisa')
   const [color,    setColor]    = useState('#6b7280')
   const [tips,     setTips]     = useState('')
   const [saving,   setSaving]   = useState(false)
+
+  // Nome: auto-gerado a partir de categoria+descrição+marca, mas editável
+  const [name,        setName]        = useState(() => buildName('Camisa', '', ''))
+  const [nameEdited,  setNameEdited]  = useState(false)
+
+  useEffect(() => {
+    if (!nameEdited) setName(buildName(category, description, brand))
+  }, [category, description, brand, nameEdited])
+
+  function handleNameChange(val: string) {
+    setName(val)
+    setNameEdited(true)
+  }
+
+  function resetName() {
+    setNameEdited(false)
+    setName(buildName(category, description, brand))
+  }
 
   // Foto prévia — comprimida e pronta para enviar
   const [preview,   setPreview]   = useState<string | null>(null)   // object URL para exibir
@@ -79,7 +102,8 @@ export function useNovaPecaPage() {
 
   return {
     navigate,
-    name, setName,
+    description, setDescription,
+    name, handleNameChange, resetName, nameEdited,
     brand, setBrand,
     category, setCategory,
     color, setColor,

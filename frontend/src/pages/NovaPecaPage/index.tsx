@@ -3,8 +3,8 @@ import { useNovaPecaPage, CAT_LIST } from './useNovaPecaPage'
 import { PageWrap, BackBtn } from '../PecaPage/PecaPage.styles'
 import { DialogTitle, SaveBtn, CancelBtn } from '../LookPage/LookPage.styles'
 
-const Label = ({ children }: { children: React.ReactNode }) => (
-  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-muted, #888)', marginBottom: 6 }}>
+const Label = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
+  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-muted, #888)', marginBottom: 6, ...style }}>
     {children}
   </div>
 )
@@ -61,7 +61,8 @@ const Textarea = (props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) => (
 export function NovaPecaPage() {
   const {
     navigate,
-    name, setName,
+    description, setDescription,
+    name, handleNameChange, resetName, nameEdited,
     brand, setBrand,
     category, setCategory,
     color, setColor,
@@ -127,13 +128,21 @@ export function NovaPecaPage() {
           </div>
         </Field>
 
-        {/* Nome */}
+        {/* Categoria */}
         <Field>
-          <Label>Nome *</Label>
+          <Label>Categoria *</Label>
+          <Select value={category} onChange={e => setCategory(e.target.value as typeof category)}>
+            {CAT_LIST.map(c => <option key={c} value={c}>{c}</option>)}
+          </Select>
+        </Field>
+
+        {/* Descrição */}
+        <Field>
+          <Label>Descrição <span style={{ fontWeight: 400, textTransform: 'none' }}>(cor, material, detalhe)</span></Label>
           <Input
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder="ex: Blazer Príncipe de Gales"
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            placeholder="ex: Chumbo Lã 120"
             autoFocus
           />
         </Field>
@@ -148,12 +157,29 @@ export function NovaPecaPage() {
           />
         </Field>
 
-        {/* Categoria */}
+        {/* Nome gerado */}
         <Field>
-          <Label>Categoria *</Label>
-          <Select value={category} onChange={e => setCategory(e.target.value as typeof category)}>
-            {CAT_LIST.map(c => <option key={c} value={c}>{c}</option>)}
-          </Select>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+            <Label style={{ marginBottom: 0 }}>
+              Nome da peça {nameEdited
+                ? <span style={{ fontWeight: 400, color: 'var(--accent, #c8a96e)' }}>(editado)</span>
+                : <span style={{ fontWeight: 400, textTransform: 'none' }}>(gerado automaticamente)</span>}
+            </Label>
+            {nameEdited && (
+              <button
+                onClick={resetName}
+                style={{ fontSize: 11, background: 'none', border: 'none', color: 'var(--text-muted, #888)', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+              >
+                resetar
+              </button>
+            )}
+          </div>
+          <Input
+            value={name}
+            onChange={e => handleNameChange(e.target.value)}
+            placeholder="ex: Blazer Chumbo Lã 120 - Bespoke"
+            style={nameEdited ? { borderColor: 'var(--accent, #c8a96e)' } : {}}
+          />
         </Field>
 
         {/* Cor */}
