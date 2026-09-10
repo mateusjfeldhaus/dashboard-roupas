@@ -16,8 +16,7 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } {
 }
 
 export function colorSortKey(hex: string): number {
-  const { h, l } = hexToHsl(hex)
-  // Primário: lightness (claro → escuro) · Secundário: hue (agrupa tons similares)
+  const { h, l } = hexToHsl(hex)  
   return Math.round((1 - l) * 10_000) + h
 }
 

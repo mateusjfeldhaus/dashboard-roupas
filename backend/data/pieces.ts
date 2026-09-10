@@ -300,14 +300,14 @@ export const pieces: Piece[] = [
     id: 'cs-al-cli', name: 'Clifield Camisa Azul Linho', brand: 'Clifield',
     category: 'Camisa',
     img: 'Camisas Longas/Clifield - Azul - Linho e Algodao.jpeg',
-    color: '#3b82f6',
+    color: '#93c5fd',
     tips: ['Mistura de linho e algodão — leve e elegante para o calor', 'Azul médio combina com areia, chumbo e caramelo', 'Sem gravata com blazer linho areia = look perfeito de verão'],
   },
   {
     id: 'cs-az-cli', name: 'Clifield Camisa Azul', brand: 'Clifield',
     category: 'Camisa',
     img: 'Camisas Longas/Clifield - Azul.jpeg',
-    color: '#2563eb',
+    color: '#3b82f6',
     tips: ['Azul vivo que ganha destaque com blazer cinza ou preto', 'Com calça preta e Derby preto = clássico executivo', 'Perfeita para reuniões onde quer transmitir confiança'],
   },
   {
@@ -342,14 +342,14 @@ export const pieces: Piece[] = [
     id: 'cs-ae-doc', name: 'Docthos Camisa Azul Escura', brand: 'Docthos',
     category: 'Camisa',
     img: 'Camisas Longas/Docthos - Azul Escura.jpeg',
-    color: '#1e3a8a',
+    color: '#1e40af',
     tips: ['Azul escuro é o segundo neutro depois do branco', 'Com blazer cinza cria o look preferido dos banqueiros', 'Calça preta ou chumbo âncora sem competir'],
   },
   {
     id: 'cs-ali-doc', name: 'Docthos Camisa Azul Listrada', brand: 'Docthos',
     category: 'Camisa',
     img: 'Camisas Longas/Docthos - Azul Listrada.jpeg',
-    color: '#3b82f6',
+    color: '#60a5fa',
     tips: ['Listrado é clássico britânico — impecável no executivo', 'Com blazer sólido (preto, cinza ou chumbo) fica perfeito', 'Sem gravata com blazer casual = smart casual refinado'],
   },
   {
