@@ -16,9 +16,9 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } {
 }
 
 export function colorSortKey(hex: string): number {
-  const { h, s, l } = hexToHsl(hex)
-  if (s < 0.12) return 1_000_000 + (1 - l) * 1000
-  return h * 1000 + (1 - l) * 100
+  const { h, l } = hexToHsl(hex)
+  // Primário: lightness (claro → escuro) · Secundário: hue (agrupa tons similares)
+  return Math.round((1 - l) * 10_000) + h
 }
 
 export function sortByColor<T extends { color: string }>(items: T[]): T[] {
