@@ -10,7 +10,11 @@ import { usePecas, categories } from './usePecas'
 import { isGuest } from '../../api/client'
 
 export function Pecas() {
-  const { navigate, pieces, loading, selectedCat, setSelectedCat, visibleCats } = usePecas()
+  const {
+    navigate, pieces, loading,
+    selectedCat, setSelectedCat, visibleCats,
+    sortByColor, toggleSortByColor, colorSortedPieces,
+  } = usePecas()
   const guest = isGuest()
 
   if (loading) return (
@@ -31,6 +35,14 @@ export function Pecas() {
               {cat}
             </FilterBtn>
           ))}
+          <FilterBtn
+            $active={sortByColor}
+            onClick={toggleSortByColor}
+            title="Ordenar por cor"
+            style={sortByColor ? { borderColor: 'var(--accent, #c8a96e)', color: 'var(--accent, #c8a96e)' } : {}}
+          >
+            🎨 Por cor
+          </FilterBtn>
           {!guest && <DescartadasLink to="/pecas/descartadas">🗄 Descartadas</DescartadasLink>}
           {!guest && (
             <FilterBtn
@@ -44,7 +56,28 @@ export function Pecas() {
         </FilterBar>
       </FilterStickyWrap>
 
-      {visibleCats.map(cat => {
+      {sortByColor ? (
+        <Section>
+          <CatTitle style={{ marginBottom: 16 }}>
+            {colorSortedPieces.length} {colorSortedPieces.length === 1 ? 'peça' : 'peças'} · ordenadas por cor
+          </CatTitle>
+          <PieceGrid>
+            {colorSortedPieces.map(piece => (
+              <PieceCard key={piece.id} onClick={() => navigate(`/pecas/${piece.id}`)}>
+                <Thumb>
+                  {piece.img && (
+                    <ThumbImg src={imgUrl(piece.img)} alt={piece.name}
+                      onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                  )}
+                </Thumb>
+                <ColorBar $color={piece.color} />
+                <PieceName>{piece.name}</PieceName>
+                <PieceBrand>{piece.brand} · {piece.category}</PieceBrand>
+              </PieceCard>
+            ))}
+          </PieceGrid>
+        </Section>
+      ) : visibleCats.map(cat => {
         const catPieces = pieces.filter(p => p.category === cat)
         if (catPieces.length === 0) return null
         return (
