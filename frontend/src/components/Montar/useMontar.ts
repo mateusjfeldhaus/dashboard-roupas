@@ -5,6 +5,7 @@ import { useLooks } from '../../hooks/useLooks'
 import type { Look } from '@data/types'
 import { SEASONS } from '../../styles/tags'
 import { CAT_LIST, CAT_LABELS } from '../../utils/lookHelpers'
+import { sortByColor } from '../../utils/colorSort'
 
 export { CAT_LABELS }
 
@@ -49,7 +50,7 @@ export function useMontar() {
   const [filterStyle,  setFilterStyle]  = useState<StyleFilter>(null)
 
   const piecesInCat = useMemo(
-    () => pieces.filter(p => (p.category as string) === activeCat),
+    () => sortByColor(pieces.filter(p => (p.category as string) === activeCat)),
     [pieces, activeCat],
   )
 

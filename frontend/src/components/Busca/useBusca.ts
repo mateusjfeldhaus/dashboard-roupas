@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
+import { sortByColor } from '../../utils/colorSort'
 
 function normalize(s: string) {
   return s.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '')
@@ -17,11 +18,11 @@ export function useBusca() {
 
   const matchedPieces = useMemo(() => {
     if (!q) return []
-    return pieces.filter(p =>
+    return sortByColor(pieces.filter(p =>
       normalize(p.name).includes(q) ||
       normalize(p.brand).includes(q) ||
       normalize(p.category).includes(q)
-    )
+    ))
   }, [q, pieces])
 
   const matchedLooks = useMemo(() => {

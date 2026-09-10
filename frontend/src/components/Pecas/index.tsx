@@ -7,6 +7,7 @@ import {
 } from './Pecas.styles'
 import { SkGrid, SkCard } from '../Skeleton'
 import { usePecas, categories } from './usePecas'
+import { sortByColor as sortPiecesByColor } from '../../utils/colorSort'
 import { isGuest } from '../../api/client'
 
 export function Pecas() {
@@ -30,19 +31,21 @@ export function Pecas() {
           <FilterBtn $active={selectedCat === 'Todas'} onClick={() => setSelectedCat('Todas')}>
             Todas
           </FilterBtn>
+          <FilterBtn
+            $active={sortByColor}
+            onClick={toggleSortByColor}
+            title="Ordenar por cor"
+            style={sortByColor
+              ? { borderColor: 'var(--accent, #c8a96e)', color: 'var(--accent, #c8a96e)' }
+              : { opacity: 0.7 }}
+          >
+            🎨 Cor
+          </FilterBtn>
           {categories.map(cat => (
             <FilterBtn key={cat} $active={selectedCat === cat} onClick={() => setSelectedCat(cat)}>
               {cat}
             </FilterBtn>
           ))}
-          <FilterBtn
-            $active={sortByColor}
-            onClick={toggleSortByColor}
-            title="Ordenar por cor"
-            style={sortByColor ? { borderColor: 'var(--accent, #c8a96e)', color: 'var(--accent, #c8a96e)' } : {}}
-          >
-            🎨 Por cor
-          </FilterBtn>
           {!guest && <DescartadasLink to="/pecas/descartadas">🗄 Descartadas</DescartadasLink>}
           {!guest && (
             <FilterBtn
@@ -78,7 +81,7 @@ export function Pecas() {
           </PieceGrid>
         </Section>
       ) : visibleCats.map(cat => {
-        const catPieces = pieces.filter(p => p.category === cat)
+        const catPieces = sortPiecesByColor(pieces.filter(p => p.category === cat))
         if (catPieces.length === 0) return null
         return (
           <Section key={cat}>

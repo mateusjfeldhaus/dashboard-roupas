@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
 import { SEASONS, OCCASIONS } from '../../styles/tags'
+import { sortByColor } from '../../utils/colorSort'
 
 let _selectedCat: string | null = null
 
@@ -42,7 +43,7 @@ export function useOverview() {
   }))
   const maxCount = Math.max(...catCounts.map(c => c.count))
 
-  const piecesInCat = selectedCat ? pieces.filter(p => p.category === selectedCat) : []
+  const piecesInCat = selectedCat ? sortByColor(pieces.filter(p => p.category === selectedCat)) : []
 
   function toggleCat(cat: string) {
     setSelectedCat(selectedCat === cat ? null : cat)

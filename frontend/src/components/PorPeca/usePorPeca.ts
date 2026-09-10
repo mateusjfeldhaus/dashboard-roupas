@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
 import { CAT_LABELS } from '../../utils/lookHelpers'
+import { sortByColor } from '../../utils/colorSort'
 import type { Look } from '@data/types'
 
 export type SubcatDef = { id: string; label: string; pieceIds: string[] }
@@ -85,9 +86,9 @@ export function usePorPeca() {
   const activeSubcatDef = subcats.find(s => s.id === activeSubcat) ?? null
   const filterIds       = activeSubcatDef?.pieceIds ?? null
 
-  const piecesInCat = pieces.filter(p =>
+  const piecesInCat = sortByColor(pieces.filter(p =>
     p.category === activeCat && (!filterIds || filterIds.includes(p.id))
-  )
+  ))
 
   function handleSubcatChange(id: string | null) {
     store.activeSubcat = id
