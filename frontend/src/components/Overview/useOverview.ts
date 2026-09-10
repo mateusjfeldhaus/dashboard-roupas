@@ -4,13 +4,20 @@ import { usePieces } from '../../hooks/usePieces'
 import { useLooks } from '../../hooks/useLooks'
 import { SEASONS, OCCASIONS } from '../../styles/tags'
 
+let _selectedCat: string | null = null
+
 export function useOverview() {
   const { pieces, loading: loadingPieces } = usePieces()
   const { looks,  loading: loadingLooks  } = useLooks()
   const navigate = useNavigate()
   const allCats  = [...new Set(pieces.map(p => p.category))]
 
-  const [selectedCat,   setSelectedCat]   = useState<string | null>(null)
+  const [selectedCat, setSelectedCatState] = useState<string | null>(_selectedCat)
+
+  function setSelectedCat(cat: string | null) {
+    _selectedCat = cat
+    setSelectedCatState(cat)
+  }
   const [filterTag,     setFilterTag]     = useState<string | null>(null)
   const [filterSection, setFilterSection] = useState<'ocasiao' | 'estacao' | null>(null)
 
@@ -19,7 +26,7 @@ export function useOverview() {
       setFilterTag(null); setFilterSection(null)
     } else {
       setFilterTag(tag); setFilterSection(section)
-      setSelectedCat(null)
+      setSelectedCat(null)   // já persiste via wrapper
     }
   }
 
@@ -38,7 +45,7 @@ export function useOverview() {
   const piecesInCat = selectedCat ? pieces.filter(p => p.category === selectedCat) : []
 
   function toggleCat(cat: string) {
-    setSelectedCat(prev => prev === cat ? null : cat)
+    setSelectedCat(selectedCat === cat ? null : cat)
     setFilterTag(null); setFilterSection(null)
   }
 
