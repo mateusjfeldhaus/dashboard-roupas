@@ -242,6 +242,57 @@ export function PecaPage() {
             <DialogTitle style={{ marginBottom: 20 }}>Editar peça</DialogTitle>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
+              {/* Foto */}
+              <FField>
+                <FLabel>Foto</FLabel>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <div style={{
+                    width: 80, height: 80, borderRadius: 10,
+                    border: '1px dashed var(--border, #333)',
+                    background: 'var(--surface, #1a1a1a)',
+                    overflow: 'hidden', flexShrink: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    {piece.img
+                      ? <img src={imgUrl(piece.img)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : <span style={{ fontSize: 24, opacity: 0.3 }}>📷</span>
+                    }
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <label htmlFor="edit-peca-foto" style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 6,
+                      padding: '6px 12px', borderRadius: 8, cursor: 'pointer',
+                      border: '1px solid var(--border, #333)',
+                      fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #888)',
+                    }}>
+                      {photo.uploading ? '⏳ Enviando…' : piece.img ? '🔄 Trocar foto' : '📸 Adicionar foto'}
+                      <input
+                        id="edit-peca-foto"
+                        type="file"
+                        accept="image/*"
+                        ref={photoInputRef}
+                        onChange={handlePhotoChange}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+                    {piece.img && (
+                      <button
+                        onClick={removePhoto}
+                        disabled={photo.uploading}
+                        style={{
+                          padding: '6px 12px', borderRadius: 8, cursor: 'pointer',
+                          border: '1px solid var(--border, #333)',
+                          background: 'none', fontSize: 12, fontWeight: 600,
+                          color: '#ef4444', textAlign: 'left',
+                        }}
+                      >
+                        🗑 Remover foto
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </FField>
+
               <FField>
                 <FLabel>Nome</FLabel>
                 <input style={inputStyle} value={editName} onChange={e => setEditName(e.target.value)} />
