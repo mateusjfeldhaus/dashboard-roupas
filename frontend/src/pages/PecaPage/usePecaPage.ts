@@ -15,10 +15,16 @@ export function usePecaPage() {
   const lightboxRef = useRef(false)
   lightboxRef.current = lightboxOpen
 
+  // ── Editar peça ─────────────────────────────────────────────────────────────
+  const [editOpen, setEditOpen] = useState(false)
+  const editOpenRef = useRef(false)
+  editOpenRef.current = editOpen
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       if (lightboxRef.current) { setLightboxOpen(false); return }
+      if (editOpenRef.current) { setEditOpen(false); return }
       navigate(-1)
     }
     window.addEventListener('keydown', onKey)
@@ -57,8 +63,6 @@ export function usePecaPage() {
     }
   }
 
-  // ── Editar peça ─────────────────────────────────────────────────────────────
-  const [editOpen, setEditOpen] = useState(false)
   const [editName, setEditName] = useState('')
   const [editBrand, setEditBrand] = useState('')
   const [editCategory, setEditCategory] = useState('')
