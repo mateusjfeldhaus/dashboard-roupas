@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { imgUrl } from '../../utils/imgUrl'
 import {
   FilterStickyWrap, FilterBar, FilterBtn,
@@ -10,6 +11,13 @@ import { usePecas, categories } from './usePecas'
 import { sortByColor as sortPiecesByColor } from '../../utils/colorSort'
 import { isGuest } from '../../api/client'
 
+const SCROLL_KEY = 'pecas-scroll'
+
+function navigateToPeca(navigate: (path: string) => void, id: string) {
+  sessionStorage.setItem(SCROLL_KEY, String(window.scrollY))
+  navigate(`/pecas/${id}`)
+}
+
 export function Pecas() {
   const {
     navigate, pieces, loading,
@@ -17,6 +25,16 @@ export function Pecas() {
     sortByColor, toggleSortByColor, colorSortedPieces,
   } = usePecas()
   const guest = isGuest()
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem(SCROLL_KEY)
+    if (saved) {
+      sessionStorage.removeItem(SCROLL_KEY)
+      const y = Number(saved)
+      // aguarda render antes de rolar
+      requestAnimationFrame(() => window.scrollTo({ top: y, behavior: 'instant' }))
+    }
+  }, [])
 
   if (loading) return (
     <SkGrid $cols='repeat(auto-fill, minmax(200px, 1fr))'>
@@ -66,7 +84,7 @@ export function Pecas() {
           </CatTitle>
           <PieceGrid>
             {colorSortedPieces.map(piece => (
-              <PieceCard key={piece.id} onClick={() => navigate(`/pecas/${piece.id}`)}>
+              <PieceCard key={piece.id} onClick={() => navigateToPeca(navigate, piece.id)}>
                 <Thumb>
                   {piece.img && (
                     <ThumbImg src={imgUrl(piece.img)} alt={piece.name}
@@ -88,7 +106,7 @@ export function Pecas() {
             <CatTitle>{cat} ({catPieces.length})</CatTitle>
             <PieceGrid>
               {catPieces.map(piece => (
-                <PieceCard key={piece.id} onClick={() => navigate(`/pecas/${piece.id}`)}>
+                <PieceCard key={piece.id} onClick={() => navigateToPeca(navigate, piece.id)}>
                   <Thumb>
                     {piece.img && (
                       <ThumbImg src={imgUrl(piece.img)} alt={piece.name}
