@@ -186,7 +186,7 @@ export function NovaPecaPage() {
         {/* Cor */}
         <Field>
           <Label>Cor da peça</Label>
-          <ColorPalettePicker value={color} onChange={setColor} />
+          <ColorPalettePicker value={color} onChange={setColor} defaultOpen />
         </Field>
 
         {/* Dicas */}
