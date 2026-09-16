@@ -62,8 +62,16 @@ export function createListHook<T extends { id: string; hidden?: boolean }>(opts:
       invalidate()
     }
 
+    /** Atualiza itens no cache sem causar loading state nem re-fetch */
+    function patchItems(updater: (items: T[]) => T[]) {
+      if (!cache) return
+      cache = updater([...cache])
+      setAll([...cache])
+      notify()
+    }
+
     const visible = all.filter(item => !item.hidden)
 
-    return { all, visible, loading, error, invalidate, toggleHidden }
+    return { all, visible, loading, error, invalidate, toggleHidden, patchItems }
   }
 }

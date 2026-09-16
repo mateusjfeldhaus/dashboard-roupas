@@ -7,6 +7,6 @@ const useList = createListHook<Piece>({
 })
 
 export function usePieces() {
-  const { all: allPieces, visible: pieces, loading, error, invalidate, toggleHidden } = useList()
-  return { pieces, allPieces, loading, error, invalidate, toggleHidden }
+  const { all: allPieces, visible: pieces, loading, error, invalidate, toggleHidden, patchItems } = useList()
+  return { pieces, allPieces, loading, error, invalidate, toggleHidden, patchItems }
 }

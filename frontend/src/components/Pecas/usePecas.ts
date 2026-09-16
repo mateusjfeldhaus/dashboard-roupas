@@ -21,7 +21,7 @@ let _sortByColor = false
 
 export function usePecas() {
   const navigate = useNavigate()
-  const { pieces, loading, invalidate } = usePieces()
+  const { pieces, loading, invalidate, patchItems } = usePieces()
   const [selectedCat, setSelectedCatState]    = useState<PieceCategory | 'Todas'>(_selectedCat)
   const [sortByColor, setSortByColorState]    = useState(_sortByColor)
   const [localSortOrders, setLocalSortOrders] = useState<Record<string, number>>({})
@@ -76,15 +76,27 @@ export function usePecas() {
     const updates: Record<string, number> = {}
     newGroupPieces.forEach((p, i) => { updates[p.id] = (i + 1) * 1000 })
 
-    // Atualização otimista imediata
+    // 1. Atualização otimista imediata (visual instantâneo)
     setLocalSortOrders(prev => ({ ...prev, ...updates }))
 
-    // Persistir no servidor
+    // 2. Persistir no servidor
     try {
       await api.patch('/api/pieces/reorder', {
         items: Object.entries(updates).map(([id, sortOrder]) => ({ id, sortOrder })),
       })
-      invalidate()
+
+      // 3. Atualizar cache diretamente — sem flash nem re-fetch
+      patchItems(items => items.map(p => {
+        const so = updates[p.id]
+        return so !== undefined ? { ...p, sortOrder: so } as Piece : p
+      }))
+
+      // 4. Limpar overrides locais (cache agora tem os valores corretos)
+      setLocalSortOrders(prev => {
+        const next = { ...prev }
+        Object.keys(updates).forEach(id => delete next[id])
+        return next
+      })
     } catch {
       // Manter estado local em caso de erro
     }
