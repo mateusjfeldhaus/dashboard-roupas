@@ -91,15 +91,28 @@ export function usePecaPage() {
   function openEdit() {
     const name  = piece?.name  ?? ''
     const brand = piece?.brand ?? ''
-    // Extrai descrição: se o nome termina com " - {brand}", remove o sufixo
-    const suffix = brand ? ` - ${brand}` : ''
-    const desc = suffix && name.endsWith(suffix)
-      ? name.slice(0, name.length - suffix.length)
-      : name
+
+    // 1. Tenta extrair desc removendo " - {brand}" exato do final
+    const exactSuffix = brand ? ` - ${brand}` : ''
+    let desc: string
+    if (exactSuffix && name.endsWith(exactSuffix)) {
+      desc = name.slice(0, name.length - exactSuffix.length)
+    } else {
+      // 2. Fallback: tudo antes do último " - "
+      const lastDash = name.lastIndexOf(' - ')
+      desc = lastDash >= 0 ? name.slice(0, lastDash) : name
+    }
+
+    // Verifica se o nome reconstruído bate com o armazenado
+    const reconstructed = desc.trim() && brand.trim()
+      ? `${desc.trim()} - ${brand.trim()}` : desc.trim() || brand.trim()
+    const nameMatchesAuto = reconstructed === name
+
     setEditDesc(desc)
     setEditBrand(brand)
     setEditName(name)
-    setEditNameEdited(false)
+    // Se o auto-gerado difere do armazenado, mantém o armazenado e marca como editado
+    setEditNameEdited(!nameMatchesAuto)
     setEditCategory(piece?.category ?? '')
     setEditColor(piece?.color ?? '#6b7280')
     setEditTips(piece?.tips.join('\n') ?? '')
