@@ -20,26 +20,49 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } {
 /** Família de cor por hue/saturation — fallback para hexes fora da paleta */
 function familyFromHsl(h: number, s: number, l: number): number {
   if (s < 0.12) return l > 0.65 ? 0 : 6
-  if (h >= 330 || h <= 20)           return 1  // rosa / vermelho
-  if (h > 185 && h <= 270)           return 2  // azul
-  if (h > 20  && h <= 75)            return 3  // amarelo / laranja / marrom
-  if (h > 75  && h <= 185)           return 4  // verde
-  return 5                                      // roxo e outros
+  if (h >= 330 || h <= 20)  return 1  // rosa / vermelho
+  if (h > 185 && h <= 270)  return 2  // azul
+  if (h > 20  && h <= 75)   return 3  // amarelo / laranja / marrom
+  if (h > 75  && h <= 185)  return 4  // verde
+  return 5                             // roxo e outros
 }
 
-export function colorSortKey(hex: string): number {
-  const { h, s, l } = hexToHsl(hex)
-
-  // 1ª chave: família da paleta (exato) ou fallback por hue
+/** Família da cor: 0–6. Usa paleta exata; fallback por HSL. */
+export function colorFamily(hex: string): number {
   const entry = paletteFor(hex)
-  const family = entry ? entry.family : familyFromHsl(h, s, l)
-
-  // 2ª chave: luminosidade do hex — do mais claro (l≈1) ao mais escuro (l≈0)
-  const secondary = Math.round((1 - l) * 999)
-
-  return family * 10_000 + secondary
+  if (entry) return entry.family
+  const { h, s, l } = hexToHsl(hex)
+  return familyFromHsl(h, s, l)
 }
 
-export function sortByColor<T extends { color: string }>(items: T[]): T[] {
-  return [...items].sort((a, b) => colorSortKey(a.color) - colorSortKey(b.color))
+function luminosityKey(hex: string): number {
+  const { l } = hexToHsl(hex)
+  return Math.round((1 - l) * 999)
+}
+
+/** Chave combinada família + luminosidade (retrocompat — usada em Overview) */
+export function colorSortKey(hex: string): number {
+  return colorFamily(hex) * 10_000 + luminosityKey(hex)
+}
+
+/**
+ * Ordena por:
+ *  1. Família de cor (Branca → Rosa → Azul → Amarelo → Verde → Roxo → Escuro)
+ *  2. sortOrder manual (quando definido pelo drag-and-drop)
+ *  3. Luminosidade (fallback para peças sem sortOrder)
+ */
+export function sortByColor<T extends { color: string; sortOrder?: number | null }>(items: T[]): T[] {
+  return [...items].sort((a, b) => {
+    const famA = colorFamily(a.color)
+    const famB = colorFamily(b.color)
+    if (famA !== famB) return famA - famB
+
+    // Dentro da mesma família: sortOrder tem prioridade
+    const orderA = a.sortOrder ?? Infinity
+    const orderB = b.sortOrder ?? Infinity
+    if (orderA !== orderB) return orderA - orderB
+
+    // Fallback: luminosidade (claro → escuro)
+    return luminosityKey(a.color) - luminosityKey(b.color)
+  })
 }

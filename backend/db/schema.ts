@@ -14,6 +14,7 @@ export const pieces = pgTable('pieces', {
   tips:      text('tips').array().notNull().default([]),
   notes:     text('notes').notNull().default(''),
   hidden:    boolean('hidden').notNull().default(false),
+  sortOrder: integer('sort_order'),                          // null = auto (luminosity), set = drag order
   createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 

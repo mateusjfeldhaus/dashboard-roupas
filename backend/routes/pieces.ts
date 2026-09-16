@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto'
 import multer from 'multer'
 import { db } from '../db/client'
 import { pieces, looks, lookPieces } from '../db/schema'
-import { PieceCreateSchema, PieceUpdateSchema, NotesSchema, HiddenSchema } from '../lib/schemas'
+import { PieceCreateSchema, PieceUpdateSchema, NotesSchema, HiddenSchema, ReorderSchema } from '../lib/schemas'
 import { supabase, BUCKET } from '../lib/supabase'
 import { apiError } from '../middleware/errorHandler'
 
@@ -70,6 +70,19 @@ router.delete('/:id/photo', async (req, res) => {
   try {
     await supabase.storage.from(BUCKET).remove([`pieces/${req.params.id}`])
     await db.update(pieces).set({ img: '' }).where(eq(pieces.id, req.params.id))
+    res.json({ ok: true })
+  } catch (e) { apiError(res, e) }
+})
+
+// PATCH /api/pieces/reorder — bulk update sort_order for multiple pieces
+router.patch('/reorder', async (req, res) => {
+  try {
+    const { items } = ReorderSchema.parse(req.body)
+    for (const item of items) {
+      await db.update(pieces)
+        .set({ sortOrder: item.sortOrder })
+        .where(eq(pieces.id, item.id))
+    }
     res.json({ ok: true })
   } catch (e) { apiError(res, e) }
 })

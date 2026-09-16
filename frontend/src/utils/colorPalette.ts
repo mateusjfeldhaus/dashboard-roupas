@@ -56,6 +56,17 @@ export function paletteFor(hex: string): PaletteColor | undefined {
   return COLOR_PALETTE.find(c => c.hex.toLowerCase() === hex.toLowerCase())
 }
 
+/** Label de cada família por índice (0–6) */
+export const FAMILY_LABELS: Record<number, string> = {
+  0: 'Branca / Bege',
+  1: 'Rosa / Vermelho',
+  2: 'Azul',
+  3: 'Amarelo / Marrom',
+  4: 'Verde',
+  5: 'Roxo / Lilás',
+  6: 'Cinza / Preto',
+}
+
 export const PALETTE_GROUPS: { label: string; colors: PaletteColor[] }[] = [
   { label: 'Branca / Bege',          colors: COLOR_PALETTE.filter(c => c.family === 0) },
   { label: 'Rosa / Vermelho',         colors: COLOR_PALETTE.filter(c => c.family === 1) },

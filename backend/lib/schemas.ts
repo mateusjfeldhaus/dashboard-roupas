@@ -21,14 +21,22 @@ export const PieceCreateSchema = z.object({
 
 // Separate schema for updates: no defaults so absent fields stay truly undefined
 export const PieceUpdateSchema = z.object({
-  name:     z.string().min(1),
-  brand:    z.string(),
-  category: z.enum(PIECE_CATEGORIES),
-  img:      z.string(),
-  color:    z.string(),
-  tips:     z.array(z.string()),
-  notes:    z.string(),
+  name:      z.string().min(1),
+  brand:     z.string(),
+  category:  z.enum(PIECE_CATEGORIES),
+  img:       z.string(),
+  color:     z.string(),
+  tips:      z.array(z.string()),
+  notes:     z.string(),
+  sortOrder: z.number().int().nullable(),
 }).partial()
+
+export const ReorderSchema = z.object({
+  items: z.array(z.object({
+    id:        z.string().min(1),
+    sortOrder: z.number().int(),
+  })),
+})
 
 export const NotesSchema = z.object({
   notes: z.string(),

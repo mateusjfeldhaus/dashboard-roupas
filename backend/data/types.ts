@@ -35,6 +35,7 @@ export interface Piece {
   tips: string[]
   notes?: string
   hidden?: boolean
+  sortOrder?: number | null
 }
 
 export interface LookPiece {
