@@ -73,6 +73,17 @@ export const Dot = styled.span<{ $filled: boolean }>`
   background: ${p => p.$filled ? p.theme.colors.accent : p.theme.colors.border};
 `
 
+export const DeleteBtn = styled.button`
+  font-size: 12px; font-weight: 600;
+  color: #ef4444;
+  border: 1px solid #ef444455;
+  border-radius: 8px;
+  padding: 5px 12px;
+  margin-top: 6px;
+  transition: all 0.15s;
+  &:hover { background: #ef4444; color: #fff; border-color: #ef4444; }
+`
+
 export const RestoreBtn = styled.button`
   font-size: 12px; font-weight: 600;
   color: ${p => p.theme.colors.accent};
