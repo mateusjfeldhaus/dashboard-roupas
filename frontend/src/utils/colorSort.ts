@@ -16,8 +16,19 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } {
 }
 
 export function colorSortKey(hex: string): number {
-  const { h, l } = hexToHsl(hex)  
-  return Math.round((1 - l) * 10_000) + h
+  const { h, s, l } = hexToHsl(hex)
+
+  // 1. Neutros (baixa saturação): agrupados no início, do mais escuro ao mais claro
+  if (s < 0.12) {
+    return Math.round(l * 1_000)
+  }
+
+  // 2. Cromáticos: ordenados por hue, depois por luminosidade dentro do mesmo tom
+  const baseHue      = Math.round(h * 10_000)
+  const lightnessOffset = Math.round(l * 1_000)
+
+  // +10.000 garante que ficam depois dos neutros (0–1000)
+  return 10_000 + baseHue + lightnessOffset
 }
 
 export function sortByColor<T extends { color: string }>(items: T[]): T[] {
