@@ -15,8 +15,8 @@ import { DialogOverlay, DialogBox, DialogTitle, DialogActions, SaveBtn, CancelBt
 import { isGuest } from '../../api/client'
 import { CAT_LIST } from '../NovaPecaPage/useNovaPecaPage'
 
-const FLabel = ({ children }: { children: React.ReactNode }) => (
-  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-muted, #888)', marginBottom: 6 }}>
+const FLabel = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
+  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-muted, #888)', marginBottom: 6, ...style }}>
     {children}
   </div>
 )
@@ -37,7 +37,8 @@ export function PecaPage() {
     photo, photoInputRef, handlePhotoChange, removePhoto,
     lightboxOpen, setLightboxOpen,
     editOpen, openEdit, setEditOpen,
-    editName, setEditName,
+    editDesc, setEditDesc,
+    editName, handleEditNameChange, resetEditName, editNameEdited,
     editBrand, setEditBrand,
     editCategory, setEditCategory,
     editColor, setEditColor,
@@ -294,13 +295,34 @@ export function PecaPage() {
               </FField>
 
               <FField>
-                <FLabel>Nome</FLabel>
-                <input style={inputStyle} value={editName} onChange={e => setEditName(e.target.value)} />
+                <FLabel>Descrição <span style={{ fontWeight: 400, textTransform: 'none' }}>(cor, material, detalhe)</span></FLabel>
+                <input style={inputStyle} value={editDesc} onChange={e => setEditDesc(e.target.value)} placeholder="ex: Chumbo Lã 120" />
               </FField>
 
               <FField>
                 <FLabel>Marca</FLabel>
-                <input style={inputStyle} value={editBrand} onChange={e => setEditBrand(e.target.value)} />
+                <input style={inputStyle} value={editBrand} onChange={e => setEditBrand(e.target.value)} placeholder="ex: Bespoke" />
+              </FField>
+
+              <FField>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                  <FLabel style={{ marginBottom: 0 }}>
+                    Nome {editNameEdited
+                      ? <span style={{ fontWeight: 400, color: 'var(--accent, #c8a96e)' }}>(editado)</span>
+                      : <span style={{ fontWeight: 400, textTransform: 'none' }}>(gerado automaticamente)</span>}
+                  </FLabel>
+                  {editNameEdited && (
+                    <button onClick={resetEditName} style={{ fontSize: 11, background: 'none', border: 'none', color: 'var(--text-muted, #888)', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>
+                      resetar
+                    </button>
+                  )}
+                </div>
+                <input
+                  style={{ ...inputStyle, ...(editNameEdited ? { borderColor: 'var(--accent, #c8a96e)' } : {}) }}
+                  value={editName}
+                  onChange={e => handleEditNameChange(e.target.value)}
+                  placeholder="ex: Chumbo Lã 120 - Bespoke"
+                />
               </FField>
 
               <FField>

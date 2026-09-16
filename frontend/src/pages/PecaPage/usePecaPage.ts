@@ -63,16 +63,43 @@ export function usePecaPage() {
     }
   }
 
-  const [editName, setEditName] = useState('')
-  const [editBrand, setEditBrand] = useState('')
+  const [editDesc,     setEditDesc]     = useState('')
+  const [editName,     setEditName]     = useState('')
+  const [editNameEdited, setEditNameEdited] = useState(false)
+  const [editBrand,    setEditBrand]    = useState('')
   const [editCategory, setEditCategory] = useState('')
-  const [editColor, setEditColor] = useState('')
-  const [editTips, setEditTips] = useState('')
-  const [editSaving, setEditSaving] = useState(false)
+  const [editColor,    setEditColor]    = useState('')
+  const [editTips,     setEditTips]     = useState('')
+  const [editSaving,   setEditSaving]   = useState(false)
+
+  useEffect(() => {
+    if (!editOpen || editNameEdited) return
+    const base = editDesc.trim()
+    const br   = editBrand.trim()
+    setEditName(base && br ? `${base} - ${br}` : base || br)
+  }, [editDesc, editBrand, editNameEdited, editOpen])
+
+  function handleEditNameChange(val: string) {
+    setEditName(val)
+    setEditNameEdited(true)
+  }
+
+  function resetEditName() {
+    setEditNameEdited(false)
+  }
 
   function openEdit() {
-    setEditName(piece?.name ?? '')
-    setEditBrand(piece?.brand ?? '')
+    const name  = piece?.name  ?? ''
+    const brand = piece?.brand ?? ''
+    // Extrai descrição: se o nome termina com " - {brand}", remove o sufixo
+    const suffix = brand ? ` - ${brand}` : ''
+    const desc = suffix && name.endsWith(suffix)
+      ? name.slice(0, name.length - suffix.length)
+      : name
+    setEditDesc(desc)
+    setEditBrand(brand)
+    setEditName(name)
+    setEditNameEdited(false)
     setEditCategory(piece?.category ?? '')
     setEditColor(piece?.color ?? '#6b7280')
     setEditTips(piece?.tips.join('\n') ?? '')
@@ -133,7 +160,8 @@ export function usePecaPage() {
     lightboxOpen, setLightboxOpen,
     toggleHidden,
     editOpen, openEdit, setEditOpen,
-    editName, setEditName,
+    editDesc, setEditDesc,
+    editName, handleEditNameChange, resetEditName, editNameEdited,
     editBrand, setEditBrand,
     editCategory, setEditCategory,
     editColor, setEditColor,
