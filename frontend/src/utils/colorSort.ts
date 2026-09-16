@@ -18,17 +18,31 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } {
 export function colorSortKey(hex: string): number {
   const { h, s, l } = hexToHsl(hex)
 
-  // 1. Neutros (baixa saturação): agrupados no início, do mais escuro ao mais claro
+  let family: number
+
   if (s < 0.12) {
-    return Math.round(l * 1_000)
+    // Neutros: branca/bege claro → início | cinza/preta → final
+    family = l > 0.65 ? 0 : 6
+  } else if (h >= 330 || h <= 20) {
+    // Rosa, vermelho, vinho — do mais claro (rosa bebê) ao mais escuro (vinho)
+    family = 1
+  } else if (h > 185 && h <= 270) {
+    // Azul — do azul bebê ao azul marinho
+    family = 2
+  } else if (h > 20 && h <= 75) {
+    // Amarelo, laranja, marrom
+    family = 3
+  } else if (h > 75 && h <= 185) {
+    // Verde — do verde-limão ao verde-musgo
+    family = 4
+  } else {
+    // Roxo (270–330) e outros
+    family = 5
   }
 
-  // 2. Cromáticos: ordenados por hue, depois por luminosidade dentro do mesmo tom
-  const baseHue      = Math.round(h * 10_000)
-  const lightnessOffset = Math.round(l * 1_000)
-
-  // +10.000 garante que ficam depois dos neutros (0–1000)
-  return 10_000 + baseHue + lightnessOffset
+  // Dentro de cada família: do mais claro (l alto) ao mais escuro (l baixo)
+  const secondary = Math.round((1 - l) * 999)
+  return family * 10_000 + secondary
 }
 
 export function sortByColor<T extends { color: string }>(items: T[]): T[] {
