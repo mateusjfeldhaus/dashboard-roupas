@@ -2,6 +2,7 @@ import React from 'react'
 import { useNovaPecaPage, CAT_LIST } from './useNovaPecaPage'
 import { PageWrap, BackBtn } from '../PecaPage/PecaPage.styles'
 import { DialogTitle, SaveBtn, CancelBtn } from '../LookPage/LookPage.styles'
+import { ColorPalettePicker } from '../../components/ColorPalettePicker'
 
 const Label = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
   <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-muted, #888)', marginBottom: 6, ...style }}>
@@ -185,21 +186,7 @@ export function NovaPecaPage() {
         {/* Cor */}
         <Field>
           <Label>Cor da peça</Label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <input
-              type="color"
-              value={color}
-              onChange={e => setColor(e.target.value)}
-              style={{ width: 44, height: 36, borderRadius: 8, border: '1px solid var(--border, #333)', background: 'none', cursor: 'pointer', padding: 2 }}
-            />
-            <Input
-              value={color}
-              onChange={e => setColor(e.target.value)}
-              placeholder="#6b7280"
-              style={{ maxWidth: 120 }}
-            />
-            <div style={{ width: 32, height: 32, borderRadius: 8, background: color, border: '1px solid var(--border, #333)', flexShrink: 0 }} />
-          </div>
+          <ColorPalettePicker value={color} onChange={setColor} />
         </Field>
 
         {/* Dicas */}

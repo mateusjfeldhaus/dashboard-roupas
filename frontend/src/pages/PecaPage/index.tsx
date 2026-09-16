@@ -1,4 +1,5 @@
 import React from 'react'
+import { ColorPalettePicker } from '../../components/ColorPalettePicker'
 import { usePecaPage } from './usePecaPage'
 import { imgUrl } from '../../utils/imgUrl'
 import { getTagColor } from '../../styles/tagColors'
@@ -334,21 +335,7 @@ export function PecaPage() {
 
               <FField>
                 <FLabel>Cor da peça</FLabel>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <input
-                    type="color"
-                    value={editColor}
-                    onChange={e => setEditColor(e.target.value)}
-                    style={{ width: 44, height: 36, borderRadius: 8, border: '1px solid var(--border, #333)', background: 'none', cursor: 'pointer', padding: 2 }}
-                  />
-                  <input
-                    style={{ ...inputStyle, maxWidth: 120 }}
-                    value={editColor}
-                    onChange={e => setEditColor(e.target.value)}
-                    placeholder="#6b7280"
-                  />
-                  <div style={{ width: 32, height: 32, borderRadius: 8, background: editColor, border: '1px solid var(--border, #333)', flexShrink: 0 }} />
-                </div>
+                <ColorPalettePicker value={editColor} onChange={setEditColor} />
               </FField>
 
               <FField>

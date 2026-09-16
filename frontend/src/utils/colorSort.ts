@@ -1,3 +1,5 @@
+import { paletteFor } from './colorPalette'
+
 function hexToHsl(hex: string): { h: number; s: number; l: number } {
   if (!hex || !hex.startsWith('#') || hex.length < 7) return { h: 0, s: 0, l: 0 }
   const r = parseInt(hex.slice(1, 3), 16) / 255
@@ -15,33 +17,26 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } {
   return { h: h * 360, s, l }
 }
 
+/** Família de cor por hue/saturation — fallback para hexes fora da paleta */
+function familyFromHsl(h: number, s: number, l: number): number {
+  if (s < 0.12) return l > 0.65 ? 0 : 6
+  if (h >= 330 || h <= 20)           return 1  // rosa / vermelho
+  if (h > 185 && h <= 270)           return 2  // azul
+  if (h > 20  && h <= 75)            return 3  // amarelo / laranja / marrom
+  if (h > 75  && h <= 185)           return 4  // verde
+  return 5                                      // roxo e outros
+}
+
 export function colorSortKey(hex: string): number {
   const { h, s, l } = hexToHsl(hex)
 
-  let family: number
+  // 1ª chave: família da paleta (exato) ou fallback por hue
+  const entry = paletteFor(hex)
+  const family = entry ? entry.family : familyFromHsl(h, s, l)
 
-  if (s < 0.12) {
-    // Neutros: branca/bege claro → início | cinza/preta → final
-    family = l > 0.65 ? 0 : 6
-  } else if (h >= 330 || h <= 20) {
-    // Rosa, vermelho, vinho — do mais claro (rosa bebê) ao mais escuro (vinho)
-    family = 1
-  } else if (h > 185 && h <= 270) {
-    // Azul — do azul bebê ao azul marinho
-    family = 2
-  } else if (h > 20 && h <= 75) {
-    // Amarelo, laranja, marrom
-    family = 3
-  } else if (h > 75 && h <= 185) {
-    // Verde — do verde-limão ao verde-musgo
-    family = 4
-  } else {
-    // Roxo (270–330) e outros
-    family = 5
-  }
-
-  // Dentro de cada família: do mais claro (l alto) ao mais escuro (l baixo)
+  // 2ª chave: luminosidade do hex — do mais claro (l≈1) ao mais escuro (l≈0)
   const secondary = Math.round((1 - l) * 999)
+
   return family * 10_000 + secondary
 }
 
