@@ -12,7 +12,8 @@ export const categories: PieceCategory[] = [
   'Polo', 'Camiseta', 'Jaqueta', 'Acessório', 'Perfume',
 ]
 
-export type ColorGroup = { family: number; label: string; pieces: Piece[] }
+export type ColorFamilyGroup    = { family: number; label: string; pieces: Piece[] }
+export type CategoryColorGroup  = { category: string; groups: ColorFamilyGroup[] }
 
 // Persistir seleção entre navegações
 let _selectedCat: PieceCategory | 'Todas' = 'Todas'
@@ -21,8 +22,8 @@ let _sortByColor = false
 export function usePecas() {
   const navigate = useNavigate()
   const { pieces, loading, invalidate } = usePieces()
-  const [selectedCat, setSelectedCatState]  = useState<PieceCategory | 'Todas'>(_selectedCat)
-  const [sortByColor, setSortByColorState]  = useState(_sortByColor)
+  const [selectedCat, setSelectedCatState]    = useState<PieceCategory | 'Todas'>(_selectedCat)
+  const [sortByColor, setSortByColorState]    = useState(_sortByColor)
   const [localSortOrders, setLocalSortOrders] = useState<Record<string, number>>({})
 
   function setSelectedCat(cat: PieceCategory | 'Todas') {
@@ -45,29 +46,33 @@ export function usePecas() {
     sortOrder: localSortOrders[p.id] ?? p.sortOrder ?? null,
   }))
 
-  const filteredForColor = piecesWithLocal.filter(
-    p => selectedCat === 'Todas' || p.category === selectedCat
-  )
+  // Agrupado por categoria → sub-grupos por família de cor
+  // (usado no modo 🎨 Cor com drag-and-drop)
+  const categoryColorGroups: CategoryColorGroup[] = (() => {
+    if (!sortByColor) return []
 
-  const colorSortedPieces = sortByColor ? sortPiecesByColor(filteredForColor) : []
+    const cats = selectedCat === 'Todas'
+      ? categories.filter(c => piecesWithLocal.some(p => p.category === c))
+      : ([selectedCat] as string[])
 
-  // Agrupado por família para o modo drag-and-drop
-  const colorGroupedPieces: ColorGroup[] = (() => {
-    const groups: ColorGroup[] = []
-    for (const piece of colorSortedPieces) {
-      const fam = colorFamily(piece.color)
-      let g = groups.find(x => x.family === fam)
-      if (!g) {
-        g = { family: fam, label: FAMILY_LABELS[fam] ?? 'Outros', pieces: [] }
-        groups.push(g)
+    return cats.map(cat => {
+      const catPieces = sortPiecesByColor(piecesWithLocal.filter(p => p.category === cat))
+      const groups: ColorFamilyGroup[] = []
+      for (const piece of catPieces) {
+        const fam = colorFamily(piece.color)
+        let g = groups.find(x => x.family === fam)
+        if (!g) {
+          g = { family: fam, label: FAMILY_LABELS[fam] ?? 'Outros', pieces: [] }
+          groups.push(g)
+        }
+        g.pieces.push(piece)
       }
-      g.pieces.push(piece)
-    }
-    return groups
+      return { category: cat, groups }
+    }).filter(c => c.groups.length > 0)
   })()
 
   async function reorderGroup(newGroupPieces: Piece[]) {
-    // Atribuir sortOrder para TODAS as peças do grupo (1000, 2000, 3000...)
+    // Atribui sortOrder para TODAS as peças do grupo (1000, 2000, 3000…)
     const updates: Record<string, number> = {}
     newGroupPieces.forEach((p, i) => { updates[p.id] = (i + 1) * 1000 })
 
@@ -81,7 +86,7 @@ export function usePecas() {
       })
       invalidate()
     } catch {
-      // Em caso de erro, manter o estado local (o usuário vê a ordem desejada)
+      // Manter estado local em caso de erro
     }
   }
 
@@ -89,7 +94,7 @@ export function usePecas() {
     navigate, pieces: piecesWithLocal, loading,
     selectedCat, setSelectedCat, visibleCats, categories,
     sortByColor, toggleSortByColor,
-    colorSortedPieces, colorGroupedPieces,
+    categoryColorGroups,
     reorderGroup,
     invalidate,
   }

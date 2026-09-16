@@ -7,7 +7,7 @@ import {
   DescartadasLink,
 } from './Pecas.styles'
 import { SkGrid, SkCard } from '../Skeleton'
-import { usePecas, categories, type ColorGroup } from './usePecas'
+import { usePecas, categories, type ColorFamilyGroup } from './usePecas'
 import { sortByColor as sortPiecesByColor } from '../../utils/colorSort'
 import { isGuest } from '../../api/client'
 import type { Piece } from '@data/types'
@@ -24,30 +24,31 @@ export function Pecas() {
     navigate, pieces, loading,
     selectedCat, setSelectedCat, visibleCats,
     sortByColor, toggleSortByColor,
-    colorGroupedPieces,
+    categoryColorGroups,
     reorderGroup,
   } = usePecas()
   const guest = isGuest()
 
   // Drag-and-drop state (UI local only)
-  const [dragId,     setDragId]     = useState<string | null>(null)
-  const [dragFamily, setDragFamily] = useState<number | null>(null)
-  const [overId,     setOverId]     = useState<string | null>(null)
+  const [dragId,       setDragId]       = useState<string | null>(null)
+  const [dragFamily,   setDragFamily]   = useState<number | null>(null)
+  const [dragCategory, setDragCategory] = useState<string | null>(null)
+  const [overId,       setOverId]       = useState<string | null>(null)
   const dragOccurred = useRef(false)
 
   useEffect(() => {
     const saved = sessionStorage.getItem(SCROLL_KEY)
     if (saved) {
       sessionStorage.removeItem(SCROLL_KEY)
-      const y = Number(saved)
-      requestAnimationFrame(() => window.scrollTo({ top: y, behavior: 'instant' }))
+      requestAnimationFrame(() => window.scrollTo({ top: Number(saved), behavior: 'instant' }))
     }
   }, [])
 
-  function handleDragStart(id: string, family: number) {
+  function handleDragStart(id: string, family: number, category: string) {
     dragOccurred.current = true
     setDragId(id)
     setDragFamily(family)
+    setDragCategory(category)
   }
 
   function handleDragOver(e: React.DragEvent, id: string) {
@@ -55,10 +56,9 @@ export function Pecas() {
     if (id !== overId) setOverId(id)
   }
 
-  function handleDrop(group: ColorGroup) {
-    if (!dragId || dragFamily !== group.family || !overId || dragId === overId) {
-      cleanup(); return
-    }
+  function handleDrop(group: ColorFamilyGroup, category: string) {
+    const sameGroup = dragFamily === group.family && dragCategory === category
+    if (!dragId || !sameGroup || !overId || dragId === overId) { cleanup(); return }
     const fromIdx = group.pieces.findIndex(p => p.id === dragId)
     const toIdx   = group.pieces.findIndex(p => p.id === overId)
     if (fromIdx === -1 || toIdx === -1) { cleanup(); return }
@@ -72,6 +72,7 @@ export function Pecas() {
   function cleanup() {
     setDragId(null)
     setDragFamily(null)
+    setDragCategory(null)
     setOverId(null)
   }
 
@@ -80,28 +81,36 @@ export function Pecas() {
     navigateToPeca(navigate, id)
   }
 
-  function renderCard(piece: Piece, group?: ColorGroup) {
+  function renderCard(piece: Piece, group?: ColorFamilyGroup, category?: string) {
     const inDragMode = sortByColor && !guest
     const isDragging = dragId === piece.id
-    const isOver     = !!group && overId === piece.id && dragFamily === group.family && !isDragging
+    const isOver     = !!group && !!category
+      && overId === piece.id
+      && dragFamily === group.family
+      && dragCategory === category
+      && !isDragging
 
     return (
       <PieceCard
         key={piece.id}
         draggable={inDragMode}
-        onDragStart={inDragMode ? () => handleDragStart(piece.id, group!.family) : undefined}
+        onDragStart={inDragMode && group && category
+          ? () => handleDragStart(piece.id, group.family, category)
+          : undefined}
         onDragOver={inDragMode ? (e) => handleDragOver(e, piece.id) : undefined}
-        onDrop={inDragMode && group ? () => handleDrop(group) : undefined}
+        onDrop={inDragMode && group && category
+          ? () => handleDrop(group, category)
+          : undefined}
         onDragEnd={inDragMode ? cleanup : undefined}
         onClick={() => handleCardClick(piece.id)}
         style={{
-          position: 'relative',
-          opacity:   isDragging ? 0.3 : 1,
-          outline:   isOver ? '2px solid var(--accent, #c8a96e)' : undefined,
+          position:    'relative',
+          opacity:     isDragging ? 0.3 : 1,
+          outline:     isOver ? '2px solid var(--accent, #c8a96e)' : undefined,
           outlineOffset: isOver ? '-2px' : undefined,
-          cursor:    inDragMode ? (dragId ? 'grabbing' : 'grab') : 'pointer',
-          transition: 'opacity 0.12s',
-          userSelect: 'none',
+          cursor:      inDragMode ? (dragId ? 'grabbing' : 'grab') : 'pointer',
+          transition:  'opacity 0.12s',
+          userSelect:  'none',
         }}
       >
         {/* Handle de drag */}
@@ -110,9 +119,7 @@ export function Pecas() {
             position: 'absolute', top: 5, right: 7,
             fontSize: 14, opacity: 0.3, pointerEvents: 'none',
             userSelect: 'none', lineHeight: 1,
-          }}>
-            ⠿
-          </div>
+          }}>⠿</div>
         )}
 
         <Thumb>
@@ -126,11 +133,7 @@ export function Pecas() {
         </Thumb>
         <ColorBar $color={piece.color} />
         <PieceName>{piece.name}</PieceName>
-        <PieceBrand>
-          {sortByColor
-            ? `${piece.brand ? piece.brand + ' · ' : ''}${piece.category}`
-            : piece.brand}
-        </PieceBrand>
+        <PieceBrand>{piece.brand}</PieceBrand>
       </PieceCard>
     )
   }
@@ -177,33 +180,38 @@ export function Pecas() {
       </FilterStickyWrap>
 
       {sortByColor ? (
-        // ── Modo cor: peças agrupadas por família, drag-and-drop dentro de cada grupo ──
-        colorGroupedPieces.length === 0 ? null : (
+        // ── Modo cor: categoria → sub-grupos por família → drag dentro de cada sub-grupo ──
+        categoryColorGroups.length === 0 ? null : (
           <>
             {!guest && (
-              <div style={{ fontSize: 11, opacity: 0.4, marginBottom: 12, marginTop: -4 }}>
-                Arraste as peças para reordenar dentro de cada grupo
+              <div style={{ fontSize: 11, opacity: 0.35, marginBottom: 12, marginTop: -4 }}>
+                Arraste para reordenar dentro de cada grupo de cor
               </div>
             )}
-            {colorGroupedPieces.map(group => (
-              <Section
-                key={group.family}
-                onDragLeave={(e) => {
-                  // Só limpa overId se o mouse saiu da Section inteira
-                  if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-                    setOverId(null)
-                  }
-                }}
-              >
-                <CatTitle>
-                  {group.label}
-                  <span style={{ fontWeight: 400, opacity: 0.5, marginLeft: 8, fontSize: 11 }}>
-                    {group.pieces.length}
-                  </span>
-                </CatTitle>
-                <PieceGrid>
-                  {group.pieces.map(piece => renderCard(piece, group))}
-                </PieceGrid>
+            {categoryColorGroups.map(({ category, groups }) => (
+              <Section key={category}>
+                <CatTitle>{category}</CatTitle>
+
+                {groups.map(group => (
+                  <div key={group.family} style={{ marginBottom: 20 }}>
+                    {/* Label do sub-grupo de cor só aparece quando há mais de uma família na categoria */}
+                    {groups.length > 1 && (
+                      <div style={{
+                        fontSize: 10, fontWeight: 700, letterSpacing: '0.08em',
+                        opacity: 0.4, textTransform: 'uppercase', marginBottom: 8,
+                      }}>
+                        {group.label}
+                      </div>
+                    )}
+                    <PieceGrid
+                      onDragLeave={(e) => {
+                        if (!e.currentTarget.contains(e.relatedTarget as Node)) setOverId(null)
+                      }}
+                    >
+                      {group.pieces.map(piece => renderCard(piece, group, category))}
+                    </PieceGrid>
+                  </div>
+                ))}
               </Section>
             ))}
           </>
