@@ -1,7 +1,7 @@
 import {
   FilterStickyWrap, FilterPanel, FilterRow, GroupLabel,
   FilterChip, Divider, MetaRow, Count, ClearBtn,
-  Grid, Card, CardTitle, TagRow, Tag,
+  Grid, Card, CardTitleRow, CardTitle, RatingBadge, TagRow, Tag,
   FormalityRow, Dot, PieceList, ClickHint,
 } from './Looks.styles'
 import { SkGrid, SkCard, SkStack, SkLine } from '../Skeleton'
@@ -105,7 +105,10 @@ export function Looks() {
       <Grid>
         {filtered.map(look => (
           <Card key={look.id} onClick={() => navigate(`/looks/${look.id}`)}>
-            <CardTitle>{look.title}</CardTitle>
+            <CardTitleRow>
+              <CardTitle>{look.title}</CardTitle>
+              {look.rating ? <RatingBadge>★ {look.rating}</RatingBadge> : null}
+            </CardTitleRow>
             <TagRow>{look.tags.map(t => <Tag key={t} $tag={t}>{t}</Tag>)}</TagRow>
             <FormalityRow>{[1,2,3,4,5].map(i => <Dot key={i} $filled={i <= look.formality} />)}</FormalityRow>
             <PieceList>{look.pieces.map(lp => lp.cat).join(' / ')}</PieceList>

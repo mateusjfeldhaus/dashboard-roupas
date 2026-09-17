@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { getTagColor } from '../../styles/tagColors'
 
-// ── Sticky wrapper ─────────────────────────────────────────────────────────
 export const FilterStickyWrap = styled.div`
   position: sticky;
   top: var(--nav-h);
@@ -10,7 +9,6 @@ export const FilterStickyWrap = styled.div`
   padding-bottom: 16px;
 `
 
-// ── Filter panel ───────────────────────────────────────────────────────────
 export const FilterPanel = styled.div`
   background: ${p => p.theme.colors.surface};
   border: 1px solid ${p => p.theme.colors.border};
@@ -71,7 +69,6 @@ export const Divider = styled.div`
   margin: 0 -2px;
 `
 
-// ── Count / meta row ───────────────────────────────────────────────────────
 export const MetaRow = styled.div`
   display: flex;
   align-items: center;
@@ -96,7 +93,6 @@ export const ClearBtn = styled.button`
   &:hover { opacity: 1; }
 `
 
-// ── Look card grid ─────────────────────────────────────────────────────────
 export const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -126,12 +122,31 @@ export const Card = styled.button`
   @media (max-width: 480px) { padding: 14px; border-radius: 10px; }
 `
 
+export const CardTitleRow = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  @media (max-width: 480px) { margin-bottom: 7px; }
+`
+
 export const CardTitle = styled.div`
   font-size: 15px;
   font-weight: 700;
   color: ${p => p.theme.colors.text};
-  margin-bottom: 10px;
-  @media (max-width: 480px) { font-size: 13px; margin-bottom: 7px; }
+  flex: 1;
+  @media (max-width: 480px) { font-size: 13px; }
+`
+
+export const RatingBadge = styled.span`
+  font-size: 12px;
+  font-weight: 700;
+  color: ${p => p.theme.colors.accent};
+  opacity: 0.8;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 2px;
 `
 
 export const TagRow = styled.div`
