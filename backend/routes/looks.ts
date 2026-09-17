@@ -1,13 +1,12 @@
 import { Router } from 'express'
-import { eq, inArray } from 'drizzle-orm'
+import { eq, inArray, desc, sql } from 'drizzle-orm'
 import { db } from '../db/client'
-import { looks, lookPieces, lookPhotos } from '../db/schema'
+import { looks, lookPieces, lookPhotos, ratings } from '../db/schema'
 import { LookCreateSchema, LookUpdateSchema, NotesSchema, HiddenSchema } from '../lib/schemas'
 import { apiError } from '../middleware/errorHandler'
 
 const router = Router()
 
-// Attach pieces array to each look row
 async function withPieces(lookRows: (typeof looks.$inferSelect)[]) {
   if (lookRows.length === 0) return []
   const ids = lookRows.map(l => l.id)
@@ -22,17 +21,21 @@ async function withPieces(lookRows: (typeof looks.$inferSelect)[]) {
   }))
 }
 
-// GET /api/looks
 router.get('/', async (_req, res) => {
   try {
-    const all    = await db.select().from(looks).orderBy(looks.title)
+    const all    = await db.select().from(looks)
+      .orderBy(desc(sql`COALESCE((SELECT rating FROM ratings WHERE look_id = ${looks.id}), 0)`))
     const allLp  = await db.select().from(lookPieces)
     const photos = await db.select({ lookId: lookPhotos.lookId, id: lookPhotos.id }).from(lookPhotos)
-    const photoMap = Object.fromEntries(photos.map(p => [p.lookId, p.id]))
+    const ratingRows = await db.select({ lookId: ratings.lookId, rating: ratings.rating }).from(ratings)
+
+    const photoMap  = Object.fromEntries(photos.map(p => [p.lookId, p.id]))
+    const ratingMap = Object.fromEntries(ratingRows.map(r => [r.lookId, r.rating]))
 
     const result = all.map(look => ({
       ...look,
-      photoId: photoMap[look.id] ?? null,
+      photoId: photoMap[look.id]  ?? null,
+      rating:  ratingMap[look.id] ?? null,
       pieces: allLp
         .filter(lp => lp.lookId === look.id)
         .map(lp => ({ cat: lp.cat, pieceId: lp.pieceId })),
@@ -41,7 +44,6 @@ router.get('/', async (_req, res) => {
   } catch (e) { apiError(res, e) }
 })
 
-// GET /api/looks/:id
 router.get('/:id', async (req, res) => {
   try {
     const [look] = await db.select().from(looks).where(eq(looks.id, req.params.id))
@@ -52,7 +54,6 @@ router.get('/:id', async (req, res) => {
   } catch (e) { apiError(res, e) }
 })
 
-// POST /api/looks  body: { id, title, tags, formality, tip, pieces: [{cat, pieceId}] }
 router.post('/', async (req, res) => {
   try {
     const { pieces: pcs, ...lookData } = LookCreateSchema.parse(req.body)
@@ -70,7 +71,6 @@ router.post('/', async (req, res) => {
   } catch (e) { apiError(res, e) }
 })
 
-// PUT /api/looks/:id  body: { title?, tags?, formality?, tip?, pieces?: [...] }
 router.put('/:id', async (req, res) => {
   try {
     const { pieces: pcs, ...fields } = LookUpdateSchema.parse(req.body)
@@ -100,7 +100,6 @@ router.put('/:id', async (req, res) => {
   } catch (e) { apiError(res, e) }
 })
 
-// DELETE /api/looks/:id  (look_pieces cascade via FK)
 router.delete('/:id', async (req, res) => {
   try {
     const [deleted] = await db.delete(looks).where(eq(looks.id, req.params.id)).returning()
@@ -109,8 +108,6 @@ router.delete('/:id', async (req, res) => {
   } catch (e) { apiError(res, e) }
 })
 
-
-// PATCH /api/looks/:id/hidden  body: { hidden: boolean }
 router.patch('/:id/hidden', async (req, res) => {
   try {
     const { hidden } = HiddenSchema.parse(req.body)
@@ -123,7 +120,6 @@ router.patch('/:id/hidden', async (req, res) => {
   } catch (e) { apiError(res, e) }
 })
 
-// PATCH /api/looks/:id/notes  body: { notes: string }
 router.patch('/:id/notes', async (req, res) => {
   try {
     const { notes } = NotesSchema.parse(req.body)

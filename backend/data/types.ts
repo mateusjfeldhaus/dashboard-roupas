@@ -50,7 +50,8 @@ export interface Look {
   formality: 1 | 2 | 3 | 4 | 5   // 1 = casual, 5 = black-tie
   tip: string
   notes?: string
-  photoId?: string    // ID único da foto do look real (look_photos.id)
+  photoId?: string
+  rating?:  number | null
   hidden?: boolean
   pieces: LookPiece[]
 }
