@@ -34,6 +34,7 @@ export const COLOR_PALETTE: PaletteColor[] = [
   { id: 'terracota',      name: 'Terracota',      hex: '#c04828', family: 3 },
   { id: 'laranja-escuro', name: 'Laranja Escuro', hex: '#a04818', family: 3 },
   { id: 'marrom',         name: 'Marrom',         hex: '#8b5020', family: 3 },
+  { id: 'cafe',           name: 'Café',           hex: '#6b4228', family: 3 },
 
   { id: 'verde-claro',  name: 'Verde Claro',  hex: '#80cc60', family: 4 },
   { id: 'verde',        name: 'Verde',        hex: '#3a8040', family: 4 },
